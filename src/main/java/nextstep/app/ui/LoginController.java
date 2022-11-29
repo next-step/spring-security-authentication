@@ -2,6 +2,7 @@ package nextstep.app.ui;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.app.support.Authentication;
 import nextstep.app.support.SecurityContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +36,24 @@ public class LoginController {
             throw new AuthenticationException();
         }
 
-        // todo: LoginAcceptanceTest.login_success() 테스트가 통과하도록 만들기
-//        SecurityContextHolder.getContext().setAuthentication();
+        SecurityContextHolder.getContext().setAuthentication(
+            new Authentication() {
+                @Override
+                public Object getPrincipal() {
+                    return null;
+                }
+
+                @Override
+                public Object getCredentials() {
+                    return null;
+                }
+
+                @Override
+                public boolean isAuthenticated() {
+                    return true;
+                }
+            }
+        );
 
         return ResponseEntity.ok().build();
     }
