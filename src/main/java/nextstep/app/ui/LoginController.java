@@ -27,7 +27,7 @@ public class LoginController {
         final Member member = memberRepository.findByEmail(email)
             .orElseThrow(AuthenticationException::new);
 
-        if (!member.getPassword().equals(password)) {
+        if (!member.isSamePassword(password)) {
             throw new AuthenticationException();
         }
 

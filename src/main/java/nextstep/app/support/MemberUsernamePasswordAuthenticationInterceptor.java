@@ -41,7 +41,7 @@ public class MemberUsernamePasswordAuthenticationInterceptor implements HandlerI
         final Member member = memberRepository.findByEmail(username)
             .orElseThrow(AuthenticationException::new);
 
-        if (!member.getPassword().equals(password)) {
+        if (!member.isSamePassword(password)) {
             throw new AuthenticationException();
         }
 
