@@ -51,7 +51,8 @@ public class LoginTest {
     }
 
     private ResultActions requestLoginWith(String username, String password) throws Exception {
-        return mockMvc.perform(post("/login")
+        return mockMvc.perform(
+            post("/login")
                 .param("username", username)
                 .param("password", password)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
