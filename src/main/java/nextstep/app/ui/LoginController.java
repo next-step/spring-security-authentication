@@ -4,9 +4,7 @@ import nextstep.app.domain.MemberService;
 import nextstep.app.support.Authentication;
 import nextstep.app.support.EmailPasswordAuthenticationToken;
 import nextstep.app.support.SecurityContextHolder;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
