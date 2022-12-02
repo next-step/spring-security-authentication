@@ -1,7 +1,8 @@
 package nextstep.app.ui;
 
-import nextstep.app.domain.Member;
-import nextstep.app.domain.MemberRepository;
+import nextstep.app.domain.MemberService;
+import nextstep.app.support.Authentication;
+import nextstep.app.support.LoginAuthentication;
 import nextstep.app.support.SecurityContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,10 @@ import java.util.Map;
 
 @RestController
 public class LoginController {
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
-    public LoginController(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public LoginController(MemberService memberService) {
+        this.memberService = memberService;
     }
 
     @PostMapping("/login")
@@ -29,14 +30,10 @@ public class LoginController {
         String email = paramMap.get("username")[0];
         String password = paramMap.get("password")[0];
 
-        Member member = memberRepository.findByEmail(email).orElseThrow(AuthenticationException::new);
+        memberService.isValidMemberInfo(email, password);
 
-        if (!member.getPassword().equals(password)) {
-            throw new AuthenticationException();
-        }
-
-        // todo: LoginAcceptanceTest.login_success() 테스트가 통과하도록 만들기
-//        SecurityContextHolder.getContext().setAuthentication();
+        Authentication authentication = new LoginAuthentication(email, password);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return ResponseEntity.ok().build();
     }

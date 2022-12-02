@@ -32,7 +32,6 @@ public class LoginTest {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // todo: 테스트 통과하도록 만들기
         assertThat(authentication.isAuthenticated()).isTrue();
     }
 
