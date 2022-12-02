@@ -37,9 +37,4 @@ public class LoginController {
 
         return ResponseEntity.ok().build();
     }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<Void> handleAuthenticationException() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
 }
