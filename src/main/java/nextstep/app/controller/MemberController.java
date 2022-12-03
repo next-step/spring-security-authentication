@@ -22,31 +22,9 @@ public class MemberController {
     }
 
     @GetMapping("/members")
-    public ResponseEntity<List<Member>> list(@RequestHeader String authorization) {
-
-        String[] split = authorization.split(" ");
-        String type = split[0];
-        String credential = split[1];
-
-        if (!"Basic".equalsIgnoreCase(type)) {
-            throw new AuthenticationException();
-        }
-
-        String decodedCredential = new String(Base64Utils.decodeFromString(credential));
-        String[] emailAndPassword = decodedCredential.split(":");
-
-        String email = emailAndPassword[0];
-        String password = emailAndPassword[1];
-
-        memberService.isValidMemberInfo(email, password);
-
+    public ResponseEntity<List<Member>> list() {
         List<Member> members = memberService.getMembers();
 
         return ResponseEntity.ok(members);
-    }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<Void> handleAuthenticationException() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
