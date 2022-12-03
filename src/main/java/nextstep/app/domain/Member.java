@@ -28,4 +28,8 @@ public class Member {
     public String getImageUrl() {
         return imageUrl;
     }
+
+    public boolean equalsPassword(final String password) {
+        return this.password.equals(password);
+    }
 }

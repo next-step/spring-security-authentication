@@ -1,4 +1,4 @@
-package nextstep.app.support;
+package nextstep.security.support;
 
 public interface Authentication {
     Object getPrincipal();
