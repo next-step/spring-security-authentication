@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class LoginTest {
+class MemberTest {
     private static final Member TEST_MEMBER = InmemoryMemberRepository.TEST_MEMBER_1;
 
     @Autowired
@@ -32,6 +32,7 @@ class LoginTest {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // todo: 테스트 통과하도록 만들기
         assertThat(authentication.isAuthenticated()).isTrue();
     }
 

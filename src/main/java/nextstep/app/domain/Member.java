@@ -1,7 +1,5 @@
 package nextstep.app.domain;
 
-import nextstep.app.ui.AuthenticationException;
-
 public class Member {
     private final String email;
     private final String password;
@@ -31,9 +29,7 @@ public class Member {
         return imageUrl;
     }
 
-    public void checkPassword(final String password) {
-        if (!this.password.equals(password)) {
-            throw new AuthenticationException();
-        }
+    public boolean isAuthenticated(final String password) {
+        return this.password.equals(password);
     }
 }

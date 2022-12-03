@@ -1,7 +1,7 @@
 package nextstep.app.ui;
 
 import nextstep.app.domain.MemberRepository;
-import nextstep.app.support.Authentication;
+import nextstep.app.support.FormAuthentication;
 import nextstep.app.support.SecurityContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,31 +29,11 @@ public class LoginController {
 
         final var member = memberRepository.findByEmail(email)
                 .orElseThrow(AuthenticationException::new);
-        member.checkPassword(password);
 
-        final var authentication = create();
+        final var authentication = new FormAuthentication(member.isAuthenticated(password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return ResponseEntity.ok().build();
-    }
-
-    private Authentication create() {
-        return  new Authentication() {
-            @Override
-            public Object getPrincipal() {
-                return null;
-            }
-
-            @Override
-            public Object getCredentials() {
-                return null;
-            }
-
-            @Override
-            public boolean isAuthenticated() {
-                return true;
-            }
-        };
     }
 
     @ExceptionHandler(AuthenticationException.class)
