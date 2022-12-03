@@ -3,7 +3,6 @@ package nextstep.app.ui;
 import nextstep.app.domain.MemberRepository;
 import nextstep.security.AuthenticationException;
 import nextstep.security.authentication.FormAuthentication;
-import nextstep.security.support.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,9 +18,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(HttpServletRequest request) {
-        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
-
+    public ResponseEntity<Void> login(final HttpServletRequest request) {
         final var email = request.getParameter("username");
         final var password = request.getParameter("password");
 
@@ -29,7 +26,7 @@ public class LoginController {
                 .orElseThrow(AuthenticationException::new);
 
         final var authentication = new FormAuthentication(member.equalsPassword(password));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        request.setAttribute("authentication", authentication);
 
         return ResponseEntity.ok().build();
     }

@@ -1,9 +1,8 @@
 package nextstep.app.ui;
 
-import nextstep.security.authentication.BasicAuthentication;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.support.SecurityContextHolder;
+import nextstep.security.authentication.BasicAuthentication;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,14 +23,11 @@ public class MemberController {
 
     @GetMapping("/members")
     public ResponseEntity<List<Member>> list(final HttpServletRequest request) {
-        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
-
         List<Member> members = memberRepository.findAll();
 
         final var authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         final var authentication = new BasicAuthentication(CREDENTIALS, authorization);
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        request.setAttribute("authentication", authentication);
 
         return ResponseEntity.ok(members);
     }
