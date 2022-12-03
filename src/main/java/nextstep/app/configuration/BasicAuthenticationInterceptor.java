@@ -1,7 +1,7 @@
 package nextstep.app.configuration;
 
 import nextstep.app.domain.MemberService;
-import nextstep.app.exception.AuthenticationException;
+import nextstep.security.exception.AuthenticationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
@@ -11,14 +11,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-class AuthenticationInterceptor implements HandlerInterceptor {
+class BasicAuthenticationInterceptor implements HandlerInterceptor {
 
     private final MemberService memberService;
 
     public static final String AUTHORIZATION = "Basic";
     public static final String SPLIT_CHAR = ":";
 
-    AuthenticationInterceptor(MemberService memberService) {
+    public BasicAuthenticationInterceptor(MemberService memberService) {
         this.memberService = memberService;
     }
 

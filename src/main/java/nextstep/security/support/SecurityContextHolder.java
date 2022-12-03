@@ -1,4 +1,4 @@
-package nextstep.app.support;
+package nextstep.security.support;
 
 public class SecurityContextHolder {
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SECURITY_CONTEXT";

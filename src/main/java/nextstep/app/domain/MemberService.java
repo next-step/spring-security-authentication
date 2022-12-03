@@ -1,6 +1,6 @@
 package nextstep.app.domain;
 
-import nextstep.app.exception.AuthenticationException;
+import nextstep.security.exception.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

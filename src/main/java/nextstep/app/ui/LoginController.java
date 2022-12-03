@@ -1,9 +1,9 @@
 package nextstep.app.ui;
 
 import nextstep.app.domain.MemberService;
-import nextstep.app.support.Authentication;
-import nextstep.app.support.EmailPasswordAuthenticationToken;
-import nextstep.app.support.SecurityContextHolder;
+import nextstep.security.authentication.FormBasedAuthenticationToken;
+import nextstep.security.support.Authentication;
+import nextstep.security.support.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +30,7 @@ public class LoginController {
 
         memberService.validateMember(email, password);
 
-        Authentication authentication = new EmailPasswordAuthenticationToken(email, password);
+        Authentication authentication = new FormBasedAuthenticationToken(email, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return ResponseEntity.ok().build();

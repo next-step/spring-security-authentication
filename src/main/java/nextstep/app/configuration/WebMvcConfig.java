@@ -7,15 +7,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 class WebMvcConfig implements WebMvcConfigurer {
 
-    private final AuthenticationInterceptor authenticationInterceptor;
+    private final BasicAuthenticationInterceptor basicAuthenticationInterceptor;
 
-    public WebMvcConfig(AuthenticationInterceptor authenticationInterceptor) {
-        this.authenticationInterceptor = authenticationInterceptor;
+    public WebMvcConfig(BasicAuthenticationInterceptor basicAuthenticationInterceptor) {
+        this.basicAuthenticationInterceptor = basicAuthenticationInterceptor;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authenticationInterceptor)
+        registry.addInterceptor(basicAuthenticationInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login");
     }
