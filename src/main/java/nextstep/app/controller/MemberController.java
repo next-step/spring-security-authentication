@@ -1,4 +1,4 @@
-package nextstep.app.ui;
+package nextstep.app.controller;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberService;

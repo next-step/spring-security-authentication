@@ -1,6 +1,7 @@
-package nextstep.app.ui;
+package nextstep.app.controller;
 
 import nextstep.app.domain.MemberService;
+import nextstep.app.exception.AuthenticationException;
 import nextstep.app.support.Authentication;
 import nextstep.app.support.LoginAuthentication;
 import nextstep.app.support.SecurityContextHolder;
