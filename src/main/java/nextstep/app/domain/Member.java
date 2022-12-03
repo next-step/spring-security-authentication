@@ -29,7 +29,7 @@ public class Member {
         return imageUrl;
     }
 
-    public boolean isAuthenticated(final String password) {
+    public boolean equalsPassword(final String password) {
         return this.password.equals(password);
     }
 }

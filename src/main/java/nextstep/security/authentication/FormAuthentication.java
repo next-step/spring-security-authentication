@@ -1,10 +1,12 @@
-package nextstep.app.support;
+package nextstep.security.authentication;
 
-import nextstep.app.ui.AuthenticationException;
+import nextstep.security.support.Authentication;
+import nextstep.security.AuthenticationException;
 
 public class FormAuthentication implements Authentication {
 
     private final boolean authenticated;
+
     public FormAuthentication(final boolean authenticated) {
         if (!authenticated) {
             throw new AuthenticationException();

@@ -2,8 +2,8 @@ package nextstep.app;
 
 import nextstep.app.domain.Member;
 import nextstep.app.infrastructure.InmemoryMemberRepository;
-import nextstep.app.support.Authentication;
-import nextstep.app.support.SecurityContextHolder;
+import nextstep.security.support.Authentication;
+import nextstep.security.support.SecurityContextHolder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
