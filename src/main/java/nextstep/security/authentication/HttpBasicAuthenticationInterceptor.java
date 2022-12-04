@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class MemberUsernamePasswordAuthenticationInterceptor implements HandlerInterceptor {
+public class HttpBasicAuthenticationInterceptor implements HandlerInterceptor {
     private final MemberRepository memberRepository;
 
-    public MemberUsernamePasswordAuthenticationInterceptor(MemberRepository memberRepository) {
+    public HttpBasicAuthenticationInterceptor(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
