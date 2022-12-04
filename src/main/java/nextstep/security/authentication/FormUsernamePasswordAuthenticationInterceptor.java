@@ -1,5 +1,6 @@
-package nextstep.app.support;
+package nextstep.security.authentication;
 
+import nextstep.security.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

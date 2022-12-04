@@ -1,8 +1,9 @@
-package nextstep.app.support;
+package nextstep.security.authentication;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.app.ui.AuthenticationException;
+import nextstep.security.context.SecurityContextHolder;
+import nextstep.security.exception.AuthenticationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.HandlerInterceptor;
 

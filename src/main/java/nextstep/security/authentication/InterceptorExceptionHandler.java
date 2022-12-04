@@ -1,6 +1,6 @@
-package nextstep.app.support;
+package nextstep.security.authentication;
 
-import nextstep.app.ui.AuthenticationException;
+import nextstep.security.exception.AuthenticationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

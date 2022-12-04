@@ -3,6 +3,7 @@ package nextstep.app.ui;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.app.ui.dto.LoginRequest;
+import nextstep.security.exception.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

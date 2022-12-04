@@ -1,4 +1,6 @@
-package nextstep.app.support;
+package nextstep.security.context;
+
+import nextstep.security.authentication.Authentication;
 
 import java.io.Serializable;
 

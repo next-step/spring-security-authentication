@@ -1,8 +1,8 @@
 package nextstep.app.config;
 
 import nextstep.app.infrastructure.InmemoryMemberRepository;
-import nextstep.app.support.FormUsernamePasswordAuthenticationInterceptor;
-import nextstep.app.support.MemberUsernamePasswordAuthenticationInterceptor;
+import nextstep.security.authentication.FormUsernamePasswordAuthenticationInterceptor;
+import nextstep.security.authentication.MemberUsernamePasswordAuthenticationInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
