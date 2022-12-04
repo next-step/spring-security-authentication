@@ -1,12 +1,13 @@
 package nextstep.app.domain;
 
+import nextstep.security.authentication.UserAuthenticationService;
 import nextstep.security.exception.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class MemberService {
+public class MemberService implements UserAuthenticationService {
     private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {

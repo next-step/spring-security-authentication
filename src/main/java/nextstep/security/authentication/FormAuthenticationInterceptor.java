@@ -1,24 +1,23 @@
-package nextstep.app.configuration;
+package nextstep.security.authentication;
 
-import nextstep.app.domain.MemberService;
-import nextstep.security.authentication.FormAuthenticationProvider;
 import nextstep.security.support.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @Component
+public
 class FormAuthenticationInterceptor implements HandlerInterceptor {
 
-    private final MemberService memberService;
-
+    private final UserAuthenticationService userAuthenticationService;
     private final FormAuthenticationProvider formAuthenticationProvider;
 
-    FormAuthenticationInterceptor(MemberService memberService, FormAuthenticationProvider formAuthenticationProvider) {
-        this.memberService = memberService;
+    FormAuthenticationInterceptor(UserAuthenticationService userAuthenticationService, FormAuthenticationProvider formAuthenticationProvider) {
+        this.userAuthenticationService = userAuthenticationService;
         this.formAuthenticationProvider = formAuthenticationProvider;
     }
 
@@ -30,7 +29,7 @@ class FormAuthenticationInterceptor implements HandlerInterceptor {
         String email = paramMap.get("username")[0];
         String password = paramMap.get("password")[0];
 
-        memberService.validateMember(email, password);
+        userAuthenticationService.validateMember(email, password);
 
         formAuthenticationProvider.doAuthentication(email, password);
 

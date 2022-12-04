@@ -1,5 +1,7 @@
 package nextstep.app.configuration;
 
+import nextstep.security.authentication.BasicAuthenticationInterceptor;
+import nextstep.security.authentication.FormAuthenticationInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

@@ -1,7 +1,5 @@
-package nextstep.app.configuration;
+package nextstep.security.authentication;
 
-import nextstep.app.domain.MemberService;
-import nextstep.security.authentication.BasicAuthenticationToken;
 import nextstep.security.support.BasicAuthenticationDecoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -10,14 +8,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
+public
 class BasicAuthenticationInterceptor implements HandlerInterceptor {
 
-    private final MemberService memberService;
+    private final UserAuthenticationService userAuthenticationService;
 
     private final BasicAuthenticationDecoder basicAuthenticationDecoder;
 
-    public BasicAuthenticationInterceptor(MemberService memberService, BasicAuthenticationDecoder basicAuthenticationDecoder) {
-        this.memberService = memberService;
+    public BasicAuthenticationInterceptor(UserAuthenticationService userAuthenticationService, BasicAuthenticationDecoder basicAuthenticationDecoder) {
+        this.userAuthenticationService = userAuthenticationService;
         this.basicAuthenticationDecoder = basicAuthenticationDecoder;
     }
 
@@ -26,7 +25,7 @@ class BasicAuthenticationInterceptor implements HandlerInterceptor {
 
         BasicAuthenticationToken basicAuthentication = basicAuthenticationDecoder.decode(request);
 
-        memberService.validateMember(
+        userAuthenticationService.validateMember(
                 basicAuthentication.getPrincipal().toString(),
                 basicAuthentication.getCredentials().toString()
         );
