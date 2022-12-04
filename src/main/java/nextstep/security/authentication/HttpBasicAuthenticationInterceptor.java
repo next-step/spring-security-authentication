@@ -11,6 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class HttpBasicAuthenticationInterceptor implements HandlerInterceptor {
+
+    private static final String TYPE = "Basic";
+
     private final AuthenticationProvider provider;
 
     public HttpBasicAuthenticationInterceptor(AuthenticationProvider provider) {
@@ -27,6 +30,10 @@ public class HttpBasicAuthenticationInterceptor implements HandlerInterceptor {
 
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header == null) {
+            throw new AuthenticationException();
+        }
+
+        if (!TYPE.equals(header.split(" ")[0])) {
             throw new AuthenticationException();
         }
 
