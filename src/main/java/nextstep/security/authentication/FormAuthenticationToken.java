@@ -1,6 +1,8 @@
-package nextstep.app.support;
+package nextstep.security.authentication;
 
-public class EmailPasswordAuthenticationToken implements Authentication {
+import nextstep.security.support.Authentication;
+
+public class FormAuthenticationToken implements Authentication {
 
     private Object principal;
 
@@ -8,7 +10,7 @@ public class EmailPasswordAuthenticationToken implements Authentication {
 
     private boolean authenticated = false;
 
-    public EmailPasswordAuthenticationToken(Object principal, Object credentials) {
+    public FormAuthenticationToken(Object principal, Object credentials) {
         this.principal = principal;
         this.credentials = credentials;
         this.authenticated = true;

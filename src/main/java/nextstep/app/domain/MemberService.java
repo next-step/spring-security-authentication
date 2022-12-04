@@ -1,6 +1,5 @@
 package nextstep.app.domain;
 
-import nextstep.app.exception.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +16,4 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
-    public void validateMember(String email, String password) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(AuthenticationException::new);
-
-        if (!member.getPassword().equals(password)) {
-            throw new AuthenticationException();
-        }
-    }
 }

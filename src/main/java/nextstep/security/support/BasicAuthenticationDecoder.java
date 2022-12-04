@@ -1,29 +1,20 @@
-package nextstep.app.configuration;
+package nextstep.security.support;
 
-import nextstep.app.domain.MemberService;
-import nextstep.app.exception.AuthenticationException;
+import nextstep.security.authentication.BasicAuthenticationToken;
+import nextstep.security.exception.AuthenticationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Component
-class AuthenticationInterceptor implements HandlerInterceptor {
-
-    private final MemberService memberService;
+public class BasicAuthenticationDecoder {
 
     public static final String AUTHORIZATION = "Basic";
     public static final String SPLIT_CHAR = ":";
 
-    AuthenticationInterceptor(MemberService memberService) {
-        this.memberService = memberService;
-    }
-
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public BasicAuthenticationToken decode(HttpServletRequest request) {
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if(!authorization.startsWith(AUTHORIZATION)) {
@@ -36,8 +27,6 @@ class AuthenticationInterceptor implements HandlerInterceptor {
         String email = emailAndPassword[0];
         String password = emailAndPassword[1];
 
-        memberService.validateMember(email, password);
-
-        return true;
+        return new BasicAuthenticationToken(email, password);
     }
 }
