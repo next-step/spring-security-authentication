@@ -1,7 +1,5 @@
 package nextstep.security.authentication;
 
-import nextstep.app.domain.Member;
-import nextstep.app.domain.MemberRepository;
 import nextstep.security.context.SecurityContextHolder;
 import nextstep.security.exception.AuthenticationException;
 import org.springframework.http.HttpHeaders;
@@ -13,10 +11,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class HttpBasicAuthenticationInterceptor implements HandlerInterceptor {
-    private final MemberRepository memberRepository;
+    private final AuthenticationProvider provider;
 
-    public HttpBasicAuthenticationInterceptor(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public HttpBasicAuthenticationInterceptor(AuthenticationProvider provider) {
+        this.provider = provider;
     }
 
     @Override
@@ -39,14 +37,12 @@ public class HttpBasicAuthenticationInterceptor implements HandlerInterceptor {
         final String username = usernameAndPassword.split(":")[0];
         final String password = usernameAndPassword.split(":")[1];
 
-        final Member member = memberRepository.findByEmail(username)
-            .orElseThrow(AuthenticationException::new);
-
-        if (!member.isSamePassword(password)) {
-            throw new AuthenticationException();
-        }
-
-        final Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
+        final Authentication authentication = provider.authenticate(
+            UsernamePasswordAuthenticationToken.unauthenticated(
+                username,
+                password
+            )
+        );
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return HandlerInterceptor.super.preHandle(request, response, handler);

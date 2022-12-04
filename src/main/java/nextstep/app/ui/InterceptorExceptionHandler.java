@@ -1,4 +1,4 @@
-package nextstep.security.authentication;
+package nextstep.app.ui;
 
 import nextstep.security.exception.AuthenticationException;
 import org.springframework.http.HttpHeaders;
