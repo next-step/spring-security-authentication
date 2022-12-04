@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-public class AuthenticationInterceptor implements HandlerInterceptor {
+public class BasicAuthenticationInterceptor implements HandlerInterceptor {
 
     private final MemberService memberService;
 
-    public AuthenticationInterceptor(MemberService memberService) {
+    public BasicAuthenticationInterceptor(MemberService memberService) {
         this.memberService = memberService;
     }
 
