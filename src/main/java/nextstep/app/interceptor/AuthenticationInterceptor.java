@@ -1,8 +1,7 @@
 package nextstep.app.interceptor;
 
-import nextstep.app.exception.AuthenticationException;
+import nextstep.security.exception.AuthenticationException;
 import nextstep.app.domain.MemberService;
-import nextstep.app.support.SecurityContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;

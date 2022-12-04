@@ -1,10 +1,10 @@
 package nextstep.app.controller;
 
 import nextstep.app.domain.MemberService;
-import nextstep.app.exception.AuthenticationException;
-import nextstep.app.support.Authentication;
-import nextstep.app.support.LoginAuthentication;
-import nextstep.app.support.SecurityContextHolder;
+import nextstep.security.exception.AuthenticationException;
+import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.LoginAuthentication;
+import nextstep.security.context.SecurityContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

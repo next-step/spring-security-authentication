@@ -1,4 +1,4 @@
-package nextstep.app.support;
+package nextstep.security.authentication;
 
 public class LoginAuthentication implements Authentication {
 
