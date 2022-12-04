@@ -1,5 +1,8 @@
 package nextstep.app.interceptor;
 
+import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.AuthenticationToken;
+import nextstep.security.context.SecurityContextHolder;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.app.domain.MemberService;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +30,8 @@ public class BasicAuthenticationInterceptor implements HandlerInterceptor {
     }
 
     private void authorize(HttpServletRequest request) {
+        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
+
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         String[] split = authorization.split(" ");
@@ -44,5 +49,8 @@ public class BasicAuthenticationInterceptor implements HandlerInterceptor {
         String password = emailAndPassword[1];
 
         memberService.isValidMemberInfo(email, password);
+
+        Authentication authentication = new AuthenticationToken(email, password);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
