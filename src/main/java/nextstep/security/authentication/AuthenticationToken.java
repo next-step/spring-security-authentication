@@ -1,6 +1,6 @@
 package nextstep.security.authentication;
 
-public class LoginAuthentication implements Authentication {
+public class AuthenticationToken implements Authentication {
 
     private final Object principal;
 
@@ -8,7 +8,7 @@ public class LoginAuthentication implements Authentication {
 
     private final boolean authenticated;
 
-    public LoginAuthentication(Object principal, Object credential) {
+    public AuthenticationToken(Object principal, Object credential) {
         this.principal = principal;
         this.credential = credential;
         this.authenticated = true;

@@ -4,7 +4,7 @@ import nextstep.app.domain.MemberService;
 import nextstep.security.authentication.provider.AuthenticationProvider;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.authentication.Authentication;
-import nextstep.security.authentication.LoginAuthentication;
+import nextstep.security.authentication.AuthenticationToken;
 import nextstep.security.context.SecurityContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +39,7 @@ public class LoginController {
 
         memberService.isValidMemberInfo(email, password);
 
-        Authentication authentication = new LoginAuthentication(email, password);
+        Authentication authentication = new AuthenticationToken(email, password);
         authenticationProvider.authenticate(authentication);
 
         return ResponseEntity.ok().build();
