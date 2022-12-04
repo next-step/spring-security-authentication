@@ -1,6 +1,7 @@
 package nextstep.app.controller;
 
 import nextstep.app.domain.MemberService;
+import nextstep.security.authentication.provider.AuthenticationProvider;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.LoginAuthentication;
@@ -18,9 +19,14 @@ import java.util.Map;
 @RestController
 public class LoginController {
     private final MemberService memberService;
+    private final AuthenticationProvider authenticationProvider;
 
-    public LoginController(MemberService memberService) {
+    public LoginController(
+            MemberService memberService,
+            AuthenticationProvider authenticationProvider
+    ) {
         this.memberService = memberService;
+        this.authenticationProvider = authenticationProvider;
     }
 
     @PostMapping("/login")
@@ -34,7 +40,7 @@ public class LoginController {
         memberService.isValidMemberInfo(email, password);
 
         Authentication authentication = new LoginAuthentication(email, password);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        authenticationProvider.authenticate(authentication);
 
         return ResponseEntity.ok().build();
     }
