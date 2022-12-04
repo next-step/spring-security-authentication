@@ -31,7 +31,7 @@ class FormAuthenticationInterceptor implements HandlerInterceptor {
 
         userAuthenticationService.validateMember(email, password);
 
-        formAuthenticationProvider.doAuthentication(email, password);
+        formAuthenticationProvider.doAuthentication(new FormAuthenticationToken(email, password));
 
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }

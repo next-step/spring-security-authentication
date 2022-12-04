@@ -6,9 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FormAuthenticationProvider implements AuthenticationProvider {
-
-    public Authentication doAuthentication(String email, String password) {
-        Authentication authentication = new FormAuthenticationToken(email, password);
+    public Authentication doAuthentication(Authentication authentication) {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return authentication;
     }
