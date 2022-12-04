@@ -2,7 +2,7 @@ package nextstep.security.authentication;
 
 import nextstep.security.support.Authentication;
 
-public class FormBasedAuthenticationToken implements Authentication {
+public class FormAuthenticationToken implements Authentication {
 
     private Object principal;
 
@@ -10,7 +10,7 @@ public class FormBasedAuthenticationToken implements Authentication {
 
     private boolean authenticated = false;
 
-    public FormBasedAuthenticationToken(Object principal, Object credentials) {
+    public FormAuthenticationToken(Object principal, Object credentials) {
         this.principal = principal;
         this.credentials = credentials;
         this.authenticated = true;

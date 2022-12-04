@@ -1,8 +1,7 @@
 package nextstep.app.ui;
 
 import nextstep.app.domain.MemberService;
-import nextstep.security.authentication.FormBasedAuthenticationToken;
-import nextstep.security.support.Authentication;
+import nextstep.security.authentication.FormAuthenticationProvider;
 import nextstep.security.support.SecurityContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,8 +15,11 @@ import java.util.Map;
 public class LoginController {
     private final MemberService memberService;
 
-    public LoginController(MemberService memberService) {
+    private final FormAuthenticationProvider formAuthenticationProvider;
+
+    public LoginController(MemberService memberService, FormAuthenticationProvider formAuthenticationProvider) {
         this.memberService = memberService;
+        this.formAuthenticationProvider = formAuthenticationProvider;
     }
 
     @PostMapping("/login")
@@ -30,8 +32,7 @@ public class LoginController {
 
         memberService.validateMember(email, password);
 
-        Authentication authentication = new FormBasedAuthenticationToken(email, password);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        formAuthenticationProvider.doAuthentication(email, password);
 
         return ResponseEntity.ok().build();
     }
