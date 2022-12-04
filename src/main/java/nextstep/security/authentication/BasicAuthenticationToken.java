@@ -8,11 +8,18 @@ public class BasicAuthenticationToken implements Authentication {
 
     private Object credentials;
 
-    private boolean authenticated = false;
+    private boolean authenticated;
+
+    public BasicAuthenticationToken(Object principal, Object credentials, boolean isAuthenticated) {
+        this.principal = principal;
+        this.credentials = credentials;
+        this.authenticated = isAuthenticated;
+    }
 
     public BasicAuthenticationToken(Object principal, Object credentials) {
         this.principal = principal;
         this.credentials = credentials;
+        this.authenticated = true;
     }
 
     @Override
