@@ -1,6 +1,6 @@
 package nextstep.app.config;
 
-import nextstep.app.applicaion.MemberService;
+import nextstep.app.applicaion.AuthenticationService;
 import nextstep.security.authentication.AuthenticationProvider;
 import nextstep.security.authentication.FormAuthenticationInterceptor;
 import nextstep.security.authentication.HttpBasicAuthenticationInterceptor;
@@ -12,15 +12,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final MemberService memberService;
+    private final AuthenticationService authenticationService;
 
-    public WebMvcConfig(MemberService memberService) {
-        this.memberService = memberService;
+    public WebMvcConfig(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        final AuthenticationProvider provider = new UsernamePasswordAuthenticationProvider(memberService);
+        final AuthenticationProvider provider = new UsernamePasswordAuthenticationProvider(authenticationService);
         registry.addInterceptor(new FormAuthenticationInterceptor(provider))
             .addPathPatterns("/login");
         registry.addInterceptor(new HttpBasicAuthenticationInterceptor(provider))

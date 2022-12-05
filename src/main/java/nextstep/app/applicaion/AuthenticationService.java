@@ -9,11 +9,11 @@ import nextstep.security.userdetils.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MemberService implements UserDetailsService {
+public class AuthenticationService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
+    public AuthenticationService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
