@@ -26,4 +26,9 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
             userDetails.getPassword()
         );
     }
+
+    @Override
+    public boolean supports(Authentication authentication) {
+        return authentication instanceof UsernamePasswordAuthenticationToken;
+    }
 }

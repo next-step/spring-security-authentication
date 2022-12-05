@@ -9,15 +9,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 
 public class HttpBasicAuthenticationInterceptor implements HandlerInterceptor {
 
     private static final String TYPE = "Basic";
 
-    private final AuthenticationProvider provider;
+    private final List<AuthenticationProvider> providers;
 
-    public HttpBasicAuthenticationInterceptor(AuthenticationProvider provider) {
-        this.provider = provider;
+    public HttpBasicAuthenticationInterceptor(AuthenticationProvider... providers) {
+        this.providers = List.of(providers);
     }
 
     @Override
@@ -44,13 +45,18 @@ public class HttpBasicAuthenticationInterceptor implements HandlerInterceptor {
         final String username = usernameAndPassword.split(":")[0];
         final String password = usernameAndPassword.split(":")[1];
 
-        final Authentication authentication = provider.authenticate(
-            UsernamePasswordAuthenticationToken.unauthenticated(
-                username,
-                password
-            )
+        final Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(
+            username,
+            password
         );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        final AuthenticationProvider provider = providers.stream()
+            .filter(it -> it.supports(authenticationRequest))
+            .findFirst()
+            .orElseThrow(() -> new AuthenticationException());
+
+        final Authentication authenticationResult = provider.authenticate(authenticationRequest);
+        SecurityContextHolder.getContext().setAuthentication(authenticationResult);
 
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
