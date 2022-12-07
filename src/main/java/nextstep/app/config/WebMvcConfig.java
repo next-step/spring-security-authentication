@@ -1,6 +1,7 @@
 package nextstep.app.config;
 
 import nextstep.app.applicaion.AuthenticationService;
+import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.AuthenticationProvider;
 import nextstep.security.authentication.FormAuthenticationInterceptor;
 import nextstep.security.authentication.HttpBasicAuthenticationInterceptor;
@@ -21,9 +22,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         final AuthenticationProvider provider = new UsernamePasswordAuthenticationProvider(authenticationService);
-        registry.addInterceptor(new FormAuthenticationInterceptor(provider))
+        final AuthenticationManager authenticationManager = new AuthenticationManager(provider);
+        registry.addInterceptor(new FormAuthenticationInterceptor(authenticationManager))
             .addPathPatterns("/login");
-        registry.addInterceptor(new HttpBasicAuthenticationInterceptor(provider))
+        registry.addInterceptor(new HttpBasicAuthenticationInterceptor(authenticationManager))
             .addPathPatterns("/members");
     }
 }

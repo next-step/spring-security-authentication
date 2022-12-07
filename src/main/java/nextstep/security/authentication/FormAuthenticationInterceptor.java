@@ -1,20 +1,18 @@
 package nextstep.security.authentication;
 
 import nextstep.security.context.SecurityContextHolder;
-import nextstep.security.exception.AuthenticationException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Map;
 
 public class FormAuthenticationInterceptor implements HandlerInterceptor {
 
-    private final List<AuthenticationProvider> providers;
+    private final AuthenticationManager authenticationManager;
 
-    public FormAuthenticationInterceptor(AuthenticationProvider... providers) {
-        this.providers = List.of(providers);
+    public FormAuthenticationInterceptor(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -34,12 +32,7 @@ public class FormAuthenticationInterceptor implements HandlerInterceptor {
             password
         );
 
-        final AuthenticationProvider provider = providers.stream()
-            .filter(it -> it.supports(authenticationRequest))
-            .findFirst()
-            .orElseThrow(() -> new AuthenticationException());
-
-        final Authentication authenticationResult = provider.authenticate(authenticationRequest);
+        final Authentication authenticationResult = authenticationManager.authenticate(authenticationRequest);
         SecurityContextHolder.getContext().setAuthentication(authenticationResult);
 
         return HandlerInterceptor.super.preHandle(request, response, handler);
