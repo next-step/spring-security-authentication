@@ -44,13 +44,24 @@ class MemberTest {
             .andExpect(header().stringValues(HttpHeaders.WWW_AUTHENTICATE, "Basic realm=/login"));
     }
 
+    @Test
+    void get_members_fail_with_invalid_auth_type() throws Exception {
+        final ResultActions membersResponse = requestMembersWith("Basic1 ", TEST_MEMBER.getEmail(), TEST_MEMBER.getPassword());
+
+        membersResponse.andExpect(status().isUnauthorized());
+    }
+
     private ResultActions requestMembersWith(String username, String password) throws Exception {
+        return requestMembersWith("Basic ", username, password);
+    }
+
+    private ResultActions requestMembersWith(String authType, String username, String password) throws Exception {
         final String usernameAndPassword = username + ":" + password;
         return mockMvc.perform(
             get("/members")
                 .header(
                     HttpHeaders.AUTHORIZATION,
-                    "Basic " + Base64.getEncoder().encodeToString(usernameAndPassword.getBytes())
+                    authType + Base64.getEncoder().encodeToString(usernameAndPassword.getBytes())
                 )
         );
     }
