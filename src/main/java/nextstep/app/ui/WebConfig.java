@@ -3,6 +3,7 @@ package nextstep.app.ui;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import nextstep.security.authentication.AuthenticationManager;
+import nextstep.security.authentication.BasicAuthenticationInterceptor;
 import nextstep.security.authentication.DaoAuthenticationProvider;
 import nextstep.security.authentication.FormLoginAuthenticationInterceptor;
 import nextstep.security.authentication.ProviderManager;
@@ -21,6 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new FormLoginAuthenticationInterceptor(authenticationManager())).addPathPatterns("/login");
+        registry.addInterceptor(new BasicAuthenticationInterceptor(authenticationManager()));
     }
 
     @Bean

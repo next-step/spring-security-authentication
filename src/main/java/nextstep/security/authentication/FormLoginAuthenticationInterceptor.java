@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import nextstep.app.ui.AuthenticationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @RequiredArgsConstructor
@@ -15,7 +14,6 @@ public class FormLoginAuthenticationInterceptor implements HandlerInterceptor {
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
     private final AuthenticationManager authenticationManager;
-
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
