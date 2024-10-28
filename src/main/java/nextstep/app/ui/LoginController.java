@@ -22,6 +22,16 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<Void> login(HttpServletRequest request, HttpSession session) {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        memberRepository.findByEmail(username)
+                .filter(member -> member.getPassword().equals(password))
+                .ifPresentOrElse(
+                        member -> session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, member),
+                        () -> { throw new AuthenticationException(); }
+                );
+
         return ResponseEntity.ok().build();
     }
 
