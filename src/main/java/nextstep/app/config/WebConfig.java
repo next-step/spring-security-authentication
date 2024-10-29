@@ -1,25 +1,27 @@
 package nextstep.app.config;
 
-import nextstep.app.domain.MemberRepository;
-import nextstep.app.interceptor.BasicAuthenticationInterceptor;
-import nextstep.app.interceptor.UsernamePasswordInterceptor;
+import nextstep.security.interceptor.BasicAuthenticationInterceptor;
+import nextstep.security.interceptor.FormLoginAuthenticationInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    private final MemberRepository memberRepository;
+    private final FormLoginAuthenticationInterceptor formLoginAuthenticationInterceptor;
+    private final BasicAuthenticationInterceptor basicAuthenticationInterceptor;
 
-    public WebConfig(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public WebConfig(FormLoginAuthenticationInterceptor formLoginAuthenticationInterceptor,
+                     BasicAuthenticationInterceptor basicAuthenticationInterceptor) {
+        this.formLoginAuthenticationInterceptor = formLoginAuthenticationInterceptor;
+        this.basicAuthenticationInterceptor = basicAuthenticationInterceptor;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new BasicAuthenticationInterceptor(memberRepository))
+        registry.addInterceptor(basicAuthenticationInterceptor)
                 .addPathPatterns("/members");
 
-        registry.addInterceptor(new UsernamePasswordInterceptor(memberRepository));
+        registry.addInterceptor(formLoginAuthenticationInterceptor);
     }
 }

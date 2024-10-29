@@ -1,7 +1,7 @@
-package nextstep.app.interceptor;
+package nextstep.security.interceptor;
 
-import nextstep.app.domain.MemberRepository;
-import nextstep.app.ui.AuthenticationException;
+import nextstep.security.service.UserDetailsService;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -9,39 +9,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 
-
+@Component
 public class BasicAuthenticationInterceptor implements HandlerInterceptor {
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
+    private final UserDetailsService userDetailsService;
 
-    private final MemberRepository memberRepository;
-
-    public BasicAuthenticationInterceptor(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public BasicAuthenticationInterceptor(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        authenticate(request);
-        return true;
-    }
-
-    private void authenticate(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
 
         if (!isValidAuthorizationHeader(authorizationHeader)) {
-            throw new AuthenticationException();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return false;
         }
 
         String[] credentials = parseCredentials(authorizationHeader);
+        if (credentials.length != 2) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return false;
+        }
+
         String username = credentials[0];
         String password = credentials[1];
-
-        memberRepository.findByEmail(username)
-                .filter(member -> member.getPassword().equals(password))
-                .ifPresentOrElse(
-                        member -> request.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, member),
-                        () -> { throw new AuthenticationException(); }
-                );
+        userDetailsService.authenticate(username, password);
+        return true;
     }
 
     private boolean isValidAuthorizationHeader(String authorizationHeader) {
@@ -51,11 +45,6 @@ public class BasicAuthenticationInterceptor implements HandlerInterceptor {
     private String[] parseCredentials(String authorizationHeader) {
         String base64Credentials = authorizationHeader.substring("Basic ".length());
         String credentials = new String(Base64Utils.decodeFromString(base64Credentials), StandardCharsets.UTF_8);
-
-        String[] values = credentials.split(":", 2);
-        if (values.length != 2) {
-            throw new AuthenticationException();
-        }
-        return values;
+        return credentials.split(":", 2);
     }
 }
