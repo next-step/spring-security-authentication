@@ -1,4 +1,4 @@
-package nextstep.app.domain;
+package nextstep.domain;
 
 public class Member {
     private final String email;

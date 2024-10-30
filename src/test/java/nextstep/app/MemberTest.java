@@ -1,8 +1,8 @@
 package nextstep.app;
 
-import nextstep.app.domain.Member;
-import nextstep.app.domain.MemberRepository;
-import nextstep.app.infrastructure.InmemoryMemberRepository;
+import nextstep.domain.Member;
+import nextstep.domain.MemberRepository;
+import nextstep.infrastructure.InmemoryMemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

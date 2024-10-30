@@ -1,4 +1,4 @@
-package nextstep.app.domain;
+package nextstep.domain;
 
 import java.util.List;
 import java.util.Optional;

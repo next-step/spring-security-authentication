@@ -1,7 +1,7 @@
-package nextstep.app.ui;
+package nextstep.ui;
 
-import nextstep.app.domain.Member;
-import nextstep.app.domain.MemberRepository;
+import nextstep.domain.Member;
+import nextstep.domain.MemberRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
