@@ -1,6 +1,8 @@
 package nextstep.app.ui;
 
+import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.security.userdetails.UserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +24,8 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<Void> login(HttpServletRequest request, HttpSession session) {
+        UserDetails userDetails = (UserDetails) session.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+        memberRepository.save(new Member(userDetails.getEmail(), userDetails.getPassword(), null, null));
         return ResponseEntity.ok().build();
     }
 
