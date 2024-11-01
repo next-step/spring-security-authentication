@@ -1,5 +1,6 @@
 package nextstep.app.config;
 
+import nextstep.security.interceptor.AuthorizationInterceptor;
 import nextstep.security.interceptor.BasicAuthenticationInterceptor;
 import nextstep.security.service.UserDetailsService;
 import org.springframework.context.annotation.Configuration;
@@ -18,5 +19,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new BasicAuthenticationInterceptor(userDetailsService));
+        registry.addInterceptor(new AuthorizationInterceptor()).addPathPatterns("/members");
     }
 }

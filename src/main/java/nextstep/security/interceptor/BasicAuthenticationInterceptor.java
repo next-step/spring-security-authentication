@@ -1,11 +1,10 @@
 package nextstep.security.interceptor;
 
+import nextstep.security.context.UserContextHolder;
 import nextstep.security.service.UserDetailsService;
 import nextstep.security.userdetails.UserDetails;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.Nullable;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +34,7 @@ public class BasicAuthenticationInterceptor implements HandlerInterceptor {
 
         UserDetails userDetails = userDetailsService.loadUserByEmailAndPassword(authValue[0], authValue[1]);
         if (userDetails != null) {
-            RequestContextHolder.getRequestAttributes().setAttribute(SPRING_SECURITY_CONTEXT, userDetails, RequestAttributes.SCOPE_SESSION);
+            UserContextHolder.setUser(userDetails);
         }
         return true;
     }
