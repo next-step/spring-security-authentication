@@ -25,13 +25,15 @@ public class LoginController {
         String email = request.getParameter("username");
         String password = request.getParameter("password");
 
+        //로그인 실패 시 예외 발생
         Member member = memberRepository.findByEmail(email).orElseThrow(AuthenticationException::new);
-        if (email.equals(member.getEmail()) && password.equals(member.getPassword())) {
-            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, member); //session name, object
-        } else {
+        if (!email.equals(member.getEmail()) || !password.equals(member.getPassword())) {
             throw new AuthenticationException();
         }
-        
+
+        //로그인 성공
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, member); //session name, object
+
         return ResponseEntity.ok().build();
     }
 
