@@ -20,10 +20,10 @@ public class UsernamePasswordInterceptor implements HandlerInterceptor {
     private final MemberService memberService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         HttpSession session = request.getSession();
 
-        if (session == null || session.getAttribute(SPRING_SECURITY_CONTEXT_KEY) == null) {
+        if (session.getAttribute(SPRING_SECURITY_CONTEXT_KEY) == null) {
             String username = request.getParameter(AppConstants.USERNAME);
             String password = request.getParameter(AppConstants.PASSWORD);
 

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.app.ui.AuthenticationException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 

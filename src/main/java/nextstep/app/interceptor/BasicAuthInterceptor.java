@@ -20,7 +20,7 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
     private final MemberService memberService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (!authenticate(authorization)) {
             throw new AuthenticationException();
