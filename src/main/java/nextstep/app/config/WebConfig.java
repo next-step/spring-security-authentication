@@ -2,6 +2,7 @@ package nextstep.app.config;
 
 import java.util.List;
 import nextstep.app.service.UserDetailService;
+import nextstep.security.BasicAuthorizationInterceptor;
 import nextstep.security.FormLoginAuthorizationInterceptor;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.AuthenticationProvider;
@@ -25,6 +26,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new FormLoginAuthorizationInterceptor(authenticationManager()))
                 .addPathPatterns("/login");
+        registry.addInterceptor(new BasicAuthorizationInterceptor(authenticationManager()))
+                .excludePathPatterns("/login");
     }
 
     @Bean
