@@ -1,7 +1,6 @@
 package nextstep.security.interceptor;
 
-import nextstep.app.domain.Member;
-import nextstep.app.domain.UserDetailService;
+import nextstep.app.domain.member.param.Member;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

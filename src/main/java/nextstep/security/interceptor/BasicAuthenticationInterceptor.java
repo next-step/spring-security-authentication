@@ -1,7 +1,7 @@
 package nextstep.security.interceptor;
 
-import nextstep.app.domain.Member;
-import nextstep.app.domain.UserDetailService;
+import nextstep.app.domain.member.param.Member;
+import nextstep.security.service.UserDetailService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;

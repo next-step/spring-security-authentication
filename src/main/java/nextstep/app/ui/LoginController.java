@@ -1,6 +1,6 @@
 package nextstep.app.ui;
 
-import nextstep.app.domain.MemberRepository;
+import nextstep.app.domain.member.repository.MemberRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

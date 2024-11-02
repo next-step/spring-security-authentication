@@ -1,6 +1,8 @@
-package nextstep.app.domain;
+package nextstep.app.domain.member.param;
 
-public class Member {
+import nextstep.security.param.UserDetails;
+
+public class Member implements UserDetails {
     private final String email;
     private final String password;
     private final String name;
@@ -13,10 +15,12 @@ public class Member {
         this.imageUrl = imageUrl;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
