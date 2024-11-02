@@ -1,7 +1,7 @@
-package nextstep.config;
+package nextstep.app.config;
 
-import nextstep.security.BasicAuthenticationInterceptor;
-import nextstep.security.LoginInterceptor;
+import nextstep.security.web.authentication.BasicAuthenticationInterceptor;
+import nextstep.security.web.authentication.UsernamePasswordAuthenticationInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -10,7 +10,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor());
+        registry.addInterceptor(new UsernamePasswordAuthenticationInterceptor());
         registry.addInterceptor(new BasicAuthenticationInterceptor()).addPathPatterns("/members");
     }
+
 }

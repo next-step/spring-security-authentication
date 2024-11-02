@@ -3,6 +3,7 @@ package nextstep.app.ui;
 import lombok.RequiredArgsConstructor;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.app.service.LoginService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,7 +19,7 @@ import java.util.Map;
 public class LoginController {
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
-    private final MemberRepository memberRepository;
+    private final LoginService loginService;
 
     @PostMapping("/login")
     public ResponseEntity<Void> login(HttpServletRequest request, HttpSession session) {
@@ -26,13 +27,12 @@ public class LoginController {
         String password = request.getParameter("password");
 
         //로그인 실패 시 예외 발생
-        Member member = memberRepository.findByEmail(email).orElseThrow(AuthenticationException::new);
-        if (!email.equals(member.getEmail()) || !password.equals(member.getPassword())) {
-            throw new AuthenticationException();
-        }
+        Member loginMember = loginService.login(email, password);
 
         //로그인 성공
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, member); //session name, object
+        if (loginMember != null) {
+            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, loginMember); //session name, object
+        }
 
         return ResponseEntity.ok().build();
     }
