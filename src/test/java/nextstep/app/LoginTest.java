@@ -1,6 +1,6 @@
 package nextstep.app;
 
-import nextstep.app.domain.Member;
+import nextstep.app.domain.member.param.Member;
 import nextstep.app.infrastructure.InmemoryMemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import javax.servlet.http.HttpSession;

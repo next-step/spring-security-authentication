@@ -1,7 +1,7 @@
 package nextstep.app.infrastructure;
 
-import nextstep.app.domain.Member;
-import nextstep.app.domain.MemberRepository;
+import nextstep.app.domain.member.param.Member;
+import nextstep.app.domain.member.repository.MemberRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;

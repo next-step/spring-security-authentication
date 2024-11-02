@@ -1,4 +1,6 @@
-package nextstep.app.domain;
+package nextstep.app.domain.member.repository;
+
+import nextstep.app.domain.member.param.Member;
 
 import java.util.List;
 import java.util.Optional;
