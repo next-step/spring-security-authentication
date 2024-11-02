@@ -5,11 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 @Slf4j
-@Primary
 @Service
 @RequiredArgsConstructor
 public class UserDetailServiceImpl implements UserDetailService {
