@@ -7,6 +7,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static nextstep.security.constants.SecurityConstants.*;
+
 public class FormLoginAuthorizationInterceptor implements HandlerInterceptor {
     private final UserDetailService userDetailService;
 
@@ -16,8 +18,8 @@ public class FormLoginAuthorizationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        String username = request.getParameter(USERNAME);
+        String password = request.getParameter(PASSWORD);
 
         if (username == null || password == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "username, password가 필요합니다.");
@@ -30,7 +32,7 @@ public class FormLoginAuthorizationInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", member);
+        request.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, member);
         return true;
     }
 }
