@@ -1,12 +1,13 @@
-package nextstep.app.interceptor;
+package nextstep.security.interceptor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nextstep.app.domain.Member;
-import nextstep.app.service.MemberService;
+import nextstep.security.service.UserDetailService;
 import nextstep.app.ui.AuthenticationException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -16,8 +17,9 @@ import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class BasicAuthInterceptor implements HandlerInterceptor {
-    private final MemberService memberService;
+    private final UserDetailService userDetailService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -46,7 +48,7 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        Member loginMember = memberService.getMember(userDetail[0], userDetail[1]);
+        Member loginMember = userDetailService.getMember(userDetail[0], userDetail[1]);
         if (loginMember == null) {
             return false;
         }

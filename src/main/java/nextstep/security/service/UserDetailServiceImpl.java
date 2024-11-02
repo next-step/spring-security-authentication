@@ -1,18 +1,20 @@
-package nextstep.app.service;
+package nextstep.security.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Slf4j
+@Primary
 @Service
 @RequiredArgsConstructor
-public class MemberServiceImpl implements MemberService {
+public class UserDetailServiceImpl implements UserDetailService {
     private final MemberRepository memberRepository;
 
     @Override
@@ -30,10 +32,5 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return member;
-    }
-
-    @Override
-    public List<Member> findAll() {
-        return memberRepository.findAll();
     }
 }

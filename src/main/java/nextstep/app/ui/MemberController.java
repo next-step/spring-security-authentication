@@ -3,7 +3,7 @@ package nextstep.app.ui;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nextstep.app.domain.Member;
-import nextstep.app.service.MemberService;
+import nextstep.app.domain.MemberRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,11 +17,11 @@ import java.util.List;
 @RestController
 public class MemberController {
 
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @GetMapping("/members")
     public ResponseEntity<List<Member>> list() {
-        List<Member> members = memberService.findAll();
+        List<Member> members = memberRepository.findAll();
         return ResponseEntity.ok(members);
     }
 

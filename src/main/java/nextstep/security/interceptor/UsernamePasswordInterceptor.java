@@ -1,39 +1,39 @@
-package nextstep.app.interceptor;
+package nextstep.security.interceptor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nextstep.app.constants.AppConstants;
 import nextstep.app.domain.Member;
-import nextstep.app.service.MemberService;
+import nextstep.security.service.UserDetailService;
 import nextstep.app.ui.AuthenticationException;
+import nextstep.security.constants.SecurityConstants;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import static nextstep.app.constants.AppConstants.SPRING_SECURITY_CONTEXT_KEY;
-
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class UsernamePasswordInterceptor implements HandlerInterceptor {
-    private final MemberService memberService;
+    private final UserDetailService userDetailService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         HttpSession session = request.getSession();
 
-        if (session.getAttribute(SPRING_SECURITY_CONTEXT_KEY) == null) {
-            String username = request.getParameter(AppConstants.USERNAME);
-            String password = request.getParameter(AppConstants.PASSWORD);
+        if (session.getAttribute(SecurityConstants.SPRING_SECURITY_CONTEXT_KEY) == null) {
+            String username = request.getParameter(SecurityConstants.USERNAME);
+            String password = request.getParameter(SecurityConstants.PASSWORD);
 
-            Member member = memberService.getMember(username, password);
+            Member member = userDetailService.getMember(username, password);
 
             if (member == null) {
                 throw new AuthenticationException();
             }
 
-            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, member);
+            session.setAttribute(SecurityConstants.SPRING_SECURITY_CONTEXT_KEY, member);
         }
 
         return true;
