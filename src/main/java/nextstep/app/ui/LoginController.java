@@ -1,5 +1,6 @@
 package nextstep.app.ui;
 
+import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,14 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<Void> login(HttpServletRequest request, HttpSession session) {
+        String userName = request.getParameter("username");
+        String passWord = request.getParameter("password");
+
+        Member member = memberRepository.findByEmail(userName).orElseThrow(AuthenticationException::new);
+        if (!member.getPassword().equals(passWord)) {
+            throw new AuthenticationException();
+        }
+
         return ResponseEntity.ok().build();
     }
 
