@@ -1,7 +1,7 @@
 package nextstep.security.interceptor;
 
-import nextstep.app.domain.member.param.Member;
-import nextstep.security.service.UserDetailService;
+import nextstep.security.param.UserDetails;
+import nextstep.security.service.UserDetailsService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -14,9 +14,9 @@ import java.util.Base64;
 import static nextstep.security.constants.SecurityConstants.BASIC_AUTH_HEADER;
 
 public class BasicAuthenticationInterceptor implements HandlerInterceptor {
-    private final UserDetailService userDetailService;
+    private final UserDetailsService userDetailService;
 
-    public BasicAuthenticationInterceptor(UserDetailService userDetailService) {
+    public BasicAuthenticationInterceptor(UserDetailsService userDetailService) {
         this.userDetailService = userDetailService;
     }
 
@@ -37,8 +37,8 @@ public class BasicAuthenticationInterceptor implements HandlerInterceptor {
         String username = values[0];
         String password = values[1];
 
-        Member member = userDetailService.retrieveMemberByEmailAndPassword(username, password);
-        if (member == null) {
+        UserDetails userDetails = userDetailService.retrieveMemberByEmailAndPassword(username, password);
+        if (userDetails == null) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
