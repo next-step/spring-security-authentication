@@ -1,6 +1,8 @@
 package nextstep.app.ui;
 
 import nextstep.app.domain.MemberRepository;
+import nextstep.app.domain.MemberService;
+import nextstep.app.exception.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,19 +16,22 @@ import javax.servlet.http.HttpSession;
 public class LoginController {
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
-    public LoginController(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public LoginController(MemberService memberService) {
+        this.memberService = memberService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<Void> login(HttpServletRequest request, HttpSession session) {
+        String email = request.getParameter("username");
+        String password = request.getParameter("password");
+        memberService.login(session, email, password);
         return ResponseEntity.ok().build();
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<Void> handleAuthenticationException() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<?> handleAuthenticationException(AuthenticationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getResponseBody());
     }
 }
