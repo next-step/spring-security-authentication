@@ -16,20 +16,14 @@ public class MemberService {
     }
 
     public void login(HttpSession session, String email, String password) {
-        memberRepo.findByEmail(email).ifPresentOrElse(
-
-                member -> {
-                    if (member.getPassword().equals(password)) {
-                        session.setAttribute("SPRING_SECURITY_CONTEXT", member);
-                        return;
-                    }
-                    throw new AuthenticationException(AuthErrorCodes.UNAUTHORIZED_LOGIN_REQUEST);
-                },
-
-                () -> {
-                    throw new AuthenticationException(AuthErrorCodes.UNAUTHORIZED_LOGIN_REQUEST);
-                }
-        );
-
+        memberRepo.findByEmail(email).ifPresentOrElse(member -> {
+            if (member.getPassword().equals(password)) {
+                session.setAttribute("SPRING_SECURITY_CONTEXT", member);
+                return;
+            }
+            throw new AuthenticationException(AuthErrorCodes.UNAUTHORIZED_LOGIN_REQUEST);
+        }, () -> {
+            throw new AuthenticationException(AuthErrorCodes.UNAUTHORIZED_LOGIN_REQUEST);
+        });
     }
 }
