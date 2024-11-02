@@ -1,6 +1,7 @@
 package nextstep.app.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.app.ui.AuthenticationException;
@@ -9,9 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class MemberServiceImpl implements MemberService{
+public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
 
     @Override
@@ -19,11 +21,13 @@ public class MemberServiceImpl implements MemberService{
         Member member = memberRepository.findByEmail(username).orElse(null);
 
         if (member == null) {
-            throw new AuthenticationException();
+            log.warn("Member is not exists");
+            return null;
         }
 
         if (!StringUtils.equals(member.getPassword(), password)) {
-            throw new AuthenticationException();
+            log.warn("Member is not valid");
+            return null;
         }
 
         return member;
