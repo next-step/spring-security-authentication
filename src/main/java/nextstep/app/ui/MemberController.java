@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 public class MemberController {
+    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
     private final MemberRepository memberRepository;
 
@@ -28,12 +29,12 @@ public class MemberController {
 
         String basicToken = request.getHeader("Authorization");
 
-        authenticate(basicToken);
+        authenticate(basicToken, session);
 
         return ResponseEntity.ok(members);
     }
 
-    private void authenticate(String token) {
+    private void authenticate(String token, HttpSession session) {
         String payload = token.split(" ")[1];
 
         String decodedPayload = new String(Base64Utils.decodeFromString(payload), StandardCharsets.UTF_8);
@@ -43,14 +44,16 @@ public class MemberController {
             throw new AuthenticationException();
         }
 
-        isValidMember(memberInfo[0], memberInfo[1]);
+        Member validMember = isValidMember(memberInfo[0], memberInfo[1]);
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, validMember);
     }
 
-    private void isValidMember(String email, String password) {
+    private Member isValidMember(String email, String password) {
         Member member = memberRepository.findByEmail(email).orElseThrow(AuthenticationException::new);
         if (!member.getPassword().equals(password)) {
             throw new AuthenticationException();
         }
+        return member;
     }
 
     @ExceptionHandler(AuthenticationException.class)
