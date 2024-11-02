@@ -1,5 +1,6 @@
 package nextstep.app.config;
 
+import nextstep.app.interceptor.BasicAuthInterceptor;
 import nextstep.app.interceptor.IdPasswordAuthInterceptor;
 import nextstep.app.domain.MemberRepository;
 import org.springframework.context.annotation.Configuration;
@@ -17,5 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new IdPasswordAuthInterceptor(memberRepository))
                 .addPathPatterns("/login");
+        registry.addInterceptor(new BasicAuthInterceptor(memberRepository))
+                .addPathPatterns("/members");
     }
 }
