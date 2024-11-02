@@ -31,6 +31,8 @@ public class LoginController {
             throw new AuthenticationException();
         }
 
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, member);
+
         return ResponseEntity.ok().build();
     }
 
