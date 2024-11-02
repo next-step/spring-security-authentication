@@ -25,41 +25,9 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/members")
-    public ResponseEntity<List<Member>> list(@RequestHeader(HttpHeaders.AUTHORIZATION)String authorization) {
-        boolean loginResult = authenticate(authorization);
-        if (!loginResult) {
-            throw new AuthenticationException();
-        }
-
+    public ResponseEntity<List<Member>> list() {
         List<Member> members = memberService.findAll();
         return ResponseEntity.ok(members);
-    }
-
-    private boolean authenticate(String authorization) {
-        if (StringUtils.isEmpty(authorization)) {
-            return false;
-        }
-
-        if (!StringUtils.startsWith(authorization, "Basic ")) {
-            return false;
-        }
-
-        String encodedCredentials = authorization.substring("Basic ".length());
-        String decodedCredentials = new String(Base64Utils.decodeFromString(encodedCredentials), StandardCharsets.UTF_8);
-
-        String[] userDetail = decodedCredentials.split(":",2);
-
-        if (userDetail.length != 2) {
-            return false;
-        }
-
-        Member loginMember = memberService.getMember(userDetail[0], userDetail[1]);
-        if (loginMember == null) {
-            return false;
-        }
-
-        log.info("Login success. ID : {} / password : {}", loginMember.getEmail(), loginMember.getPassword());
-        return true;
     }
 
     @ExceptionHandler(AuthenticationException.class)

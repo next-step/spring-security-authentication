@@ -15,21 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import static nextstep.app.constants.AppConstants.SPRING_SECURITY_CONTEXT_KEY;
+
 @RequiredArgsConstructor
 @RestController
 public class LoginController {
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
-
     private final MemberService memberService;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(HttpServletRequest request, HttpSession session) {
-        String username = request.getParameter(AppConstants.USERNAME);
-        String password = request.getParameter(AppConstants.PASSWORD);
-
-        Member member = memberService.getMember(username, password);
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, member);
-
+    public ResponseEntity<Void> login() {
         return ResponseEntity.ok().build();
     }
 
