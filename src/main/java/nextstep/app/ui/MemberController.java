@@ -1,6 +1,7 @@
 package nextstep.app.ui;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.app.service.MemberService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
@@ -47,7 +49,7 @@ public class MemberController {
             throw new AuthenticationException();
         }
 
-
+        Member loginMember = memberService.getMember(userDetail[0], userDetail[1]);
+        log.info("Login success. ID : {} / password : {}", loginMember.getEmail(), loginMember.getPassword());
     }
-
 }
