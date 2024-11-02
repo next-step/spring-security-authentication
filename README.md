@@ -11,3 +11,6 @@
 ### 인터셉터 분리
     - LoginController에서 IdPasswordAuthInterceptor로 인증 방식 분리
     - MemeberController에서 BasicAuthInterceptor로 인증 방식 분리
+
+### 인증 로직과 서비스 로직 간의 패키지 분리
+    - 패키지 분리 및 리팩토링
