@@ -1,9 +1,8 @@
-package nextstep.app.util;
+package nextstep.security.util;
 
-import static nextstep.security.authentication.SecurityConstants.BASIC_TOKEN_PREFIX;
+import static nextstep.security.util.SecurityConstants.BASIC_TOKEN_PREFIX;
 
 import java.nio.charset.StandardCharsets;
-import nextstep.security.authentication.TokenDecoder;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.userdetail.UserDetail;
 import org.springframework.stereotype.Component;

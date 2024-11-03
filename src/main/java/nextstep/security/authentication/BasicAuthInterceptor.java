@@ -1,12 +1,13 @@
 package nextstep.security.authentication;
 
-import static nextstep.security.authentication.SecurityConstants.SPRING_SECURITY_CONTEXT_KEY;
+import static nextstep.security.util.SecurityConstants.SPRING_SECURITY_CONTEXT_KEY;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.userdetail.UserDetail;
 import nextstep.security.userdetail.UserDetailService;
+import nextstep.security.util.TokenDecoder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.HandlerInterceptor;
 

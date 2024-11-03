@@ -1,6 +1,6 @@
 package nextstep.security.authentication;
 
-import static nextstep.security.authentication.SecurityConstants.SPRING_SECURITY_CONTEXT_KEY;
+import static nextstep.security.util.SecurityConstants.SPRING_SECURITY_CONTEXT_KEY;
 
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;

@@ -2,8 +2,8 @@ package nextstep.app.config;
 
 import nextstep.security.authentication.BasicAuthInterceptor;
 import nextstep.security.authentication.FormLoginAuthInterceptor;
-import nextstep.security.authentication.TokenDecoder;
 import nextstep.security.userdetail.UserDetailService;
+import nextstep.security.util.TokenDecoder;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

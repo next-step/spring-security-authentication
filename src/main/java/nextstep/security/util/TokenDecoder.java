@@ -1,4 +1,4 @@
-package nextstep.security.authentication;
+package nextstep.security.util;
 
 import nextstep.security.userdetail.UserDetail;
 
