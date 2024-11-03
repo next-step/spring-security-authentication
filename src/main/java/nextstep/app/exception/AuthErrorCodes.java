@@ -3,7 +3,8 @@ package nextstep.app.exception;
 import org.springframework.http.HttpStatus;
 
 public enum AuthErrorCodes {
-    UNAUTHORIZED_LOGIN_REQUEST(HttpStatus.UNAUTHORIZED, "Username not exist or Wrong password");
+    UNAUTHORIZED_LOGIN_REQUEST(HttpStatus.UNAUTHORIZED, "Username not exist or Wrong password"),
+    WRONG_BASIC_TOKEN_FORMAT(HttpStatus.UNAUTHORIZED, "Wrong basic token format");
 
     private final HttpStatus statusCode;
     private final String message;
