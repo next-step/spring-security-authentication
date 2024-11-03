@@ -1,4 +1,5 @@
-package nextstep.app.ui;
+package nextstep.security.exception;
 
 public class AuthenticationException extends RuntimeException {
+
 }
