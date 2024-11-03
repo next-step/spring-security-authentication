@@ -13,9 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @RestController
-public class LoginController {
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
-
+public class LoginController extends BaseController {
     private final MemberService memberService;
 
     public LoginController(MemberService memberService) {
@@ -28,10 +26,5 @@ public class LoginController {
         String password = request.getParameter("password");
         memberService.login(session, email, password);
         return ResponseEntity.ok().build();
-    }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<?> handleAuthenticationException(AuthenticationException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getResponseBody());
     }
 }
