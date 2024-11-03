@@ -28,7 +28,6 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
             String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
             UserDetail decodedUserInfo = tokenDecoder.decodeToken(token);
-
             UserDetail userDetail = userDetailService.getUserDetail(decodedUserInfo.getUsername());
 
             if (!userDetail.verifyPassword(decodedUserInfo.getPassword())) {
