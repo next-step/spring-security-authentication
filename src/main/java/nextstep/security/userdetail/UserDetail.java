@@ -18,4 +18,8 @@ public class UserDetail {
     public String getPassword() {
         return password;
     }
+
+    public boolean verifyPassword(String password) {
+        return this.password.equals(password);
+    }
 }

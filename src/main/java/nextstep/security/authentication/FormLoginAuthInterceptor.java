@@ -37,9 +37,13 @@ public class FormLoginAuthInterceptor implements HandlerInterceptor {
                 throw new AuthenticationException();
             }
 
-            UserDetail userDetail = userDetailService.getUserDetail(username, password);
+            UserDetail userDetail = userDetailService.getUserDetail(username);
 
             if (Objects.isNull(userDetail)) {
+                throw new AuthenticationException();
+            }
+
+            if (!userDetail.verifyPassword(password)) {
                 throw new AuthenticationException();
             }
 

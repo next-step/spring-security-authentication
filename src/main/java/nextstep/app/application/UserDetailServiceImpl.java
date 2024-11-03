@@ -1,6 +1,5 @@
 package nextstep.app.application;
 
-import java.util.Objects;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.security.userdetail.UserDetail;
@@ -17,13 +16,11 @@ public class UserDetailServiceImpl implements UserDetailService {
     }
 
     @Override
-    public UserDetail getUserDetail(String username, String password) {
+    public UserDetail getUserDetail(String username) {
         return memberRepository.findByEmail(username)
-                .filter(member -> Objects.equals(member.getPassword(), password))
                 .map(this::convertToUserDetail)
                 .orElse(null);
     }
-
 
     public UserDetail convertToUserDetail(Member member) {
         return new UserDetail(member.getEmail(), member.getPassword());

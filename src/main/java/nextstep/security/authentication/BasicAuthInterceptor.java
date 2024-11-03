@@ -29,8 +29,11 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
 
             UserDetail decodedUserInfo = tokenDecoder.decodeToken(token);
 
-            UserDetail userDetail = userDetailService.getUserDetail(decodedUserInfo.getUsername(),
-                    decodedUserInfo.getPassword());
+            UserDetail userDetail = userDetailService.getUserDetail(decodedUserInfo.getUsername());
+
+            if (!userDetail.verifyPassword(decodedUserInfo.getPassword())) {
+                throw new AuthenticationException();
+            }
 
             request.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, userDetail);
             return true;
