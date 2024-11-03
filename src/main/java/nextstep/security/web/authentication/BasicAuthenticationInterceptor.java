@@ -1,33 +1,21 @@
 package nextstep.security.web.authentication;
 
-import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.BadCredentialsException;
-import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
 import nextstep.security.core.Authentication;
-import nextstep.security.core.AuthenticationException;
-import nextstep.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class BasicAuthenticationInterceptor implements HandlerInterceptor {
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
-    private final AuthenticationManager authenticationManager;
+public class BasicAuthenticationInterceptor extends AuthenticationInterceptor {
 
-    public BasicAuthenticationInterceptor() {
-        this.authenticationManager = new AuthenticationManager();
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
         Authentication authRequest;
-        Authentication authResponse;
 
         // 인증 정보 추출
         try {
@@ -37,6 +25,7 @@ public class BasicAuthenticationInterceptor implements HandlerInterceptor {
             return false;
         }
 
+        // 인증 정보가 없을 경우 로그인 페이지로 리다이렉트
         if (authRequest == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return false;
@@ -44,26 +33,17 @@ public class BasicAuthenticationInterceptor implements HandlerInterceptor {
 
         //인증이 필요할 경우 인증
         if (authenticationIsRequired((String) authRequest.getPrincipal())) {
-
-            // 인증
-            try {
-                authResponse = authenticationManager.authenticate(authRequest);
-            } catch (AuthenticationException e) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-                return false;
-            }
-
-            //인증 정보 저장
-            SecurityContextHolder.setContext(new SecurityContext(authResponse));
-
-            // 인증 정보를 세션에 저장
-            UserDetails principal = (UserDetails) authResponse.getPrincipal();
-            request.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, principal);
+            request.setAttribute("authRequest", authRequest);
+            super.preHandle(request, response, handler);
         }
 
         return true; //다음 인터셉터로
     }
 
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        super.afterCompletion(request, response, handler, ex);
+    }
 
     private Authentication convert(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
