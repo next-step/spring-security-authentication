@@ -1,7 +1,7 @@
 package nextstep.app.config;
 
-import nextstep.app.interceptor.BasicAuthInterceptor;
-import nextstep.app.interceptor.LoginInterceptor;
+import nextstep.security.interceptor.BasicAuthInterceptor;
+import nextstep.security.interceptor.LoginInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

@@ -1,10 +1,7 @@
-package nextstep.app.interceptor;
+package nextstep.security.interceptor;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.app.ui.AuthenticationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -15,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Optional;
 
-import static nextstep.app.ui.LoginController.SPRING_SECURITY_CONTEXT_KEY;
+import static nextstep.security.SecurityConstants.SPRING_SECURITY_CONTEXT_KEY;
 
 @Component
 public class BasicAuthInterceptor implements HandlerInterceptor {
