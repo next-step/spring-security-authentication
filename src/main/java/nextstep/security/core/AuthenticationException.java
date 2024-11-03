@@ -1,6 +1,6 @@
 package nextstep.security.core;
 
-public abstract class AuthenticationException extends RuntimeException {
+public class AuthenticationException extends RuntimeException {
     public AuthenticationException(String msg) {
         super(msg);
     }
