@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nextstep.security.core.authority.GrantedAuthority;
+import nextstep.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
@@ -21,5 +22,12 @@ public class Authentication {
         this.principal = principal;
         this.credentials = credentials;
         this.authorities = authorities;
+    }
+
+    public String getName(){
+        if (principal instanceof UserDetails){
+            return ((UserDetails)principal).getUsername();
+        }
+        return principal.toString();
     }
 }

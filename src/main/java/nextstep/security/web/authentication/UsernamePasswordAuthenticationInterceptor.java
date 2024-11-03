@@ -28,7 +28,7 @@ public class UsernamePasswordAuthenticationInterceptor implements HandlerInterce
 
         // 인증
         try {
-            authentication = authenticationManager.authenticate(authentication); //throw new AuthenticationException
+            authentication = authenticationManager.authenticate(authentication);
         } catch (AuthenticationException e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             return false;
