@@ -1,4 +1,4 @@
-package nextstep.app.config;
+package nextstep.app;
 
 import nextstep.security.web.authentication.UsernamePasswordAuthenticationInterceptor;
 import org.springframework.context.annotation.Configuration;

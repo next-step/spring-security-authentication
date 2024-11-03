@@ -1,6 +1,5 @@
 package nextstep.security.web.authentication;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.core.Authentication;
