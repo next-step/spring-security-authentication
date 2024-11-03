@@ -1,7 +1,7 @@
 package nextstep.app;
 
 import nextstep.app.domain.Member;
-import nextstep.app.domain.MemberRepository;
+import nextstep.security.service.MemberRepository;
 import nextstep.app.infrastructure.InmemoryMemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
