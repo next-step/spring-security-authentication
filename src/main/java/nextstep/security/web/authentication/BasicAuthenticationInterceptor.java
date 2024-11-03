@@ -16,7 +16,6 @@ public class BasicAuthenticationInterceptor extends AuthenticationInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Authentication authRequest;
-
         // 인증 정보 추출
         try {
             authRequest = convert(request);
@@ -34,10 +33,10 @@ public class BasicAuthenticationInterceptor extends AuthenticationInterceptor {
         //인증이 필요할 경우 인증
         if (authenticationIsRequired((String) authRequest.getPrincipal())) {
             request.setAttribute("authRequest", authRequest);
-            super.preHandle(request, response, handler);
+            return super.preHandle(request, response, handler);
         }
 
-        return true; //다음 인터셉터로
+        return true;
     }
 
     @Override

@@ -20,21 +20,23 @@ public abstract class AuthenticationInterceptor implements HandlerInterceptor {
         Authentication authRequest = (Authentication) request.getAttribute("authRequest");
         Authentication authResponse;
 
-        // 인증
         try {
+            // 인증
             authResponse = authenticationManager.authenticate(authRequest);
+
+            //인증 정보 저장
+            SecurityContextHolder.setContext(new SecurityContext(authResponse));
+
         } catch (AuthenticationException e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             return false;
         }
 
-        //인증 정보 저장
-        SecurityContextHolder.setContext(new SecurityContext(authResponse));
-
         // 인증 정보를 세션에 저장
         UserDetails principal = (UserDetails) authResponse.getPrincipal();
         request.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, principal);
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+
+        return true;
     }
 
     @Override

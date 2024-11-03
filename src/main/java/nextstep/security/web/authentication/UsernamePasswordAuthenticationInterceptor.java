@@ -12,15 +12,12 @@ public class UsernamePasswordAuthenticationInterceptor extends AuthenticationInt
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
         // request parameter 로 전달된 정보를 인증 정보로 변환
         Authentication authRequest = new Authentication(request.getParameter("username"), request.getParameter("password"), null);
 
         // 인증
         request.setAttribute("authRequest", authRequest);
-        super.preHandle(request, response, handler);
-
-        return true;
+        return super.preHandle(request, response, handler);
     }
 
     @Override
