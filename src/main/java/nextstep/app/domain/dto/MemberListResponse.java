@@ -18,4 +18,16 @@ public class MemberListResponse {
                 member.getEmail(), member.getName(), member.getImageUrl()
         );
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
 }
