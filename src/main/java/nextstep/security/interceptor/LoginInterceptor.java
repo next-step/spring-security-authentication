@@ -1,8 +1,8 @@
-package nextstep.app.interceptor;
+package nextstep.security.interceptor;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.app.ui.AuthenticationException;
+import nextstep.security.exception.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import static nextstep.app.ui.LoginController.SPRING_SECURITY_CONTEXT_KEY;
+import static nextstep.security.SecurityConstants.SPRING_SECURITY_CONTEXT_KEY;
 
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
