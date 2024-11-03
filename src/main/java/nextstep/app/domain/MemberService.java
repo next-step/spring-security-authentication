@@ -1,11 +1,14 @@
 package nextstep.app.domain;
 
+import nextstep.app.domain.dto.MemberListResponse;
 import nextstep.app.exception.AuthErrorCodes;
 import nextstep.app.exception.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +25,12 @@ public class MemberService {
     public void login(HttpSession session, String email, String password) {
         Member member = findUserByCredential(email, password);
         session.setAttribute(SPRING_SECURITY_CONTEXT, member);
+    }
+
+    public List<MemberListResponse> findAllMembers(){
+        List<MemberListResponse> response = new ArrayList<>();
+        memberRepo.findAll().stream().map(MemberListResponse::of).forEach(response::add);
+        return response;
     }
 
     public void validate(String basicToken){

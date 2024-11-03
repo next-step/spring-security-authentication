@@ -3,6 +3,7 @@ package nextstep.app.ui;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.app.domain.MemberService;
+import nextstep.app.domain.dto.MemberListResponse;
 import nextstep.app.exception.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +19,14 @@ import java.util.List;
 public class MemberController extends BaseController {
 
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
 
-
-    public MemberController(MemberService memberService, MemberRepository memberRepository) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.memberRepository = memberRepository;
     }
 
     @GetMapping("/members")
-    public ResponseEntity<List<Member>> list(@RequestHeader("Authorization") String basicToken) {
-        memberService.validate(basicToken);
-        List<Member> members = memberRepository.findAll();
+    public ResponseEntity<List<MemberListResponse>> list() {
+        List<MemberListResponse> members = memberService.findAllMembers();
         return ResponseEntity.ok(members);
     }
 
