@@ -1,7 +1,10 @@
 package nextstep.app;
 
-import nextstep.domain.Member;
-import nextstep.infrastructure.InmemoryMemberRepository;
+import javax.servlet.http.HttpSession;
+
+import nextstep.app.domain.Member;
+import nextstep.app.domain.MemberRepository;
+import nextstep.app.infrastructure.InmemoryMemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import javax.servlet.http.HttpSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,6 +25,9 @@ class LoginTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private MemberRepository memberRepository = new InmemoryMemberRepository();
 
     @DisplayName("로그인 성공")
     @Test

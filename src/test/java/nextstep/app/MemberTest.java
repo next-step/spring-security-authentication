@@ -1,8 +1,8 @@
 package nextstep.app;
 
-import nextstep.domain.Member;
-import nextstep.domain.MemberRepository;
-import nextstep.infrastructure.InmemoryMemberRepository;
+import nextstep.app.domain.Member;
+import nextstep.app.domain.MemberRepository;
+import nextstep.app.infrastructure.InmemoryMemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class MemberTest {
+
     private static final Member TEST_MEMBER = InmemoryMemberRepository.TEST_MEMBER_1;
 
     @Autowired

@@ -1,6 +1,13 @@
-package nextstep.domain;
+package nextstep.app.domain;
 
-public class Member {
+import java.io.Serializable;
+
+import lombok.Builder;
+import lombok.Getter;
+
+@Builder
+@Getter
+public class Member implements Serializable {
     private final String email;
     private final String password;
     private final String name;
@@ -13,19 +20,4 @@ public class Member {
         this.imageUrl = imageUrl;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
 }
