@@ -1,5 +1,7 @@
 package nextstep.app.util;
 
+import static nextstep.security.authentication.SecurityConstants.BASIC_TOKEN_PREFIX;
+
 import java.nio.charset.StandardCharsets;
 import nextstep.security.authentication.TokenDecoder;
 import nextstep.security.exception.AuthenticationException;
@@ -9,8 +11,6 @@ import org.springframework.util.Base64Utils;
 
 @Component
 public class BasicTokenDecoder implements TokenDecoder {
-
-    public static final String BASIC_TOKEN_PREFIX = "Basic ";
 
     @Override
     public UserDetail decodeToken(String token) {

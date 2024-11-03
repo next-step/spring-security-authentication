@@ -1,5 +1,7 @@
 package nextstep.security.authentication;
 
+import static nextstep.security.authentication.SecurityConstants.SPRING_SECURITY_CONTEXT_KEY;
+
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,8 +13,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class FormLoginAuthInterceptor implements HandlerInterceptor {
-
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
     private final UserDetailService userDetailService;
 

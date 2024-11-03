@@ -1,15 +1,16 @@
 package nextstep.security.authentication;
 
+import static nextstep.security.authentication.SecurityConstants.SPRING_SECURITY_CONTEXT_KEY;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import nextstep.security.exception.AuthenticationException;
 import nextstep.security.userdetail.UserDetail;
 import nextstep.security.userdetail.UserDetailService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class BasicAuthInterceptor implements HandlerInterceptor {
-
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
     private final TokenDecoder tokenDecoder;
     private final UserDetailService userDetailService;
