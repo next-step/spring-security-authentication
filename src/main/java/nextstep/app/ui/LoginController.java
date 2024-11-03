@@ -12,7 +12,6 @@ import javax.servlet.http.HttpSession;
 
 @RestController
 public class LoginController {
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
     private final MemberRepository memberRepository;
 
