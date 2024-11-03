@@ -1,6 +1,6 @@
 package nextstep.app.ui;
 
-import nextstep.app.domain.MemberRepository;
+import nextstep.security.service.MemberRepository;
 import nextstep.security.exception.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

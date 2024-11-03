@@ -1,7 +1,7 @@
 package nextstep.security.interceptor;
 
 import nextstep.app.domain.Member;
-import nextstep.app.domain.MemberRepository;
+import nextstep.security.service.MemberRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 

@@ -1,4 +1,6 @@
-package nextstep.app.domain;
+package nextstep.security.service;
+
+import nextstep.app.domain.Member;
 
 import java.util.List;
 import java.util.Optional;
