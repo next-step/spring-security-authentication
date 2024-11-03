@@ -20,7 +20,7 @@ public class SecurityConfig {
         http
                 .csrf().disable() // CSRF 비활성화 (테스트 용도)
                 .authorizeRequests()
-                .antMatchers("/login").permitAll() // /login 경로는 인증 없이 접근 허용
+                .antMatchers("/login", "/members").permitAll() // /login 경로는 인증 없이 접근 허용
                 .anyRequest().authenticated(); // 그 외의 요청은 인증 필요
         return http.build();
     }
