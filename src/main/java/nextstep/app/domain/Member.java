@@ -1,6 +1,8 @@
 package nextstep.app.domain;
 
-public class Member {
+import nextstep.security.model.UserDetail;
+
+public class Member implements UserDetail{
     private final String email;
     private final String password;
     private final String name;
