@@ -9,8 +9,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.web.filter.GenericFilterBean;
 
+@AllArgsConstructor
 public class FilterChainProxy extends GenericFilterBean {
 
     List<SecurityFilterChain> securityFilterChainList;

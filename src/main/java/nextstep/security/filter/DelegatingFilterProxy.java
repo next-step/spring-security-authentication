@@ -6,8 +6,10 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.web.filter.GenericFilterBean;
 
+@AllArgsConstructor
 public class DelegatingFilterProxy extends GenericFilterBean {
 
     Filter delegate;
@@ -15,6 +17,6 @@ public class DelegatingFilterProxy extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-
+        delegate.doFilter(request, response, chain);
     }
 }

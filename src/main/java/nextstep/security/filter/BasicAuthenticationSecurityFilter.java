@@ -1,5 +1,6 @@
 package nextstep.security.filter;
 
+
 import java.io.IOException;
 import java.util.Objects;
 import javax.servlet.FilterChain;
@@ -20,6 +21,7 @@ import org.springframework.web.filter.GenericFilterBean;
 public class BasicAuthenticationSecurityFilter extends GenericFilterBean {
 
     private final AuthenticationManager authenticationManager;
+    private static final String DEFAULT_REQUEST_URI = "/members";
 
     public BasicAuthenticationSecurityFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -28,13 +30,24 @@ public class BasicAuthenticationSecurityFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        UsernamePasswordAuthenticationToken authRequest = createAuthentication(
-                (HttpServletRequest) request);
+        if (!DEFAULT_REQUEST_URI.equals(((HttpServletRequest) request).getRequestURI())) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-        Authentication authentication = authenticationManager.authenticate(authRequest);
+        try {
+            UsernamePasswordAuthenticationToken authRequest = createAuthentication(
+                    (HttpServletRequest) request);
 
-        if (Objects.isNull(authentication) || !authentication.isAuthenticated()) {
-            throw new AuthenticationException();
+            Authentication authentication = authenticationManager.authenticate(authRequest);
+
+            if (Objects.isNull(authentication) || !authentication.isAuthenticated()) {
+                ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            }
+
+            chain.doFilter(request, response);
+        } catch (Exception e) {
+            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 
