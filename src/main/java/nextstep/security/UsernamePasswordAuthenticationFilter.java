@@ -1,7 +1,5 @@
 package nextstep.security;
 
-import static nextstep.security.SecurityConstants.SPRING_SECURITY_CONTEXT_KEY;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +11,8 @@ import nextstep.app.ui.AuthenticationException;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
+import nextstep.security.context.SecurityContext;
+import nextstep.security.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
@@ -43,11 +43,14 @@ public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
 
             validateAuthentication(authentication);
 
-            request.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, authentication);
+            SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+            ctx.setAuthentication(authentication);
+            SecurityContextHolder.setContext(ctx);
 
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            SecurityContextHolder.clearContext();
         }
     }
 

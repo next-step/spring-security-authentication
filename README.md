@@ -61,5 +61,9 @@
 
 ## SecurityContextHolder 로 인증 정보 객체 저장하기
 
+- [x] `SecurityContext` 구현
+- [x] `SecurityContextHolder` 구현
+- [x] seesion 에서 `SecurityContext` 로 인증 정보 저장하도록 변경
+
 ## SecurityContextHolderFilter 구현하기
 

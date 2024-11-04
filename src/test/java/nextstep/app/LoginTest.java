@@ -1,7 +1,13 @@
 package nextstep.app;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import nextstep.app.domain.Member;
 import nextstep.app.infrastructure.InmemoryMemberRepository;
+import nextstep.security.authentication.Authentication;
+import nextstep.security.context.SecurityContextHolder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,18 +15,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-
-import javax.servlet.http.HttpSession;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class LoginTest {
+
     private static final Member TEST_MEMBER = InmemoryMemberRepository.TEST_MEMBER_1;
 
     @Autowired
@@ -37,9 +37,9 @@ class LoginTest {
 
         loginResponse.andExpect(status().isOk());
 
-        HttpSession session = loginResponse.andReturn().getRequest().getSession();
-        assertThat(session).isNotNull();
-        assertThat(session.getAttribute("SPRING_SECURITY_CONTEXT")).isNotNull();
+        // SecurityContextHolder 로 변경
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        assertThat(authentication).isNotNull();
     }
 
     @DisplayName("로그인 실패 - 사용자 없음")
