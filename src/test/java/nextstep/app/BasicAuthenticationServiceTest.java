@@ -4,7 +4,7 @@ import java.util.Base64;
 import java.util.stream.Stream;
 
 import nextstep.app.domain.Member;
-import nextstep.app.service.auth.BasicAuthenticationService;
+import nextstep.security.service.BasicAuthenticationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

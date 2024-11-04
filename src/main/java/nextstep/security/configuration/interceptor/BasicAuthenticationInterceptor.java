@@ -1,26 +1,26 @@
-package nextstep.app.configuration.interceptor;
+package nextstep.security.configuration.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.app.domain.Member;
-import nextstep.app.domain.MemberRepository;
-import nextstep.app.service.auth.BasicAuthenticationService;
+import nextstep.security.model.UserDetails;
+import nextstep.security.service.BasicAuthenticationService;
+import nextstep.security.service.UserDetailsService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import static nextstep.app.utils.Constants.BASIC_TOKEN_PREFIX;
-import static nextstep.app.utils.Constants.SPRING_SECURITY_CONTEXT_KEY;
+import static nextstep.security.utils.Constants.BASIC_TOKEN_PREFIX;
+import static nextstep.security.utils.Constants.SPRING_SECURITY_CONTEXT_KEY;
 
 @Component
 @RequiredArgsConstructor
 public class BasicAuthenticationInterceptor implements HandlerInterceptor {
 
-    private final MemberRepository memberRepository;
     private final BasicAuthenticationService basicAuthenticationService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -32,15 +32,15 @@ public class BasicAuthenticationInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        Member decodedMember = basicAuthenticationService.mapTokenToMember(authorizationHeader);
+        UserDetails decodedUserDetails = basicAuthenticationService.mapTokenToUserDetails(authorizationHeader);
 
-        if (decodedMember == null) {
+        if (decodedUserDetails == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
 
-        request.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, decodedMember);
-        return memberRepository.findByEmail(decodedMember.getEmail()).isPresent();
+        request.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, decodedUserDetails);
+        return userDetailsService.loadUserByUsername(decodedUserDetails.getUserName()).isPresent();
     }
 
 }

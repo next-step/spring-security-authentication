@@ -1,4 +1,4 @@
-package nextstep.app.utils;
+package nextstep.security.utils;
 
 public class Constants {
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
