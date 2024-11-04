@@ -4,11 +4,10 @@ import nextstep.security.interceptor.AuthorizationInterceptor;
 import nextstep.security.interceptor.BasicAuthenticationInterceptor;
 import nextstep.security.interceptor.FormLoginAuthInterceptor;
 import nextstep.security.service.UserDetailsService;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
+//@Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     private final UserDetailsService userDetailsService;
