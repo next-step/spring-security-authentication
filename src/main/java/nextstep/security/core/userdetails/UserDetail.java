@@ -1,4 +1,4 @@
-package nextstep.security.core;
+package nextstep.security.core.userdetails;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

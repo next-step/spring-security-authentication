@@ -1,8 +1,8 @@
 package nextstep.app.domain;
 
 import nextstep.app.domain.dto.MemberListResponse;
-import nextstep.security.core.UserDetail;
-import nextstep.security.core.UserDetailService;
+import nextstep.security.core.userdetails.UserDetail;
+import nextstep.security.core.userdetails.UserDetailService;
 import nextstep.security.exception.AuthErrorCodes;
 import nextstep.security.exception.AuthenticationException;
 import org.springframework.stereotype.Service;

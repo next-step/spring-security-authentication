@@ -1,4 +1,4 @@
-package nextstep.security.core;
+package nextstep.security.core.userdetails;
 
 public interface UserDetailService {
     UserDetail findUserByUsername(String username);
