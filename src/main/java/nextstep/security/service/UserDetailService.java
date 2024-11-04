@@ -4,5 +4,6 @@ import nextstep.security.model.UserDetail;
 
 
 public interface UserDetailService {
-     UserDetail isValidUser(String email, String password);
+     UserDetail loadUserByUsername(String username);
+
 }
