@@ -1,11 +1,7 @@
 package nextstep.app.ui;
 
-import nextstep.app.domain.MemberRepository;
 import nextstep.app.domain.MemberService;
-import nextstep.app.exception.AuthenticationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 

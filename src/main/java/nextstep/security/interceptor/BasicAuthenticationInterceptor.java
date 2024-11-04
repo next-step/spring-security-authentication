@@ -1,7 +1,7 @@
-package nextstep.app.interceptor;
+package nextstep.security.interceptor;
 
 import nextstep.app.domain.MemberService;
-import nextstep.app.exception.AuthenticationException;
+import nextstep.security.exception.AuthenticationException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class BasicAuthenticationInterceptor implements HandlerInterceptor {
 
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public BasicAuthenticationInterceptor(MemberService memberService) {
         this.memberService = memberService;

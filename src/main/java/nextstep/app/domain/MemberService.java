@@ -1,8 +1,10 @@
 package nextstep.app.domain;
 
 import nextstep.app.domain.dto.MemberListResponse;
-import nextstep.app.exception.AuthErrorCodes;
-import nextstep.app.exception.AuthenticationException;
+import nextstep.security.core.UserDetail;
+import nextstep.security.core.UserDetailService;
+import nextstep.security.exception.AuthErrorCodes;
+import nextstep.security.exception.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
@@ -12,10 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MemberService {
+public class MemberService implements UserDetailService {
 
-    private static String SPRING_SECURITY_CONTEXT = "SPRING_SECURITY_CONTEXT";
-    private MemberRepository memberRepo;
+    private static final String  SPRING_SECURITY_CONTEXT = "SPRING_SECURITY_CONTEXT";
+    private final MemberRepository memberRepo;
 
 
     public MemberService(MemberRepository memberRepo) {
@@ -35,8 +37,8 @@ public class MemberService {
 
     public void validate(String basicToken){
         String decoded = new String(Base64.getDecoder().decode(basicToken.replace("Basic ", "")));
-        String email = "";
-        String password = "";
+        String email;
+        String password;
         try {
             email = decoded.substring(0, decoded.indexOf(":"));
             password = decoded.substring(decoded.indexOf(":") + 1);
@@ -50,5 +52,11 @@ public class MemberService {
         return memberRepo.findByEmail(email)
                 .filter(user -> user.getPassword().equals(pw))
                 .orElseThrow(() -> new AuthenticationException(AuthErrorCodes.UNAUTHORIZED_LOGIN_REQUEST));
+    }
+
+    @Override
+    public UserDetail findUserByUsername(String username) {
+        Optional<Member> member = memberRepo.findByEmail(username);
+        return member.map(value -> new UserDetail(value.getEmail(), value.getPassword())).orElse(null);
     }
 }
