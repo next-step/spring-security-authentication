@@ -47,6 +47,4 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, userDetail);
         return true;
     }
-
-
 }
