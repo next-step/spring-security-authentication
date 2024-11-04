@@ -19,4 +19,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .filter(userDetails -> userDetails.verifyPassword(password))
                 .orElse(UserDetailsImpl.empty());
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        return memberRepository.findByEmail(username)
+                .map(UserDetailsImpl::of)
+                .orElse(null);
+    }
 }

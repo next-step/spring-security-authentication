@@ -30,8 +30,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain() {
         return new DefaultSecurityFilterChain(
                 List.of(
-                        new BasicAuthenticationFilter(userDetailsService),
-                        new UsernamePasswordAuthenticationFilter(userDetailsService)
+                        new UsernamePasswordAuthenticationFilter(userDetailsService),
+                        new BasicAuthenticationFilter(userDetailsService)
                 )
         );
     }
