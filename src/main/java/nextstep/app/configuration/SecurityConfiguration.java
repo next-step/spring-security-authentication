@@ -1,30 +1,55 @@
 package nextstep.app.configuration;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.app.ui.AuthenticationException;
-import nextstep.security.configuration.interceptor.BasicAuthenticationInterceptor;
-import nextstep.security.configuration.interceptor.FormLoginInterceptor;
+import nextstep.security.configuration.DefaultSecurityFilterChain;
+import nextstep.security.configuration.DelegateFilterProxy;
+import nextstep.security.configuration.FilterChainProxy;
+import nextstep.security.configuration.SecurityFilterChain;
+import nextstep.security.configuration.filter.BasicAuthenticationFilter;
+import nextstep.security.configuration.filter.FormLoginFilter;
 import nextstep.security.model.UserDetails;
 import nextstep.security.service.UserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
-public class WebMvcConfiguration implements WebMvcConfigurer {
+public class SecurityConfiguration {
 
     private final MemberRepository memberRepository;
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(formLoginInterceptor()).addPathPatterns("/login");
-        registry.addInterceptor(basicAuthenticationInterceptor()).addPathPatterns("/members");
+    @Bean
+    public DelegateFilterProxy delegateFilterProxy() {
+        return new DelegateFilterProxy(filterChainProxy(List.of(securityFilterChain())));
+    }
+
+    @Bean
+    public FilterChainProxy filterChainProxy(List<SecurityFilterChain> securityFilterChains) {
+        return new FilterChainProxy(securityFilterChains);
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain() {
+        return new DefaultSecurityFilterChain(List.of(
+                formLoginFilter(),
+                basicAuthenticationFilter()
+        ));
+    }
+
+    @Bean
+    public FormLoginFilter formLoginFilter() {
+        return new FormLoginFilter(userDetailsService());
+    }
+
+    @Bean
+    public BasicAuthenticationFilter basicAuthenticationFilter() {
+        return new BasicAuthenticationFilter(userDetailsService());
     }
 
     @Bean
@@ -48,13 +73,5 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         };
     }
 
-    @Bean
-    public FormLoginInterceptor formLoginInterceptor() {
-        return new FormLoginInterceptor(userDetailsService());
-    }
 
-    @Bean
-    public BasicAuthenticationInterceptor basicAuthenticationInterceptor() {
-        return new BasicAuthenticationInterceptor(userDetailsService());
-    }
 }
