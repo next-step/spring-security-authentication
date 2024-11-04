@@ -35,7 +35,7 @@ class BasicAuthenticationServiceTest {
     void decodeToken_shouldReturnNullWhenTokenIsCorrupted(String token) {
         // arrange
         // act
-        var result = underTest.decodeToken(token);
+        var result = underTest.mapTokenToMember(token);
 
         // assert
         assertThat(result).isNull();
@@ -49,7 +49,7 @@ class BasicAuthenticationServiceTest {
         var token = "Basic " + Base64.getEncoder().encodeToString((email+":"+password).getBytes());
 
         // act
-        var result = underTest.decodeToken(token);
+        var result = underTest.mapTokenToMember(token);
 
         // assert
         assertThat(result).isNotNull().isInstanceOf(Member.class);

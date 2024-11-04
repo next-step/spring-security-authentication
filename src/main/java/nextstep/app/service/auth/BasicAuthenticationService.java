@@ -13,7 +13,7 @@ import static nextstep.app.utils.Constants.BASIC_TOKEN_PREFIX;
 @Service
 public class BasicAuthenticationService {
 
-    public Member decodeToken(String token) {
+    public Member mapTokenToMember(String token) {
         if (Objects.isNull(token)) {
             return null;
         }

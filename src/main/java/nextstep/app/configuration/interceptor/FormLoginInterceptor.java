@@ -19,7 +19,7 @@ import static nextstep.app.utils.Constants.USERNAME_ATTRIBUTE_NAME;
 
 @Component
 @RequiredArgsConstructor
-public class MemberAuthorizationInterceptor implements HandlerInterceptor {
+public class FormLoginInterceptor implements HandlerInterceptor {
 
     private final MemberRepository memberRepository;
 

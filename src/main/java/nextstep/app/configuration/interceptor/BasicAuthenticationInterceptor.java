@@ -32,7 +32,7 @@ public class BasicAuthenticationInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        Member decodedMember = basicAuthenticationService.decodeToken(authorizationHeader);
+        Member decodedMember = basicAuthenticationService.mapTokenToMember(authorizationHeader);
 
         if (decodedMember == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
