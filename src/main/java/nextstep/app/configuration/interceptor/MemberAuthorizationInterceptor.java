@@ -29,9 +29,10 @@ public class MemberAuthorizationInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession();
 
         if (Objects.nonNull(session.getAttribute(SPRING_SECURITY_CONTEXT_KEY))) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return true;
+            Member member = (Member) session.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+            return memberRepository.findByEmailAndPassword(member.getEmail(), member.getPassword()).isPresent();
         }
+
         Optional<Member> member = memberRepository.findByEmailAndPassword(
                 request.getParameter(USERNAME_ATTRIBUTE_NAME),
                 request.getParameter(PASSWORD_ATTRIBUTE_NAME));
