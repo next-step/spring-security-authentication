@@ -2,7 +2,7 @@ package nextstep.security.interceptor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nextstep.app.domain.Member;
+import nextstep.security.model.UserDetails;
 import nextstep.security.service.UserDetailService;
 import nextstep.app.ui.AuthenticationException;
 import org.apache.commons.lang3.StringUtils;
@@ -48,12 +48,12 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        Member loginMember = userDetailService.getMember(userDetail[0], userDetail[1]);
+        UserDetails loginMember = userDetailService.getUserDetails(userDetail[0], userDetail[1]);
         if (loginMember == null) {
             return false;
         }
 
-        log.info("Login success. ID : {} / password : {}", loginMember.getEmail(), loginMember.getPassword());
+        log.info("Login success. ID : {} / password : {}", loginMember.getUsername(), loginMember.getPassword());
         return true;
     }
 }

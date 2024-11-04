@@ -2,7 +2,7 @@ package nextstep.security.interceptor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nextstep.app.domain.Member;
+import nextstep.security.model.UserDetails;
 import nextstep.security.service.UserDetailService;
 import nextstep.app.ui.AuthenticationException;
 import nextstep.security.constants.SecurityConstants;
@@ -27,13 +27,13 @@ public class UsernamePasswordInterceptor implements HandlerInterceptor {
             String username = request.getParameter(SecurityConstants.USERNAME);
             String password = request.getParameter(SecurityConstants.PASSWORD);
 
-            Member member = userDetailService.getMember(username, password);
+            UserDetails userDetails = userDetailService.getUserDetails(username, password);
 
-            if (member == null) {
+            if (userDetails == null) {
                 throw new AuthenticationException();
             }
 
-            session.setAttribute(SecurityConstants.SPRING_SECURITY_CONTEXT_KEY, member);
+            session.setAttribute(SecurityConstants.SPRING_SECURITY_CONTEXT_KEY, userDetails);
         }
 
         return true;

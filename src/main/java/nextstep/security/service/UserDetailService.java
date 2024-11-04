@@ -1,7 +1,7 @@
 package nextstep.security.service;
 
-import nextstep.app.domain.Member;
+import nextstep.security.model.UserDetails;
 
 public interface UserDetailService {
-    Member getMember(String username, String password);
+    UserDetails getUserDetails(String username, String password);
 }
