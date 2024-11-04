@@ -26,10 +26,11 @@ public class FilterChainProxy extends GenericFilterBean {
     private List<Filter> getFilters(HttpServletRequest request) {
         for (SecurityFilterChain chain : this.filterChains) {
             if (chain.matches(request)) {
+                logger.info("SecurityChainMatched"+chain.getClass().getName());
                 return chain.getFilters();
             }
         }
-        return null;
+        return List.of();
     }
 
     private static final class VirtualFilterChain implements FilterChain {

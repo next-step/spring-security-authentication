@@ -24,11 +24,18 @@ public class SpringSecurityConfig {
     @Bean
     public DelegatingFilterProxy delegatingFilterProxy() {
         final List<Filter> filters = List.of(
-                new UsernamePasswordAuthenticationFilter(authenticationManager()),
+                new UsernamePasswordAuthenticationFilter(authenticationManager())
+        );
+
+        final List<Filter> basicTokenFilters = List.of(
                 new BasicTokenAuthenticationFilter(authenticationManager())
         );
 
-        FilterChainProxy filterChainProxy = new FilterChainProxy(List.of(new DefaultSecurityFilterChain(filters)));
+        FilterChainProxy filterChainProxy = new FilterChainProxy(
+                List.of(
+                        new DefaultSecurityFilterChain(new String[]{"/members"}, basicTokenFilters),
+                        new DefaultSecurityFilterChain(new String[]{"/login"}, filters)
+                ));
 
         return new DelegatingFilterProxy(filterChainProxy);
     }

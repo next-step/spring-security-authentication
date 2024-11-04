@@ -33,15 +33,17 @@ public class BasicTokenAuthenticationFilter implements Filter {
             authentication = authenticationManager.getAuthenticationProvider(PRINCIPAL).authenticate(authentication);
             if (authentication.isAuthenticated()) {
                 chain.doFilter(request, response);
-                return;
+            }else{
+                HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+                httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                httpServletResponse.flushBuffer();
             }
         }catch (Exception e){
-
+            e.printStackTrace();
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpServletResponse.flushBuffer();
         }
-
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        httpServletResponse.flushBuffer();
     }
 
     @Override

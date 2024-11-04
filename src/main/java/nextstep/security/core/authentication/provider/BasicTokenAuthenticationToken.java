@@ -3,6 +3,9 @@ package nextstep.security.core.authentication.provider;
 import nextstep.security.exception.AuthErrorCodes;
 import nextstep.security.exception.AuthenticationException;
 
+import java.util.Arrays;
+import java.util.Base64;
+
 public class BasicTokenAuthenticationToken extends UsernamePasswordAuthenticationToken{
 
 
@@ -10,10 +13,13 @@ public class BasicTokenAuthenticationToken extends UsernamePasswordAuthenticatio
         super(null, null);
         try{
             if(basic.startsWith("Basic ")){
-                this.setUsername(basic.replace("Basic ", "").split(":")[0]);
-                this.setPassword(basic.replace("Basic ", "").split(":")[1]);
+                String base64 = basic.replace("Basic ", "");
+                String original = new String(Base64.getDecoder().decode(base64));
+                this.setUsername(original.split(":")[0]);
+                this.setPassword(original.split(":")[1]);
             }
         }catch (Exception e){
+            e.printStackTrace();
             throw new AuthenticationException(AuthErrorCodes.WRONG_BASIC_TOKEN_FORMAT);
         }
 
