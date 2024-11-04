@@ -9,17 +9,15 @@ import nextstep.security.service.BasicAuthenticationService;
 import nextstep.security.service.UserDetailsService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import static nextstep.security.utils.Constants.BASIC_TOKEN_PREFIX;
 import static nextstep.security.utils.Constants.SPRING_SECURITY_CONTEXT_KEY;
 
-@Component
 @RequiredArgsConstructor
 public class BasicAuthenticationInterceptor implements HandlerInterceptor {
 
-    private final BasicAuthenticationService basicAuthenticationService;
+    private final BasicAuthenticationService basicAuthenticationService = new BasicAuthenticationService();
     private final UserDetailsService userDetailsService;
 
     @Override

@@ -3,7 +3,7 @@ package nextstep.app;
 import java.util.Base64;
 import java.util.stream.Stream;
 
-import nextstep.app.domain.Member;
+import nextstep.security.model.UserDetails;
 import nextstep.security.service.BasicAuthenticationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,31 +32,29 @@ class BasicAuthenticationServiceTest {
 
     @ParameterizedTest
     @MethodSource("tokenProvider")
-    void decodeToken_shouldReturnNullWhenTokenIsCorrupted(String token) {
+    void mapTokenToUserDetails_shouldReturnNullWhenTokenIsCorrupted(String token) {
         // arrange
         // act
-        var result = underTest.mapTokenToMember(token);
+        var result = underTest.mapTokenToUserDetails(token);
 
         // assert
         assertThat(result).isNull();
     }
 
     @Test
-    void decodeToken_shouldReturnMemberWith() {
+    void mapTokenToUserDetails_shouldReturnUserDetailsWithMatchedResult() {
         // arrange
         var email = "test_email";
         var password = "test_password";
         var token = "Basic " + Base64.getEncoder().encodeToString((email+":"+password).getBytes());
 
         // act
-        var result = underTest.mapTokenToMember(token);
+        var result = underTest.mapTokenToUserDetails(token);
 
         // assert
-        assertThat(result).isNotNull().isInstanceOf(Member.class);
-        assertThat(result.getEmail()).isEqualTo(email);
+        assertThat(result).isNotNull().isInstanceOf(UserDetails.class);
+        assertThat(result.getUserName()).isEqualTo(email);
         assertThat(result.getPassword()).isEqualTo(password);
-        assertThat(result.getName()).isNull();
-        assertThat(result.getImageUrl()).isNull();
     }
 
 }
