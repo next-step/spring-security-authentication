@@ -1,27 +1,34 @@
-package nextstep.app.ui;
+package nextstep.security;
 
+import nextstep.app.domain.LoginService;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.app.ui.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
-@RestController
-public class MemberController {
+@Component
+public class BasicAuthenticationInterceptor implements HandlerInterceptor {
 
+    private final LoginService loginService;
     private final MemberRepository memberRepository;
 
-    public MemberController(MemberRepository memberRepository) {
+    public BasicAuthenticationInterceptor(LoginService loginService, MemberRepository memberRepository) {
+        this.loginService = loginService;
         this.memberRepository = memberRepository;
     }
 
-    @GetMapping("/members")
-    public ResponseEntity<List<Member>> list(HttpServletRequest request) {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        System.out.println("BasicAuthenticationInterceptor.preHandle");
 
         String authHeader = request.getHeader("Authorization");
 
@@ -42,11 +49,11 @@ public class MemberController {
             // 사용자 인증 검증
             Member authenticatedMember = memberRepository.findByEmail(email).orElse(null);
             if (authenticatedMember == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                throw new AuthenticationException();
             }
 
             List<Member> members = memberRepository.findAll();
-            return ResponseEntity.ok(members);
+            return true;
         } catch (Exception e) {
             throw new AuthenticationException();
         }
