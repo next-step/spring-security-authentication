@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import nextstep.app.ui.AuthenticationException;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
-import nextstep.security.authentication.DefaultAuthentication;
+import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -87,7 +87,8 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
             throw new AuthenticationException();
         }
 
-        return DefaultAuthentication.unauthenticated(emailAndPassword[0], emailAndPassword[1]);
+        return UsernamePasswordAuthenticationToken.unauthenticated(emailAndPassword[0],
+                emailAndPassword[1]);
     }
 
     private void validateAuthentication(Authentication authentication) {

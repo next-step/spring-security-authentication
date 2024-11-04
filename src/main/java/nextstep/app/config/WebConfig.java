@@ -4,8 +4,8 @@ import java.util.List;
 import nextstep.app.service.UserDetailService;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.AuthenticationProvider;
-import nextstep.security.authentication.DefaultAuthenticationManager;
-import nextstep.security.authentication.DefaultAuthenticationProvider;
+import nextstep.security.authentication.DaoAuthenticationProvider;
+import nextstep.security.authentication.ProviderManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -21,12 +21,12 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Bean
     public AuthenticationManager authenticationManager() {
-        return new DefaultAuthenticationManager(authenticationProviders());
+        return new ProviderManager(authenticationProviders());
     }
 
     @Bean
     public List<AuthenticationProvider> authenticationProviders() {
-        return List.of(new DefaultAuthenticationProvider(userDetailService));
+        return List.of(new DaoAuthenticationProvider(userDetailService));
     }
 
 }

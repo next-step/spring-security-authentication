@@ -40,7 +40,7 @@
 
 패키지 분리
 
-## Interceptor 에서 Filter 로 변경하기
+## 1. Interceptor 에서 Filter 로 변경하기
 
 ### `GenericFilterBean` 와 `OncePerRequestFilter` 의 차이점
 
@@ -52,9 +52,12 @@
 - [x] `FormLoginAuthorizationInterceptor` -> `UsernamePasswordAuthenticationFilter`
 - [x] `WebMvcConfigurer` -> `SecurityConfig` 로 변경
 
-## Registry 등록에서 DelegatingFilterProxy 로 변경하기
+## 2. AuthenticationManager 로 인증 추상화 하기
 
-## AuthenticationManager 로 인증 추상화 하기
+- [x] `AuthenticationManager` 구현
+- [x] `ProviderManager` 구현
+- [x] `AuthenticationProvider` 구현
+- [x] `DaoAuthenticationProvider` 구현
 
 ## SecurityContextHolder 로 인증 정보 객체 저장하기
 

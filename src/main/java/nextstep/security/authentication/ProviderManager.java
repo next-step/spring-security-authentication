@@ -2,11 +2,11 @@ package nextstep.security.authentication;
 
 import java.util.List;
 
-public class DefaultAuthenticationManager implements AuthenticationManager {
+public class ProviderManager implements AuthenticationManager {
 
     private final List<AuthenticationProvider> authenticationProviders;
 
-    public DefaultAuthenticationManager(List<AuthenticationProvider> authenticationProviders) {
+    public ProviderManager(List<AuthenticationProvider> authenticationProviders) {
         this.authenticationProviders = authenticationProviders;
     }
 

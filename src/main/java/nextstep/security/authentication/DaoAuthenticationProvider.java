@@ -3,11 +3,11 @@ package nextstep.security.authentication;
 import nextstep.app.service.UserDetail;
 import nextstep.app.service.UserDetailService;
 
-public class DefaultAuthenticationProvider implements AuthenticationProvider {
+public class DaoAuthenticationProvider implements AuthenticationProvider {
 
     private final UserDetailService userDetailService;
 
-    public DefaultAuthenticationProvider(UserDetailService userDetailService) {
+    public DaoAuthenticationProvider(UserDetailService userDetailService) {
         this.userDetailService = userDetailService;
     }
 
@@ -24,12 +24,12 @@ public class DefaultAuthenticationProvider implements AuthenticationProvider {
             return null;
         }
 
-        return DefaultAuthentication.authenticated(
+        return UsernamePasswordAuthenticationToken.authenticated(
                 userDetail.getEmail(), userDetail.getPassword());
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return DefaultAuthentication.class.isAssignableFrom(authentication);
+        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

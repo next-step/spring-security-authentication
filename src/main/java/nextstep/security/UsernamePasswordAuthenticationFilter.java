@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import nextstep.app.ui.AuthenticationException;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
-import nextstep.security.authentication.DefaultAuthentication;
+import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
@@ -52,7 +52,7 @@ public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private Authentication createAuthentication(Map<String, String[]> paramMap) {
-        return DefaultAuthentication.unauthenticated(
+        return UsernamePasswordAuthenticationToken.unauthenticated(
                 paramMap.get("username")[0],
                 paramMap.get("password")[0]);
     }
