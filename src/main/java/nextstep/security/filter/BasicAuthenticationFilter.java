@@ -1,7 +1,9 @@
 package nextstep.security.filter;
 
+import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
 import nextstep.security.context.UserContextHolder;
-import nextstep.security.service.UserDetailsService;
+import nextstep.security.manager.AuthenticationManager;
 import nextstep.security.userdetails.UserDetails;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.Nullable;
@@ -19,10 +21,10 @@ public class BasicAuthenticationFilter implements Filter {
     private static final String BLANK = " ";
     private static final String COLON = ":";
 
-    private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
-    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public BasicAuthenticationFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -33,9 +35,9 @@ public class BasicAuthenticationFilter implements Filter {
             return;
         }
 
-        UserDetails userDetails = userDetailsService.loadUserByEmailAndPassword(credentials[0], credentials[1]);
-        if (userDetails != null) {
-            UserContextHolder.setUser(userDetails);
+        Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(credentials[0], credentials[1]));
+        if (authentication != null) {
+            UserContextHolder.setUser((UserDetails) authentication.getPrincipal());
         }
         chain.doFilter(request, response);
     }

@@ -1,7 +1,9 @@
 package nextstep.security.filter;
 
+import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
 import nextstep.security.context.UserContextHolder;
-import nextstep.security.service.UserDetailsService;
+import nextstep.security.manager.AuthenticationManager;
 import nextstep.security.userdetails.UserDetails;
 
 import javax.servlet.*;
@@ -10,10 +12,10 @@ import java.util.Map;
 
 public class FormLoginAuthFilter implements Filter {
 
-    private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
-    public FormLoginAuthFilter(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public FormLoginAuthFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -22,9 +24,9 @@ public class FormLoginAuthFilter implements Filter {
         String email = paramMap.get("username")[0];
         String password = paramMap.get("password")[0];
 
-        UserDetails userDetails = userDetailsService.loadUserByEmailAndPassword(email, password);
-        if (userDetails != null) {
-            UserContextHolder.setUser(userDetails);
+        Authentication authentication = this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        if (authentication != null) {
+            UserContextHolder.setUser((UserDetails) authentication.getPrincipal());
         }
         chain.doFilter(request, response);
     }
