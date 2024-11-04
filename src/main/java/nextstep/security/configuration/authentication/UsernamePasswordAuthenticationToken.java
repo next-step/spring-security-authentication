@@ -3,7 +3,7 @@ package nextstep.security.configuration.authentication;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class UsernamePasswordAuthenticationToken implements Authentication{
+public class UsernamePasswordAuthenticationToken implements Authentication {
 
     private final Object credentials;
     private final Object principal;

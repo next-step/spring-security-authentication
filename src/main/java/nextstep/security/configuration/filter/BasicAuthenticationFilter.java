@@ -48,18 +48,11 @@ public class BasicAuthenticationFilter extends GenericFilterBean {
             return;
         }
 
-
-
         try {
-            Authentication authentication = convert(httpRequest);
-
-            if (Objects.isNull(authentication)) {
-                filterChain.doFilter(servletRequest, servletResponse);
-                return;
-            }
-
+            Authentication authenticationRequest = convert(httpRequest);
             httpRequest.getSession()
-                    .setAttribute(SPRING_SECURITY_CONTEXT_KEY, authenticationManager.authenticate(authentication));
+                    .setAttribute(SPRING_SECURITY_CONTEXT_KEY,
+                            authenticationManager.authenticate(authenticationRequest));
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (Exception e) {
             ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);

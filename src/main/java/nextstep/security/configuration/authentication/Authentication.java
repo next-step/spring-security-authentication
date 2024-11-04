@@ -1,6 +1,8 @@
 package nextstep.security.configuration.authentication;
 
-public interface Authentication {
+import java.io.Serializable;
+
+public interface Authentication extends Serializable {
 
     Object getCredentials();
 

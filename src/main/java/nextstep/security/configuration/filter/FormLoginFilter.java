@@ -49,22 +49,24 @@ public class FormLoginFilter extends GenericFilterBean {
 
         try {
 
-            // 여기서 context holder 확인해서 빠꾸시킬것
+            //TODO: 여기서 context holder 확인해서 빠꾸시킬것
             //            if (Objects.nonNull(session.getAttribute(SPRING_SECURITY_CONTEXT_KEY))) {
             //                UserDetails userDetails = (UserDetails) session.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
             //                return userDetailsService.loadUserByUsernameAndEmail(userDetails.getUserName(), userDetails.getPassword())
             //                        .isPresent();
             //            }
 
-            Authentication authentication = convert(httpRequest);
+            Authentication authenticationRequest = convert(httpRequest);
 
-            if (Objects.isNull(authentication)) {
+            if (Objects.isNull(authenticationRequest)) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }
 
             HttpSession session = httpRequest.getSession();
-            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, authenticationManager.authenticate(authentication));
+            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY,
+                    authenticationManager.authenticate(authenticationRequest));
+            filterChain.doFilter(servletRequest, servletResponse);
         } catch (Exception e) {
             ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
