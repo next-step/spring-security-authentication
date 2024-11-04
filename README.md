@@ -30,3 +30,16 @@
 - [x] 함수의 길이가 15 라인을 넘지 않도록 한다.
 - [x] else 예약어를 사용하지 않는다.
 - [x] 정리한 기능 목록이 정상적으로 동작하는지 테스트 코드를 구현한다.
+
+# 페어 코딩
+
+## Interceptor 에서 Filter 로 변경하기
+
+## Registry 등록에서 DelegatingFilterProxy 로 변경하기
+
+## AuthenticationManager 로 인증 추상화 하기
+
+## SecurityContextHolder 로 인증 정보 객체 저장하기
+
+## SecurityContextHolderFilter 구현하기
+
