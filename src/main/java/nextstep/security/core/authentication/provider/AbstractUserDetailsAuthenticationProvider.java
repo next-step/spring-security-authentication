@@ -19,13 +19,20 @@ public class AbstractUserDetailsAuthenticationProvider implements Authentication
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication.getCredential();
-        UserDetail user = userDetailService.findUserByUsername(token.getUsername());
-        authentication.setAuthenticated(false);
-        if (user != null && user.getPassword().equals(token.getPassword())) {
-            authentication.setAuthenticated(true);
+        try {
+            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication.getCredential();
+            UserDetail user = userDetailService.findUserByUsername(token.getUsername());
+            authentication.setAuthenticated(false);
+            if (user != null && user.getPassword().equals(token.getPassword())) {
+                authentication.setAuthenticated(true);
+            }
         }
-        return authentication;
+        catch (Exception e){
+            authentication.setAuthenticated(false);
+        }
+        finally {
+            return authentication;
+        }
     }
 
     @Override
