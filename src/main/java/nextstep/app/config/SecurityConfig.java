@@ -1,6 +1,9 @@
 package nextstep.app.config;
 
 import java.util.List;
+import nextstep.security.BasicAuthenticationFilter;
+import nextstep.security.UsernamePasswordAuthenticationFilter;
+import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.filter.DefaultSecurityFilterChain;
 import nextstep.security.filter.DelegatingFilterProxy;
 import nextstep.security.filter.FilterChainProxy;
@@ -11,11 +14,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SecurityConfig {
 
+    private final AuthenticationManager authenticationManager;
+
+    public SecurityConfig(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain() {
         return new DefaultSecurityFilterChain(
-                // todo 우리가 만든 필터를 여기에 추가해야 함.
-                List.of()
+                List.of(
+                        new BasicAuthenticationFilter(authenticationManager),
+                        new UsernamePasswordAuthenticationFilter(authenticationManager)
+                )
         );
     }
 

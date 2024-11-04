@@ -33,7 +33,24 @@
 
 # 페어 코딩
 
+- `SecurityFilterChain` : 보안 필터의 묶음을 정의하는 인터페이스
+- `DefaultSecurityFilterChain` : `SecurityFilterChain` 의 구현체
+- `FilterChainProxy` : 보안 필터의 묶음을 관리하는 객체
+- `DelegatingFilterProxy` : 스프링에 등록한 필터를 실행을 위임할 객체
+
+패키지 분리
+
 ## Interceptor 에서 Filter 로 변경하기
+
+### `GenericFilterBean` 와 `OncePerRequestFilter` 의 차이점
+
+실행 횟수: `GenericFilterBean` 은 요청마다 실행될 수 있지만, `OncePerRequestFilter` 는 요청당 한 번만 실행됩니다.
+사용 목적: 요청별로 한 번만 실행되어야 하는 필터링 로직에는 `OncePerRequestFilter` 가 적합하며, 그렇지 않으면 `GenericFilterBean` 을 사용할
+수 있습니다.
+
+- [x] `BasicAuthorizationInterceptor` -> `BasicAuthenticationFilter`
+- [x] `FormLoginAuthorizationInterceptor` -> `UsernamePasswordAuthenticationFilter`
+- [x] `WebMvcConfigurer` -> `SecurityConfig` 로 변경
 
 ## Registry 등록에서 DelegatingFilterProxy 로 변경하기
 

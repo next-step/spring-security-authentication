@@ -2,15 +2,12 @@ package nextstep.app.config;
 
 import java.util.List;
 import nextstep.app.service.UserDetailService;
-import nextstep.security.BasicAuthorizationInterceptor;
-import nextstep.security.FormLoginAuthorizationInterceptor;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.AuthenticationProvider;
 import nextstep.security.authentication.DefaultAuthenticationManager;
 import nextstep.security.authentication.DefaultAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -20,14 +17,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     public WebConfig(UserDetailService userDetailService) {
         this.userDetailService = userDetailService;
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new FormLoginAuthorizationInterceptor(authenticationManager()))
-                .addPathPatterns("/login");
-        registry.addInterceptor(new BasicAuthorizationInterceptor(authenticationManager()))
-                .excludePathPatterns("/login");
     }
 
     @Bean
