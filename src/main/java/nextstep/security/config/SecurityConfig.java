@@ -23,6 +23,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain() {
         return new DefaultSecurityFilterChain(
                 List.of(
+                        new SecurityContextHolderFilter(),
                         new UsernamePasswordAuthFilter(userDetailService),
                         new BasicAuthenticationFilter(userDetailService)
                 )
