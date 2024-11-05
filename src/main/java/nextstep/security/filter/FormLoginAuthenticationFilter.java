@@ -10,6 +10,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import nextstep.app.ui.AuthenticationException;
+import nextstep.security.SecurityContext;
+import nextstep.security.SecurityContextHolder;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,6 +51,10 @@ public class FormLoginAuthenticationFilter extends GenericFilterBean {
             if (Objects.isNull(authentication) || !authentication.isAuthenticated()) {
                 throw new AuthenticationException();
             }
+
+            SecurityContext context = SecurityContextHolder.getContext();
+            context.setAuthentication(authentication);
+            SecurityContextHolder.setContext(context);
 
             ((HttpServletRequest) request).getSession()
                     .setAttribute(SPRING_SECURITY_CONTEXT_KEY, authentication);

@@ -2,7 +2,6 @@ package nextstep.security.filter;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -29,7 +28,7 @@ public class FilterChainProxy extends GenericFilterBean {
     private List<Filter> getFilters(HttpServletRequest request) {
         return securityFilterChainList.stream()
                 .filter(it -> it.matches(request))
-                .flatMap(it -> it.getFilters().stream()).collect(Collectors.toList());
+                .flatMap(it -> it.getFilters().stream()).toList();
     }
 
     private static final class VirtualFilterChain implements FilterChain {

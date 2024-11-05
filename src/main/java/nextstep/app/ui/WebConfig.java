@@ -3,6 +3,7 @@ package nextstep.app.ui;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import nextstep.security.SecurityContextHolderFilter;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.DaoAuthenticationProvider;
 import nextstep.security.authentication.ProviderManager;
@@ -50,7 +51,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(AuthenticationManager authenticationManager) {
         return new DefaultSecurityFilterChain(
-                List.of(new FormLoginAuthenticationFilter(authenticationManager),
+                List.of(
+                        new SecurityContextHolderFilter(),
+                        new FormLoginAuthenticationFilter(authenticationManager),
                         new BasicAuthenticationSecurityFilter(authenticationManager))
         );
     }
