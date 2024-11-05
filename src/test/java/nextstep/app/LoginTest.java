@@ -1,6 +1,5 @@
 package nextstep.app;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
 import nextstep.app.domain.Member;
@@ -12,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,17 +75,18 @@ class LoginTest {
     @DisplayName("로그인 후 세션을 통해 회원 목록 조회")
     @Test
     void login_after_members() throws Exception {
+        var mockedSession = new MockHttpSession();
         ResultActions loginResponse = mockMvc.perform(post("/login")
                 .param("username", TEST_MEMBER.getEmail())
                 .param("password", TEST_MEMBER.getPassword())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .session(mockedSession)
         ).andDo(print());
+
         loginResponse.andExpect(status().isOk());
-        MvcResult loginResult = loginResponse.andReturn();
-        HttpSession session = loginResult.getRequest().getSession();
-        String sessionId = session.getId();
+ 
         ResultActions membersResponse = mockMvc.perform(get("/members")
-                .cookie(new Cookie("JSESSIONID", sessionId))
+                .session(mockedSession)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         );
         membersResponse.andExpect(status().isOk());
