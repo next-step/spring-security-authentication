@@ -9,8 +9,8 @@ import nextstep.security.FilterChainProxy;
 import nextstep.security.SecurityFilterChain;
 import nextstep.security.filter.BasicAuthenticationFilter;
 import nextstep.security.filter.UsernamePasswordAuthenticationFilter;
-import nextstep.security.model.UserDetail;
-import nextstep.security.service.UserDetailService;
+import nextstep.security.model.UserDetails;
+import nextstep.security.service.UserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -42,14 +42,14 @@ public class SecurityConfig {
         ));
     }
     @Bean
-    public UserDetailService userDetailService() {
+    public UserDetailsService userDetailService() {
         return username -> {
             Member member = memberRepository.findByEmail(username)
                     .orElseThrow(() -> new AuthenticationException("존재하지 않는 사용자입니다."));
 
-            return new UserDetail() {
+            return new UserDetails() {
                 @Override
-                public String getUserName() {
+                public String getUsername() {
                     return member.getEmail();
                 }
 

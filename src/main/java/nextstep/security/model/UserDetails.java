@@ -1,6 +1,6 @@
 package nextstep.security.model;
 
-public interface UserDetail {
-    String getUserName();
+public interface UserDetails {
+    String getUsername();
     String getPassword();
 }
