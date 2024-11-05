@@ -4,4 +4,6 @@ import nextstep.security.model.UserDetails;
 
 public interface UserDetailService {
     UserDetails getUserDetails(String username, String password);
+
+    UserDetails loadUserByUsername(String email);
 }

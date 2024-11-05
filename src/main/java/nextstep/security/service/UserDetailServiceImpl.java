@@ -30,4 +30,16 @@ public class UserDetailServiceImpl implements UserDetailService {
 
         return member.getUserDetails();
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) {
+        Member member = memberRepository.findByEmail(email).orElse(null);
+
+        if (member == null) {
+            log.warn("Member is not exists");
+            return null;
+        }
+
+        return member.getUserDetails();
+    }
 }

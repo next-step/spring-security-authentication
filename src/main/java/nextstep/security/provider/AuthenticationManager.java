@@ -1,6 +1,7 @@
 package nextstep.security.provider;
 
-public interface AuthenticationManager {
+import nextstep.security.model.SecurityAuthentication;
 
-    AuthenticationProvider getProvider(String principal);
+public interface AuthenticationManager {
+    SecurityAuthentication authenticate(SecurityAuthentication authentication);
 }

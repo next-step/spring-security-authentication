@@ -1,11 +1,8 @@
 package nextstep.security.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
-public class SecurityAuthentication {
-    private UserDetails userDetails;
-    private boolean isAuthenticated;
+public interface SecurityAuthentication {
+    // Collection<? extends GrantedAuthority> getAuthorities();
+    Object getCredentials();
+    Object getPrincipal();
+    boolean isAuthenticated();
 }

@@ -1,15 +1,21 @@
 package nextstep.security.provider;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.security.model.SecurityAuthentication;
 
-import java.util.Map;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class ProviderManager implements AuthenticationManager {
-    private final Map<String, AuthenticationProvider> providers;
+    private final List<AuthenticationProvider> providers;
 
     @Override
-    public AuthenticationProvider getProvider(String principal) {
-        return providers.get(principal);
+    public SecurityAuthentication authenticate(SecurityAuthentication authentication) {
+        for (AuthenticationProvider provider : providers) {
+            if (provider.supports(authentication.getClass())) {
+                return provider.authenticate(authentication);
+            }
+        }
+        return null;
     }
 }
