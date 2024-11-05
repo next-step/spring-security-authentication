@@ -1,6 +1,9 @@
 package nextstep.app;
 
+import javax.servlet.http.HttpSession;
+
 import nextstep.app.domain.Member;
+import nextstep.app.domain.MemberRepository;
 import nextstep.app.infrastructure.InmemoryMemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,14 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import javax.servlet.http.HttpSession;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -25,6 +28,9 @@ class LoginTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private MemberRepository memberRepository = new InmemoryMemberRepository();
 
     @DisplayName("로그인 성공")
     @Test
@@ -64,5 +70,25 @@ class LoginTest {
         );
 
         response.andExpect(status().isUnauthorized());
+    }
+
+    @DisplayName("로그인 후 세션을 통해 회원 목록 조회")
+    @Test
+    void login_after_members() throws Exception {
+        var mockedSession = new MockHttpSession();
+        ResultActions loginResponse = mockMvc.perform(post("/login")
+                .param("username", TEST_MEMBER.getEmail())
+                .param("password", TEST_MEMBER.getPassword())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .session(mockedSession)
+        ).andDo(print());
+
+        loginResponse.andExpect(status().isOk());
+ 
+        ResultActions membersResponse = mockMvc.perform(get("/members")
+                .session(mockedSession)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+        );
+        membersResponse.andExpect(status().isOk());
     }
 }

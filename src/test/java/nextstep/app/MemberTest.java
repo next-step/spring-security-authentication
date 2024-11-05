@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class MemberTest {
+
     private static final Member TEST_MEMBER = InmemoryMemberRepository.TEST_MEMBER_1;
 
     @Autowired
