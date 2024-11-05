@@ -22,5 +22,4 @@ public class MemberController {
         List<Member> members = memberRepository.findAll();
         return ResponseEntity.ok(members);
     }
-
 }
