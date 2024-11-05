@@ -1,6 +1,7 @@
-package nextstep.security.configuration.authentication;
+package nextstep.security.service.authentication;
 
 import nextstep.app.ui.AuthenticationException;
+import nextstep.security.model.authentication.Authentication;
 
 public interface AuthenticationProvider {
 

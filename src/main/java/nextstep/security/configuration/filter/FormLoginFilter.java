@@ -10,26 +10,28 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import nextstep.security.configuration.authentication.Authentication;
-import nextstep.security.configuration.authentication.AuthenticationManager;
-import nextstep.security.configuration.authentication.DaoAuthenticationProvider;
-import nextstep.security.configuration.authentication.ProviderManager;
-import nextstep.security.configuration.authentication.UsernamePasswordAuthenticationToken;
+import nextstep.security.model.authentication.Authentication;
+import nextstep.security.model.authentication.UsernamePasswordAuthenticationToken;
+import nextstep.security.model.context.SecurityContext;
+import nextstep.security.repository.HttpSessionSecurityContextRepository;
 import nextstep.security.service.UserDetailsService;
+import nextstep.security.service.authentication.AuthenticationManager;
+import nextstep.security.service.authentication.DaoAuthenticationProvider;
+import nextstep.security.service.authentication.ProviderManager;
+import nextstep.security.service.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import static nextstep.security.utils.Constants.LOGIN_ENDPOINT_ADDRESS;
 import static nextstep.security.utils.Constants.PASSWORD_ATTRIBUTE_NAME;
-import static nextstep.security.utils.Constants.SPRING_SECURITY_CONTEXT_KEY;
 import static nextstep.security.utils.Constants.USERNAME_ATTRIBUTE_NAME;
 
 @Component
 public class FormLoginFilter extends GenericFilterBean {
 
     private final AuthenticationManager authenticationManager;
+    private final HttpSessionSecurityContextRepository httpSessionSecurityContextRepository = new HttpSessionSecurityContextRepository();
 
     public FormLoginFilter(UserDetailsService userDetailsService) {
         authenticationManager = new ProviderManager(
@@ -48,25 +50,19 @@ public class FormLoginFilter extends GenericFilterBean {
         }
 
         try {
-
-            //TODO: 여기서 context holder 확인해서 빠꾸시킬것
-            //            if (Objects.nonNull(session.getAttribute(SPRING_SECURITY_CONTEXT_KEY))) {
-            //                UserDetails userDetails = (UserDetails) session.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-            //                return userDetailsService.loadUserByUsernameAndEmail(userDetails.getUserName(), userDetails.getPassword())
-            //                        .isPresent();
-            //            }
-
             Authentication authenticationRequest = convert(httpRequest);
 
             if (Objects.isNull(authenticationRequest)) {
-                filterChain.doFilter(servletRequest, servletResponse);
+                ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
 
-            HttpSession session = httpRequest.getSession();
-            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY,
-                    authenticationManager.authenticate(authenticationRequest));
-            filterChain.doFilter(servletRequest, servletResponse);
+            Authentication authenticated = authenticationManager.authenticate(authenticationRequest);
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authenticated);
+            SecurityContextHolder.setContext(context);
+            httpSessionSecurityContextRepository.saveContext(context, httpRequest,
+                    (HttpServletResponse) servletResponse);
         } catch (Exception e) {
             ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }

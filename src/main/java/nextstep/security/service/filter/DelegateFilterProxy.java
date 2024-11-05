@@ -1,4 +1,4 @@
-package nextstep.security.configuration;
+package nextstep.security.service.filter;
 
 import java.io.IOException;
 

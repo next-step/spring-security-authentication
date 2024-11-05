@@ -1,8 +1,9 @@
-package nextstep.security.configuration.authentication;
+package nextstep.security.service.authentication;
 
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.security.model.authentication.Authentication;
 
 @RequiredArgsConstructor
 public class ProviderManager implements AuthenticationManager{

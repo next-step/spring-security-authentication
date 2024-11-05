@@ -1,4 +1,4 @@
-package nextstep.security.configuration.authentication;
+package nextstep.security.model.authentication;
 
 import java.io.Serializable;
 

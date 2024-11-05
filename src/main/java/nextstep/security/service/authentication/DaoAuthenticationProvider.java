@@ -1,8 +1,10 @@
-package nextstep.security.configuration.authentication;
+package nextstep.security.service.authentication;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.app.ui.AuthenticationException;
 import nextstep.security.model.UserDetails;
+import nextstep.security.model.authentication.Authentication;
+import nextstep.security.model.authentication.UsernamePasswordAuthenticationToken;
 import nextstep.security.service.UserDetailsService;
 
 @RequiredArgsConstructor
