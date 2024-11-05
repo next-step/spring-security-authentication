@@ -1,6 +1,7 @@
 package nextstep.app.domain;
 
-public class Member {
+
+public class Member{
     private final String email;
     private final String password;
     private final String name;

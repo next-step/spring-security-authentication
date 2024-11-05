@@ -1,8 +1,8 @@
-package nextstep.app.ui;
+package nextstep.security.authentication;
 
 public class AuthenticationException extends RuntimeException {
     public AuthenticationException() {
-        super("인증에 실패하셨습니다.");
+        super("인증에 실패하였습니다.");
     }
 
     public AuthenticationException(String message) {
