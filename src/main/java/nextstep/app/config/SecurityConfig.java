@@ -50,7 +50,7 @@ public class SecurityConfig {
             return new UserDetail() {
                 @Override
                 public String getUserName() {
-                    return member.getUserName();
+                    return member.getEmail();
                 }
 
                 @Override

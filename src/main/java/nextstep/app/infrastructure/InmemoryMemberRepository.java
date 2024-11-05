@@ -17,8 +17,8 @@ public class InmemoryMemberRepository implements MemberRepository {
     private static final Map<String, Member> members = new HashMap<>();
 
     static {
-        members.put(TEST_MEMBER_1.getUserName(), TEST_MEMBER_1);
-        members.put(TEST_MEMBER_2.getUserName(), TEST_MEMBER_2);
+        members.put(TEST_MEMBER_1.getEmail(), TEST_MEMBER_1);
+        members.put(TEST_MEMBER_2.getEmail(), TEST_MEMBER_2);
     }
 
     @Override
@@ -33,6 +33,6 @@ public class InmemoryMemberRepository implements MemberRepository {
 
     @Override
     public void save(Member member) {
-        members.put(member.getUserName(), member);
+        members.put(member.getEmail(), member);
     }
 }
