@@ -2,6 +2,7 @@ package nextstep.app.ui;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.security.authentication.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,34 +23,27 @@ public class MemberController {
 
     @GetMapping("/members")
     public ResponseEntity<List<Member>> list(HttpServletRequest request) {
-
-        String authHeader = request.getHeader("Authorization");
-
-        String[] split = authHeader.split(" ");
-        String type = split[0];
-        String credential = split[1];
-
-        System.out.println("type = " + type);
-        System.out.println("credential = " + credential);
-
-        try {
-            String decodedCredential = new String(org.springframework.util.Base64Utils.decodeFromString(credential));
-
-            String[] emailAndPassword = decodedCredential.split(":");
-            String email = emailAndPassword[0];
-            String password = emailAndPassword[1];
-
-            // 사용자 인증 검증
-            Member authenticatedMember = memberRepository.findByEmail(email).orElse(null);
-            if (authenticatedMember == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-
-            List<Member> members = memberRepository.findAll();
-            return ResponseEntity.ok(members);
-        } catch (Exception e) {
-            throw new AuthenticationException();
-        }
+//        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+//        String[] split = authorization.split(" ");
+//        String type = split[0];
+//        String credential = split[1];
+//        if (!"Basic".equalsIgnoreCase(type)) {
+//            throw new AuthenticationException();
+//        }
+//        try {
+//            String decodedCredential = new String(Base64Utils.decodeFromString(credential));
+//            String[] emailAndPassword = decodedCredential.split(":");
+//            String email = emailAndPassword[0];
+//            String password = emailAndPassword[1];
+//            Member member = memberRepository.findByEmail(email).orElseThrow(AuthenticationException::new);
+//            member.checkPassword(password);
+//            List<Member> members = memberRepository.findAll();
+//            return ResponseEntity.ok(members);
+//        } catch (Exception e) {
+//            throw new AuthenticationException();
+//        }
+        List<Member> members = memberRepository.findAll();
+        return ResponseEntity.ok(members);
     }
 
     @ExceptionHandler(AuthenticationException.class)
