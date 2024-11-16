@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 public class MemberController {
-
     private final MemberRepository memberRepository;
 
     public MemberController(MemberRepository memberRepository) {
@@ -22,5 +21,4 @@ public class MemberController {
         List<Member> members = memberRepository.findAll();
         return ResponseEntity.ok(members);
     }
-
 }
