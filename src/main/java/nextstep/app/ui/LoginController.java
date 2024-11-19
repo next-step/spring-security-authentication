@@ -1,14 +1,11 @@
 package nextstep.app.ui;
 
 import nextstep.app.domain.MemberRepository;
+import nextstep.security.authentication.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @RestController
 public class LoginController {
@@ -20,10 +17,17 @@ public class LoginController {
         this.memberRepository = memberRepository;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<Void> login(HttpServletRequest request, HttpSession session) {
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<Void> login(HttpServletRequest request, HttpSession session) {
+//        Map<String, String[]> parameterMap = request.getParameterMap();
+//        String username = parameterMap.get("username")[0];
+//        String password = parameterMap.get("password")[0];
+//        Member member = memberRepository.findByEmail(username)
+//                .orElseThrow(AuthenticationException::new);
+//        member.checkPassword(password);
+//        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, member);
+//        return ResponseEntity.ok().build();
+//    }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Void> handleAuthenticationException() {
