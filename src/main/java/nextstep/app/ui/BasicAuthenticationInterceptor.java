@@ -18,8 +18,15 @@ public class BasicAuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try {
             String authorization = request.getHeader("Authorization");
-            String credentials = authorization.split(" ")[1];
-            String decodedString = Base64Convertor.decode(credentials);
+            String[] split = authorization.split(" ");
+            String type = split[0];
+            String credential = split[1];
+
+            if (!"Basic".equalsIgnoreCase(type)) {
+                throw new AuthenticationException();
+            }
+
+            String decodedString = Base64Convertor.decode(credential);
             String[] usernameAndPassword = decodedString.split(":");
             String username = usernameAndPassword[0];
             String password = usernameAndPassword[1];
