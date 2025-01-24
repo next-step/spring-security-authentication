@@ -1,9 +1,9 @@
-package nextstep.security;
+package nextstep.security.authentication;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nextstep.security.authentication.*;
+import nextstep.security.userdetails.UserDetailsService;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
 import org.springframework.http.HttpHeaders;

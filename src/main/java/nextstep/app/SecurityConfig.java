@@ -2,10 +2,10 @@ package nextstep.app;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.BasicAuthenticationFilter;
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
-import nextstep.security.UsernamePasswordAuthenticationFilter;
+import nextstep.security.authentication.BasicAuthenticationFilter;
+import nextstep.security.userdetails.UserDetails;
+import nextstep.security.userdetails.UserDetailsService;
+import nextstep.security.authentication.UsernamePasswordAuthenticationFilter;
 import nextstep.security.config.DefaultSecurityFilterChain;
 import nextstep.security.config.DelegatingFilterProxy;
 import nextstep.security.config.FilterChainProxy;
