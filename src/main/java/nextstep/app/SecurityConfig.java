@@ -10,6 +10,7 @@ import nextstep.security.config.DefaultSecurityFilterChain;
 import nextstep.security.config.DelegatingFilterProxy;
 import nextstep.security.config.FilterChainProxy;
 import nextstep.security.config.SecurityFilterChain;
+import nextstep.security.context.SecurityContextHolderFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -38,8 +39,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain() {
         return new DefaultSecurityFilterChain(
                 List.of(
-                        new BasicAuthenticationFilter(userDetailsService()),
-                        new UsernamePasswordAuthenticationFilter(userDetailsService())
+                        new SecurityContextHolderFilter(),
+                        new UsernamePasswordAuthenticationFilter(userDetailsService()),
+                        new BasicAuthenticationFilter(userDetailsService())
                 )
         );
     }

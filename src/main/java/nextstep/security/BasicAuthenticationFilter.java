@@ -4,6 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.*;
+import nextstep.security.context.SecurityContext;
+import nextstep.security.context.SecurityContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -32,7 +34,10 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            this.authenticationManager.authenticate(authentication);
+            Authentication authenticate = this.authenticationManager.authenticate(authentication);
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authenticate);
+            SecurityContextHolder.setContext(context);
 
             filterChain.doFilter(request, response);
         } catch (Exception e) {
