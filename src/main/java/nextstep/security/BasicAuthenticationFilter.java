@@ -1,16 +1,13 @@
 package nextstep.security;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.app.ui.AuthenticationException;
 import nextstep.app.util.Base64Convertor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.util.Base64Utils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
 import java.util.Objects;
 
 public class BasicAuthenticationFilter extends OncePerRequestFilter {
@@ -32,13 +29,16 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
 
     private void checkAuthentication(HttpServletRequest request) {
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authorization == null) {
+            return;
+        }
 
         String[] split = authorization.split(" ");
         String type = split[0];
         String credential = split[1];
 
         if (!"Basic".equalsIgnoreCase(type)) {
-            throw new AuthenticationException();
+            return;
         }
 
         String decodedCredential = Base64Convertor.decode(credential);
