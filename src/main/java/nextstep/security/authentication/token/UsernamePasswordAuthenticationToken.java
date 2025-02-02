@@ -1,4 +1,6 @@
-package nextstep.security.authentication;
+package nextstep.security.authentication.token;
+
+import nextstep.security.authentication.Authentication;
 
 public class UsernamePasswordAuthenticationToken implements Authentication {
     private final String username;

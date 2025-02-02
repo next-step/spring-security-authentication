@@ -1,6 +1,6 @@
 package nextstep.security.authentication.converter.basic;
 
-import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
+import nextstep.security.authentication.token.UsernamePasswordAuthenticationToken;
 
 import java.util.Base64;
 
