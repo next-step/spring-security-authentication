@@ -19,7 +19,7 @@ public class FilterChainProxy {
     }
 
 
-    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws ServletException, IOException {
+    public void invoke(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws ServletException, IOException {
         SecurityFilterChain filterChain = findFilterChain(request);
 
         VirtualFilterChain virtualFilterChain = new VirtualFilterChain(filterChain.filters(), chain);
