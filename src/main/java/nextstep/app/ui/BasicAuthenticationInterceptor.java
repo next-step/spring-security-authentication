@@ -3,8 +3,8 @@ package nextstep.app.ui;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.app.util.Base64Convertor;
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
+import nextstep.security.user.UserDetails;
+import nextstep.security.user.UserDetailsService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class BasicAuthenticationInterceptor implements HandlerInterceptor {
