@@ -1,12 +1,11 @@
 package nextstep.app;
 
-import nextstep.app.domain.Member;
-import nextstep.app.domain.MemberRepository;
-import nextstep.security.UserDetails;
+import nextstep.security.BasicAuthenticationFilter;
+import nextstep.security.FormLoginAuthenticationFilter;
 import nextstep.security.UserDetailsService;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -18,29 +17,19 @@ public class WebConfig implements WebMvcConfigurer {
         this.userDetailsService = userDetailsService;
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new BasicAuthenticationInterceptor(userDetailsService)).addPathPatterns("/members");
-        registry.addInterceptor(new FormLoginAuthenticationInterceptor(userDetailsService)).addPathPatterns("/login");
+    @Bean
+    public FilterRegistrationBean<BasicAuthenticationFilter> basicAuthenticationFilter() {
+        FilterRegistrationBean<BasicAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new BasicAuthenticationFilter(userDetailsService));
+        registrationBean.addUrlPatterns("/members");
+        return registrationBean;
     }
 
-
     @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> {
-            Member member = memberRepository.findByEmail(username)
-                    .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자를 찾을 수 없습니다."));
-            return new UserDetails() {
-                @Override
-                public String getUsername() {
-                    return member.getEmail();
-                }
-
-                @Override
-                public String getPassword() {
-                    return member.getPassword();
-                }
-            };
-        };
+    public FilterRegistrationBean<FormLoginAuthenticationFilter> formLoginAuthenticationFilter() {
+        FilterRegistrationBean<FormLoginAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new FormLoginAuthenticationFilter(userDetailsService));
+        registrationBean.addUrlPatterns("/login");
+        return registrationBean;
     }
 }
