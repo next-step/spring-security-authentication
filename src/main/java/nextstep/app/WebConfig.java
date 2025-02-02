@@ -12,17 +12,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final MemberRepository memberRepository;
+    private final UserDetailsService userDetailsService;
 
-    public WebConfig(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public WebConfig(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new BasicAuthenticationInterceptor(userDetailsService())).addPathPatterns("/members");
-        registry.addInterceptor(new FormLoginAuthenticationInterceptor(userDetailsService())).addPathPatterns("/login");
+        registry.addInterceptor(new BasicAuthenticationInterceptor(userDetailsService)).addPathPatterns("/members");
+        registry.addInterceptor(new FormLoginAuthenticationInterceptor(userDetailsService)).addPathPatterns("/login");
     }
+
 
     @Bean
     public UserDetailsService userDetailsService() {
