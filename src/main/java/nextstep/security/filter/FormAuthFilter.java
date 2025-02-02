@@ -1,16 +1,18 @@
-package nextstep.security;
+package nextstep.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.web.filter.OncePerRequestFilter;
+import nextstep.security.UserDetails;
+import nextstep.security.UserDetailsService;
+import nextstep.security.exception.AuthenticationException;
 
 import java.io.IOException;
 import java.util.Map;
 
-public class FormAuthFilter extends OncePerRequestFilter {
+public class FormAuthFilter extends CustomSecurityAuthFilter {
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
     private final UserDetailsService userDetailsService;
 
@@ -19,7 +21,17 @@ public class FormAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
+    boolean match(final HttpServletRequest request) {
+        return request.getRequestURI().equals("/login");
+    }
+
+    @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
+        if (!match(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             Map<String, String[]> parameterMap = request.getParameterMap();
             String username = parameterMap.get("username")[0];
