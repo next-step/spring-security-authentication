@@ -1,21 +1,18 @@
-package nextstep.app.interceptor;
+package nextstep.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import nextstep.app.domain.Member;
-import nextstep.app.domain.MemberRepository;
-import nextstep.app.ui.AuthenticationException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Map;
 
 public class FormAuthInterceptor implements HandlerInterceptor {
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
-    private final MemberRepository memberRepository;
+    private final UserDetailsService userDetailsService;
 
-    public FormAuthInterceptor(final MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public FormAuthInterceptor(final UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -25,12 +22,14 @@ public class FormAuthInterceptor implements HandlerInterceptor {
             String username = parameterMap.get("username")[0];
             String password = parameterMap.get("password")[0];
 
-            Member member = memberRepository.findByEmail(username)
-                    .filter(it -> it.matchPassword(password))
-                    .orElseThrow(AuthenticationException::new);
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            if (!userDetails.getPassword().equals(password)) {
+                throw new AuthenticationException();
+            }
 
             HttpSession session = request.getSession();
-            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, member);
+            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, userDetails);
         } catch (Exception e) {
             throw new AuthenticationException();
         }
