@@ -2,12 +2,12 @@ package nextstep.app;
 
 import nextstep.app.domain.CustomUserDetailsService;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.BasicAuthInterceptor;
-import nextstep.security.FormAuthInterceptor;
+import nextstep.security.BasicAuthFilter;
+import nextstep.security.FormAuthFilter;
 import nextstep.security.UserDetailsService;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -18,10 +18,20 @@ public class WebConfig implements WebMvcConfigurer {
         this.memberRepository = memberRepository;
     }
 
-    @Override
-    public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(new FormAuthInterceptor(userDetailsService())).addPathPatterns("/login");
-        registry.addInterceptor(new BasicAuthInterceptor(userDetailsService())).addPathPatterns("/members");
+    @Bean
+    public FilterRegistrationBean basicAuthFilterRegister() {
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean(new BasicAuthFilter(userDetailsService()));
+        registrationBean.addUrlPatterns("/members");
+        registrationBean.setOrder(1);
+        return registrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean usernamePasswordAuthFilterRegister() {
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean(new FormAuthFilter(userDetailsService()));
+        registrationBean.addUrlPatterns("/login");
+        registrationBean.setOrder(2);
+        return registrationBean;
     }
 
     @Bean
