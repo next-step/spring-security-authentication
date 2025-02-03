@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import nextstep.app.SecurityContextHolder;
 import nextstep.app.util.Base64Convertor;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationManager;
@@ -32,17 +33,23 @@ public class BasicAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         try {
-            authCheck(request);
+            Authentication requestAuthentication = extractAuthenticationByRequest(request);
+            Authentication authenticationToken = getAuthentication(requestAuthentication);
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         } catch (AuthenticationException e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-            return;
+            handleError(response, e);
         }
 
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
     }
 
-    private void authCheck(HttpServletRequest httpRequest) {
-        String authorization = httpRequest.getHeader(AUTHORIZATION_HEADER);
+    private Authentication extractAuthenticationByRequest(HttpServletRequest request) {
+        String authorization = request.getHeader(AUTHORIZATION_HEADER);
+
         if (!StringUtils.hasText(authorization)) {
             throw new AuthenticationException();
         }
@@ -50,20 +57,33 @@ public class BasicAuthFilter extends OncePerRequestFilter {
         String credentials = authorization.split(" ")[1];
         String decodedString = Base64Convertor.decode(credentials);
         String[] usernameAndPassword = decodedString.split(":");
+
         if (usernameAndPassword.length != 2) {
             throw new AuthenticationException();
         }
 
         String username = usernameAndPassword[0];
         String password = usernameAndPassword[1];
+
         if (!StringUtils.hasText(username) || !StringUtils.hasText(password)) {
             throw new AuthenticationException();
         }
 
-        UsernamePasswordAuthenticationToken authentication = UsernamePasswordAuthenticationToken.unAuthorizedToken(username, password);
-        Authentication authenticate = authenticationManager.authenticate(authentication);
-        if (authenticate.isAuthenticated()) {
+        return UsernamePasswordAuthenticationToken.unAuthorizedToken(username, password);
+    }
+
+    private Authentication getAuthentication(Authentication authentication1) {
+        Authentication result = authenticationManager.authenticate(authentication1);
+
+        if (result.isAuthenticated()) {
             throw new AuthenticationException();
         }
+
+        return result;
+    }
+
+    private void handleError(HttpServletResponse response, AuthenticationException e) throws IOException {
+        SecurityContextHolder.clearContext();
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
     }
 }
