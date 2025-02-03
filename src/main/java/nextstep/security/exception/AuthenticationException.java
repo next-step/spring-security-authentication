@@ -1,9 +1,5 @@
 package nextstep.security.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(code = HttpStatus.UNAUTHORIZED)
 public class AuthenticationException extends RuntimeException {
     public AuthenticationException() {}
 
@@ -19,6 +15,10 @@ public class AuthenticationException extends RuntimeException {
         return SingletonHolder.NOT_SUPPORTED;
     }
 
+    public static AuthenticationException badToken() {
+        return SingletonHolder.BAD_TOKEN;
+    }
+
     private static class SingletonHolder {
         private static final AuthenticationException INVALID_CREDENTIAL = new AuthenticationException(
                 "Credential is invalid"
@@ -26,6 +26,10 @@ public class AuthenticationException extends RuntimeException {
 
         private static final AuthenticationException NOT_SUPPORTED = new AuthenticationException(
                 "Authentication token is not supported by providers"
+        );
+
+        private static final AuthenticationException BAD_TOKEN = new AuthenticationException(
+                "Token can not be decoded"
         );
     }
 }

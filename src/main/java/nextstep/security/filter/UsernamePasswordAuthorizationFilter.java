@@ -12,6 +12,7 @@ import nextstep.security.authentication.provider.AuthenticationProvider;
 import nextstep.security.authentication.provider.UsernamePasswordAuthenticationProvider;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
+import nextstep.security.exception.AuthenticationException;
 import nextstep.security.user.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -39,8 +40,12 @@ public class UsernamePasswordAuthorizationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        SecurityContextHolder.setContext(createSecurityContext(request));
-        filterChain.doFilter(request, response);
+        try {
+            SecurityContextHolder.setContext(createSecurityContext(request));
+            filterChain.doFilter(request, response);
+        } catch (AuthenticationException e) {
+            response.setStatus(401);
+        }
     }
 
     private SecurityContext createSecurityContext(HttpServletRequest request) {
