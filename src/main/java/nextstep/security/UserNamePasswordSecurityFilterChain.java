@@ -2,6 +2,7 @@ package nextstep.security;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletRequest;
+import nextstep.security.filter.SecurityFilterChain;
 import org.springframework.http.HttpMethod;
 
 import java.util.Arrays;
