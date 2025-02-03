@@ -1,4 +1,4 @@
-package nextstep.security;
+package nextstep.security.util;
 
 import java.util.Base64;
 
