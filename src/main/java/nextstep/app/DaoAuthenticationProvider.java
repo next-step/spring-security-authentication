@@ -25,7 +25,7 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
         if (!Objects.equals(userDetails.password(), authentication.getCredentials())) {
             throw new AuthenticationException();
         }
-        return UsernamePasswordAuthenticationToken.authorizedToken(userDetails.username(), userDetails.password());
+        return UsernamePasswordAuthenticationToken.authorizedToken(userDetails.username(), userDetails.password(), userDetails.authorities());
     }
 
     @Override

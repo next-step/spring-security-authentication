@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class FormLoginTest {
-    private final Member TEST_MEMBER = new Member("a@a.com", "password", "a", "");
+    private final Member TEST_MEMBER = new Member("a@a.com", "password", "a", "", MemberRole.NORMAL_USER);
 
     @Autowired
     private MockMvc mockMvc;
