@@ -8,8 +8,10 @@ import nextstep.security.Authentication;
 import nextstep.security.AuthenticationConverter;
 import nextstep.security.AuthenticationEntrypoint;
 import nextstep.security.AuthenticationManager;
+import nextstep.security.SecurityContext;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
+import nextstep.security.context.SecurityContextHolder;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.exception.BadCredentialsException;
 import nextstep.security.exception.UsernameNotFoundException;
@@ -46,13 +48,25 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            this.authenticationManager.authenticate(authRequest);
+            Authentication authResult = this.authenticationManager.authenticate(authRequest);
+            setSecurityContext(authResult);
+
         } catch (AuthenticationException e) {
             logger.error("Basic Authentication failed", e);
             authenticationEntrypoint.commence(request, response, e);
+            SecurityContextHolder.clearContext();
         }
 
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
+    }
 
+    private void setSecurityContext(Authentication authResult) {
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authResult);
+        SecurityContextHolder.setContext(securityContext);
     }
 }
