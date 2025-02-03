@@ -1,8 +1,9 @@
 package nextstep.security.authentication;
 
+import nextstep.security.UserDetails;
+import nextstep.security.UserDetailsService;
 import nextstep.security.exception.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import nextstep.security.util.PasswordEncoder;
 
 public class DaoAuthenticationProvider implements AuthenticationProvider {
     private final PasswordEncoder passwordEncoder;
@@ -13,13 +14,19 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
         this.userDetailsService = userDetailsService;
     }
 
-
     @Override
     public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
-        // userDetailsService 호출 후 UserDetails 리턴 || UserDetails user = retrieveUser();
+        UserDetails user = retrieveUser(authentication);
 
-        // token 새로 만들어서 리턴 || createSuccessAuthentication()
-        return null;
+        return createSuccessAuthentication(user, authentication);
+    }
+
+    private UserDetails retrieveUser(final Authentication authentication) {
+        return this.userDetailsService.loadUserByUsername(authentication.getPrincipal());
+    }
+
+    private Authentication createSuccessAuthentication(final UserDetails user, final Authentication authentication) {
+        return UsernamePasswordAuthenticationToken.authenticated(user.getUsername(), authentication.getCredentials());
     }
 
     @Override
