@@ -86,17 +86,17 @@ public class SecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain() {
+    public SecurityFilterChain securityFilterChain(UserDetailsService userDetailsService) {
         return new DefaultSecurityFilterChain(
                 List.of(
                         new UsernamePasswordAuthenticationFilter(
-                                userDetailsService(),
+                                userDetailsService,
                                 usernamePasswordAuthenticationConverter(),
                                 usernamePasswordAuthenticationEntrypoint()
                         ),
 
                         new BasicAuthenticationFilter(
-                                userDetailsService(),
+                                userDetailsService,
                                 basicAuthenticationConverter(),
                                 basicAuthenticationEntrypoint()
                         )

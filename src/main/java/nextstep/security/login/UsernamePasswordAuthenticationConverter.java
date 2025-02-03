@@ -3,6 +3,7 @@ package nextstep.security.login;
 import jakarta.servlet.http.HttpServletRequest;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationConverter;
+import nextstep.security.authentication.UsernamePasswordAuthentication;
 
 import java.util.Map;
 

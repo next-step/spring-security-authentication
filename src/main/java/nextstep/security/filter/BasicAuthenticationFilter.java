@@ -2,8 +2,6 @@ package nextstep.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.Authentication;
@@ -13,6 +11,7 @@ import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.exception.BadCredentialsException;
+import nextstep.security.exception.UsernameNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,12 +37,6 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-
-        if (!request.getRequestURI().equals("/members")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         try {
             Authentication authRequest = this.authenticationConverter.convert(request);
 
@@ -52,20 +45,41 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            String principal = authRequest.getPrincipal().toString();
-            String credentials = authRequest.getCredentials().toString();
-            UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
+            String username = obtainUsername(authRequest);
+            String password = obtainPassword(authRequest);
 
-            if (!userDetails.getPassword().equals(credentials)) {
-                throw new BadCredentialsException("Bad Credentials %s".formatted(principal));
-            }
-
+            UserDetails user = tryRetrieveUser(username);
+            checkPassword(user, password);
         } catch (AuthenticationException e) {
-            logger.error("Basic Authentication error", e);
+            logger.error("Basic Authentication failed", e);
             authenticationEntrypoint.commence(request, response, e);
         }
 
         filterChain.doFilter(request, response);
 
+    }
+
+    private void checkPassword(UserDetails user, String password) {
+        boolean passwordValid = user.getPassword().equals(password);
+        if (!passwordValid) {
+            throw new BadCredentialsException("Bad Credentials");
+        }
+    }
+
+    private UserDetails tryRetrieveUser(String principal) {
+        try {
+            return userDetailsService.loadUserByUsername(principal);
+        } catch (Exception e) {
+            logger.error("Fail to get Authentication user", e);
+            throw new UsernameNotFoundException("Fail to get Authentication user", e);
+        }
+    }
+
+    private String obtainUsername(Authentication authRequest) {
+        return authRequest.getPrincipal().toString();
+    }
+
+    private String obtainPassword(Authentication authRequest) {
+        return authRequest.getCredentials().toString();
     }
 }

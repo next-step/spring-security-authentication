@@ -3,6 +3,7 @@ package nextstep.security.basic;
 import jakarta.servlet.http.HttpServletRequest;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationConverter;
+import nextstep.security.authentication.UsernamePasswordAuthentication;
 import nextstep.security.exception.BadCredentialsException;
 import nextstep.security.util.Base64Convertor;
 
@@ -28,6 +29,6 @@ public class BasicAuthenticationConverter implements AuthenticationConverter {
         String username = decodedToken.substring(0, delim);
         String password = decodedToken.substring(delim + 1);
 
-        return new BasicAuthentication(username, password);
+        return new UsernamePasswordAuthentication(username, password);
     }
 }

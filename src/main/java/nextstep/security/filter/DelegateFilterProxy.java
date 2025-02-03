@@ -18,7 +18,9 @@ public class DelegateFilterProxy extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
+                         FilterChain filterChain) throws IOException, ServletException {
+
         delegate.doFilter(servletRequest, servletResponse, filterChain);
     }
 }

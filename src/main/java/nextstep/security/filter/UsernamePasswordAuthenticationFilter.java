@@ -14,6 +14,7 @@ import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.exception.BadCredentialsException;
+import nextstep.security.exception.UsernameNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
@@ -23,6 +24,7 @@ import java.io.IOException;
 public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
     private static final Logger logger = LoggerFactory.getLogger(UsernamePasswordAuthenticationFilter.class);
     private static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
+    private static final String DEFAULT_FILTER_PROCESS_URL = "/login";
 
     private final UserDetailsService userDetailsService;
     private final AuthenticationConverter authenticationConverter;
@@ -38,38 +40,63 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response,
+                         FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        if (!httpRequest.getRequestURI().equals("/login")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        Authentication authRequest = this.authenticationConverter.convert(httpRequest);
-
-        if (authRequest == null) {
+        if (!requireAuthentication(httpRequest)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            String principal = authRequest.getPrincipal().toString();
-            String credentials = authRequest.getCredentials().toString();
-            UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
+            Authentication authRequest = this.authenticationConverter.convert(httpRequest);
 
-            if (!userDetails.getPassword().equals(credentials)) {
-                throw new BadCredentialsException("Bad Credentials %s".formatted(principal));
+            if (authRequest == null) {
+                filterChain.doFilter(request, response);
+                return;
             }
 
+            String username = obtainUsername(authRequest);
+            String password = obtainPassword(authRequest);
+
+            UserDetails user = tryRetrieveUser(username);
+            checkPassword(user, password);
+
             HttpSession session = httpRequest.getSession();
-            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, userDetails);
+            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, user);
         } catch (AuthenticationException e) {
-            logger.error("UsernamePassword Authentication error", e);
+            logger.error("UsernamePassword Authentication failed", e);
             authenticationEntrypoint.commence((HttpServletRequest) request, (HttpServletResponse) response, e);
-        } catch (Exception e) {
-            logger.error("Authentication error", e);
-            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
+
+    private boolean requireAuthentication(HttpServletRequest httpRequest) {
+        return httpRequest.getRequestURI().equals(DEFAULT_FILTER_PROCESS_URL);
+    }
+
+    private void checkPassword(UserDetails user, String password) {
+        boolean passwordValid = user.getPassword().equals(password);
+        if (!passwordValid) {
+            throw new BadCredentialsException("Bad Credentials");
+        }
+    }
+
+    private UserDetails tryRetrieveUser(String principal) {
+        try {
+            return userDetailsService.loadUserByUsername(principal);
+        } catch (Exception e) {
+            logger.error("Fail to get Authentication user", e);
+            throw new UsernameNotFoundException("Fail to get Authentication user", e);
+        }
+    }
+
+    private String obtainUsername(Authentication authRequest) {
+        return authRequest.getPrincipal().toString();
+    }
+
+    private String obtainPassword(Authentication authRequest) {
+        return authRequest.getCredentials().toString();
+    }
+
 }

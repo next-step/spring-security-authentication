@@ -22,7 +22,7 @@ public class InmemoryMemberRepository implements MemberRepository {
 
     @Override
     public List<Member> findAll() {
-        return members.values().stream().collect(Collectors.toUnmodifiableList());
+        return members.values().stream().toList();
     }
 
     @Override
