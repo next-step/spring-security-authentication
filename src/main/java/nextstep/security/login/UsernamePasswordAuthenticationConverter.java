@@ -3,7 +3,7 @@ package nextstep.security.login;
 import jakarta.servlet.http.HttpServletRequest;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationConverter;
-import nextstep.security.authentication.UsernamePasswordAuthentication;
+import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.util.Map;
 
@@ -15,6 +15,6 @@ public class UsernamePasswordAuthenticationConverter implements AuthenticationCo
         String username = parameterMap.get("username")[0];
         String password = parameterMap.get("password")[0];
 
-        return new UsernamePasswordAuthentication(username, password);
+        return new UsernamePasswordAuthenticationToken(username, password);
     }
 }

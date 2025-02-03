@@ -2,9 +2,13 @@ package nextstep.app.config;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.security.AuthenticationManager;
+import nextstep.security.AuthenticationProvider;
 import nextstep.security.SecurityFilterChain;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
+import nextstep.security.authentication.DaoAuthenticationProvider;
+import nextstep.security.authentication.ProviderManager;
 import nextstep.security.basic.BasicAuthenticationConverter;
 import nextstep.security.basic.BasicAuthenticationEntrypoint;
 import nextstep.security.filter.BasicAuthenticationFilter;
@@ -86,17 +90,27 @@ public class SecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(UserDetailsService userDetailsService) {
+    public AuthenticationManager authenticationManager(List<AuthenticationProvider> authenticationProviders) {
+        return new ProviderManager(authenticationProviders);
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
+        return new DaoAuthenticationProvider(userDetailsService);
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(AuthenticationManager authenticationManager) {
         return new DefaultSecurityFilterChain(
                 List.of(
                         new UsernamePasswordAuthenticationFilter(
-                                userDetailsService,
+                                authenticationManager,
                                 usernamePasswordAuthenticationConverter(),
                                 usernamePasswordAuthenticationEntrypoint()
                         ),
 
                         new BasicAuthenticationFilter(
-                                userDetailsService,
+                                authenticationManager,
                                 basicAuthenticationConverter(),
                                 basicAuthenticationEntrypoint()
                         )

@@ -10,11 +10,8 @@ import jakarta.servlet.http.HttpSession;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationConverter;
 import nextstep.security.AuthenticationEntrypoint;
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
+import nextstep.security.AuthenticationManager;
 import nextstep.security.exception.AuthenticationException;
-import nextstep.security.exception.BadCredentialsException;
-import nextstep.security.exception.UsernameNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
@@ -26,15 +23,15 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
     private static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
     private static final String DEFAULT_FILTER_PROCESS_URL = "/login";
 
-    private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
     private final AuthenticationConverter authenticationConverter;
     private final AuthenticationEntrypoint authenticationEntrypoint;
 
-    public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService,
+    public UsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager,
                                                 AuthenticationConverter authenticationConverter,
                                                 AuthenticationEntrypoint authenticationEntrypoint) {
 
-        this.userDetailsService = userDetailsService;
+        this.authenticationManager = authenticationManager;
         this.authenticationConverter = authenticationConverter;
         this.authenticationEntrypoint = authenticationEntrypoint;
     }
@@ -57,14 +54,10 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
                 return;
             }
 
-            String username = obtainUsername(authRequest);
-            String password = obtainPassword(authRequest);
-
-            UserDetails user = tryRetrieveUser(username);
-            checkPassword(user, password);
+            Authentication authResult = this.authenticationManager.authenticate(authRequest);
 
             HttpSession session = httpRequest.getSession();
-            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, user);
+            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, authResult);
         } catch (AuthenticationException e) {
             logger.error("UsernamePassword Authentication failed", e);
             authenticationEntrypoint.commence((HttpServletRequest) request, (HttpServletResponse) response, e);
@@ -73,30 +66,6 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
 
     private boolean requireAuthentication(HttpServletRequest httpRequest) {
         return httpRequest.getRequestURI().equals(DEFAULT_FILTER_PROCESS_URL);
-    }
-
-    private void checkPassword(UserDetails user, String password) {
-        boolean passwordValid = user.getPassword().equals(password);
-        if (!passwordValid) {
-            throw new BadCredentialsException("Bad Credentials");
-        }
-    }
-
-    private UserDetails tryRetrieveUser(String principal) {
-        try {
-            return userDetailsService.loadUserByUsername(principal);
-        } catch (Exception e) {
-            logger.error("Fail to get Authentication user", e);
-            throw new UsernameNotFoundException("Fail to get Authentication user", e);
-        }
-    }
-
-    private String obtainUsername(Authentication authRequest) {
-        return authRequest.getPrincipal().toString();
-    }
-
-    private String obtainPassword(Authentication authRequest) {
-        return authRequest.getCredentials().toString();
     }
 
 }

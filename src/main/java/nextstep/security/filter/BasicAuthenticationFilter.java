@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationConverter;
 import nextstep.security.AuthenticationEntrypoint;
+import nextstep.security.AuthenticationManager;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
 import nextstep.security.exception.AuthenticationException;
@@ -21,15 +22,15 @@ import java.io.IOException;
 public class BasicAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(BasicAuthenticationFilter.class);
 
-    private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
     private final AuthenticationConverter authenticationConverter;
     private final AuthenticationEntrypoint authenticationEntrypoint;
 
-    public BasicAuthenticationFilter(UserDetailsService userDetailsService,
+    public BasicAuthenticationFilter(AuthenticationManager authenticationManager,
                                      AuthenticationConverter authenticationConverter,
                                      AuthenticationEntrypoint authenticationEntrypoint) {
 
-        this.userDetailsService = userDetailsService;
+        this.authenticationManager = authenticationManager;
         this.authenticationConverter = authenticationConverter;
         this.authenticationEntrypoint = authenticationEntrypoint;
     }
@@ -45,11 +46,7 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            String username = obtainUsername(authRequest);
-            String password = obtainPassword(authRequest);
-
-            UserDetails user = tryRetrieveUser(username);
-            checkPassword(user, password);
+            this.authenticationManager.authenticate(authRequest);
         } catch (AuthenticationException e) {
             logger.error("Basic Authentication failed", e);
             authenticationEntrypoint.commence(request, response, e);
@@ -57,29 +54,5 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
 
-    }
-
-    private void checkPassword(UserDetails user, String password) {
-        boolean passwordValid = user.getPassword().equals(password);
-        if (!passwordValid) {
-            throw new BadCredentialsException("Bad Credentials");
-        }
-    }
-
-    private UserDetails tryRetrieveUser(String principal) {
-        try {
-            return userDetailsService.loadUserByUsername(principal);
-        } catch (Exception e) {
-            logger.error("Fail to get Authentication user", e);
-            throw new UsernameNotFoundException("Fail to get Authentication user", e);
-        }
-    }
-
-    private String obtainUsername(Authentication authRequest) {
-        return authRequest.getPrincipal().toString();
-    }
-
-    private String obtainPassword(Authentication authRequest) {
-        return authRequest.getCredentials().toString();
     }
 }
