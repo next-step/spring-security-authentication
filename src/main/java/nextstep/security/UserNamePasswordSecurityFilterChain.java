@@ -7,14 +7,15 @@ import org.springframework.http.HttpMethod;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class UserNamePasswordSecurityFilterChain implements SecurityFilterChain {
     private final String[] requestURI;
     private final List<Filter> filters;
 
     public UserNamePasswordSecurityFilterChain(String[] requestURI, List<Filter> filters) {
-        this.requestURI = requestURI;
-        this.filters = filters;
+        this.requestURI = Objects.requireNonNull(requestURI);
+        this.filters = Objects.requireNonNull(filters);
     }
 
     @Override

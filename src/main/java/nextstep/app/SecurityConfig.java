@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 import java.util.List;
+import java.util.Objects;
 
 @Configuration
 public class SecurityConfig {
@@ -25,8 +26,8 @@ public class SecurityConfig {
     private final SecurityContextRepository securityContextRepository;
 
     public SecurityConfig(UserDetailsService userDetailsService, SecurityContextRepository securityContextRepository) {
-        this.userDetailsService = userDetailsService;
-        this.securityContextRepository = securityContextRepository;
+        this.userDetailsService = Objects.requireNonNull(userDetailsService);
+        this.securityContextRepository = Objects.requireNonNull(securityContextRepository);
     }
 
     @Bean

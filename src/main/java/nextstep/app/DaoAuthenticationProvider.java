@@ -16,7 +16,7 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
     private final UserDetailsService userDetailsService;
 
     public DaoAuthenticationProvider(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+        this.userDetailsService = Objects.requireNonNull(userDetailsService);
     }
 
     @Override

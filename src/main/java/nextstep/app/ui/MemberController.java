@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 public class MemberController {
@@ -14,7 +15,7 @@ public class MemberController {
     private final MemberRepository memberRepository;
 
     public MemberController(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+        this.memberRepository = Objects.requireNonNull(memberRepository);
     }
 
     @GetMapping("/members")

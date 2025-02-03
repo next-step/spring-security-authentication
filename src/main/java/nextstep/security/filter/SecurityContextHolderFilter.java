@@ -11,13 +11,14 @@ import nextstep.security.SecurityContextRepository;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class SecurityContextHolderFilter extends GenericFilterBean {
 
     private final SecurityContextRepository contextRepository;
 
     public SecurityContextHolderFilter(SecurityContextRepository contextRepository) {
-        this.contextRepository = contextRepository;
+        this.contextRepository = Objects.requireNonNull(contextRepository);
     }
 
     @Override

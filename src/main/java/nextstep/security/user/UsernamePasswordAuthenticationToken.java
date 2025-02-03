@@ -14,10 +14,10 @@ public class UsernamePasswordAuthenticationToken implements Authentication {
     private final Collection<Object> authorities;
 
     public UsernamePasswordAuthenticationToken(Object principal, Object credentials, boolean authenticated, Collection<Object> authorities) {
-        this.principal = principal;
-        this.credentials = credentials;
+        this.principal = Objects.requireNonNull(principal);
+        this.credentials = Objects.requireNonNull(credentials);
         this.authenticated = authenticated;
-        this.authorities = authorities;
+        this.authorities = Objects.requireNonNull(authorities);
     }
 
     public static UsernamePasswordAuthenticationToken authorizedToken(Object principal, Object credentials, Collection<Object> authorities) {

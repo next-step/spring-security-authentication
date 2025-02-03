@@ -5,14 +5,15 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class BasicSecurityFilterChain implements SecurityFilterChain {
     private final String[] requestURI;
     private final List<Filter> filters;
 
     public BasicSecurityFilterChain(String[] requestURI, List<Filter> filters) {
-        this.requestURI = requestURI;
-        this.filters = filters;
+        this.requestURI = Objects.requireNonNull(requestURI);
+        this.filters = Objects.requireNonNull(filters);
     }
 
     @Override

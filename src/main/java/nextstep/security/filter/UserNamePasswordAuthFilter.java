@@ -17,6 +17,7 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 public class UserNamePasswordAuthFilter extends GenericFilterBean {
 
@@ -24,12 +25,12 @@ public class UserNamePasswordAuthFilter extends GenericFilterBean {
     private final SecurityContextRepository securityContextRepository;
 
     public UserNamePasswordAuthFilter(AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
-        this.authenticationManager = authenticationManager;
-        this.securityContextRepository = securityContextRepository;
+        this.authenticationManager = Objects.requireNonNull(authenticationManager);
+        this.securityContextRepository = Objects.requireNonNull(securityContextRepository);
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException {
         try {
             HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
             Authentication authentication = getAuthenticationByUserNamePassword(httpRequest);

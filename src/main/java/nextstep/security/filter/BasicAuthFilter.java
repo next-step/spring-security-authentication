@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class BasicAuthFilter extends OncePerRequestFilter {
 
@@ -28,8 +29,8 @@ public class BasicAuthFilter extends OncePerRequestFilter {
     private static final String NORMAL_USER = "NORMAL_USER";
 
     public BasicAuthFilter(AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
-        this.authenticationManager = authenticationManager;
-        this.securityContextRepository = securityContextRepository;
+        this.authenticationManager = Objects.requireNonNull(authenticationManager);
+        this.securityContextRepository = Objects.requireNonNull(securityContextRepository);
     }
 
     @Override

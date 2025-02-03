@@ -7,13 +7,14 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class FilterChainProxy extends GenericFilterBean {
 
     private final List<SecurityFilterChain> filterChains;
 
     public FilterChainProxy(List<SecurityFilterChain> filterChains) {
-        this.filterChains = filterChains;
+        this.filterChains = Objects.requireNonNull(filterChains);
     }
 
     @Override
@@ -56,8 +57,8 @@ public class FilterChainProxy extends GenericFilterBean {
          * @param additionalFilters 현재 요청에 맞는 추가 필터 그룹
          */
         private VirtualFilterChain(FilterChain chain, List<Filter> additionalFilters) {
-            this.originalChain = chain;
-            this.additionalFilters = additionalFilters;
+            this.originalChain = Objects.requireNonNull(chain);
+            this.additionalFilters = Objects.requireNonNull(additionalFilters);
             this.size = additionalFilters.size();
         }
 

@@ -7,6 +7,7 @@ import nextstep.security.authentication.exception.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class ProviderManager implements AuthenticationManager {
@@ -14,7 +15,7 @@ public class ProviderManager implements AuthenticationManager {
     private final List<AuthenticationProvider> authenticationProviders;
 
     public ProviderManager(List<AuthenticationProvider> authenticationProviders) {
-        this.authenticationProviders = authenticationProviders;
+        this.authenticationProviders = Objects.requireNonNull(authenticationProviders);
     }
 
     @Override
