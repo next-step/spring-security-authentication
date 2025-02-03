@@ -33,7 +33,7 @@
 요청에 따라 적절한 그룹의 필터들을 __순서대로__ 실행할 수 있는 구조
 
 ### FilterChainProxy 의 역할:
-[FilterChainProxy.java](./src/main/java/nextstep/security/FilterChainProxy.java)\
+[FilterChainProxy.java](./src/main/java/nextstep/security/filter/config/FilterChainProxy.java)\
 필터들의 실행을 관리하는 중앙 컨트롤러
 VirtualFilterChain 을 통해 필터들을 순차적으로 실행
 ``` java
