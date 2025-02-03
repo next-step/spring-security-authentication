@@ -19,7 +19,7 @@ public class AuthenticationException extends RuntimeException {
         return SingletonHolder.BAD_TOKEN;
     }
 
-    private static class SingletonHolder {
+    private static final class SingletonHolder {
         private static final AuthenticationException INVALID_CREDENTIAL = new AuthenticationException(
                 "Credential is invalid"
         );

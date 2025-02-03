@@ -24,7 +24,7 @@ public class BasicAuthenticationConverter implements AuthenticationConverter {
         return header != null && header.trim().startsWith("Basic ");
     }
 
-    private static class SingletonHolder {
+    private static final class SingletonHolder {
         private static final BasicAuthenticationConverter INSTANCE = new BasicAuthenticationConverter();
     }
 }

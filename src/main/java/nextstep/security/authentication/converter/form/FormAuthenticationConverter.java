@@ -21,7 +21,7 @@ public class FormAuthenticationConverter implements AuthenticationConverter {
         return FormAuthentication.supports(request.getParameterMap());
     }
 
-    private static class SingletonHolder {
+    private static final class SingletonHolder {
         private static final FormAuthenticationConverter INSTANCE = new FormAuthenticationConverter();
     }
 }

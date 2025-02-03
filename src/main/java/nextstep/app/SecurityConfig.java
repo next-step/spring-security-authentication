@@ -4,6 +4,7 @@ import nextstep.security.config.DefaultSecurityFilterChain;
 import nextstep.security.config.DelegatingFilterProxy;
 import nextstep.security.config.FilterChainProxy;
 import nextstep.security.config.SecurityFilterChain;
+import nextstep.security.context.SecurityContextHolderFilter;
 import nextstep.security.filter.BasicAuthorizationFilter;
 import nextstep.security.filter.FormAuthorizationFilter;
 import nextstep.security.user.UserDetailsService;
@@ -19,6 +20,7 @@ public class SecurityConfig {
             UserDetailsService userDetailsService
     ) {
         final SecurityFilterChain securityFilterChain = new DefaultSecurityFilterChain(List.of(
+                new SecurityContextHolderFilter(),
                 new BasicAuthorizationFilter(userDetailsService),
                 new FormAuthorizationFilter(userDetailsService)
         ));

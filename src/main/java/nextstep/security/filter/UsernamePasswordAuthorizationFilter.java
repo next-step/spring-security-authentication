@@ -10,8 +10,10 @@ import nextstep.security.authentication.manager.AuthenticationManager;
 import nextstep.security.authentication.manager.ProviderManager;
 import nextstep.security.authentication.provider.AuthenticationProvider;
 import nextstep.security.authentication.provider.UsernamePasswordAuthenticationProvider;
+import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
+import nextstep.security.context.SecurityContextRepository;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.user.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -22,6 +24,7 @@ import java.util.List;
 public class UsernamePasswordAuthorizationFilter extends OncePerRequestFilter {
     private final AuthenticationManager manager;
     private final AuthenticationConverter converter;
+    private final SecurityContextRepository securityContextRepository = HttpSessionSecurityContextRepository.getInstance();
 
     public UsernamePasswordAuthorizationFilter(
             UserDetailsService userDetailsService,
@@ -41,11 +44,17 @@ public class UsernamePasswordAuthorizationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            SecurityContextHolder.setContext(createSecurityContext(request));
+            setContext(request, response);
             filterChain.doFilter(request, response);
         } catch (AuthenticationException e) {
             response.setStatus(401);
         }
+    }
+
+    private void setContext(HttpServletRequest request, HttpServletResponse response) {
+        final SecurityContext context = createSecurityContext(request);
+        SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, request, response);
     }
 
     private SecurityContext createSecurityContext(HttpServletRequest request) {

@@ -17,7 +17,7 @@ public class SecurityContext {
         return authentication;
     }
 
-    private static class SingletonHolder {
+    private static final class SingletonHolder {
         private static final SecurityContext EMPTY_INSTANCE = new SecurityContext(
                 new Authentication() {
                     @Override
