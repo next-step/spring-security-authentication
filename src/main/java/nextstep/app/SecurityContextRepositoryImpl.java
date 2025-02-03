@@ -20,7 +20,6 @@ public class SecurityContextRepositoryImpl implements SecurityContextRepository 
         }
 
         Object attribute = session.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-
         if (attribute instanceof SecurityContext securityContext) {
             return securityContext;
         }

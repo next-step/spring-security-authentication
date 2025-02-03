@@ -33,8 +33,10 @@ public class UserNamePasswordAuthFilter extends GenericFilterBean {
         try {
             HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
             Authentication authentication = getAuthenticationByUserNamePassword(httpRequest);
+
             SecurityContext securityContext = new SecurityContextImpl(authentication);
             securityContextRepository.saveContext(securityContext, httpRequest, (HttpServletResponse) servletResponse);
+
         } catch (AuthenticationException e) {
             ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             return;
@@ -49,6 +51,7 @@ public class UserNamePasswordAuthFilter extends GenericFilterBean {
         String password = parameterMap.get("password")[0];
 
         UsernamePasswordAuthenticationToken authentication = UsernamePasswordAuthenticationToken.unAuthorizedToken(username, password);
+
         Authentication authenticate = authenticationManager.authenticate(authentication);
         if (!authenticate.isAuthenticated()) {
             throw new AuthenticationException();

@@ -5,6 +5,9 @@ import nextstep.security.SecurityContextRepository;
 import nextstep.security.UserNamePasswordSecurityFilterChain;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.filter.*;
+import nextstep.security.filter.config.BasicSecurityFilterChain;
+import nextstep.security.filter.config.FilterChainProxy;
+import nextstep.security.filter.config.SecurityFilterChain;
 import nextstep.security.user.UserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,8 +48,8 @@ public class SecurityConfig {
         return new BasicSecurityFilterChain(
                 BASIC_AUTH_PATH,
                 List.of(
-                        new BasicAuthFilter(authenticationManager(), securityContextRepository),
-                        new SecurityContextHolderFilter(securityContextRepository)
+                        new SecurityContextHolderFilter(securityContextRepository),
+                        new BasicAuthFilter(authenticationManager(), securityContextRepository)
                 )
         );
     }
@@ -55,7 +58,10 @@ public class SecurityConfig {
     public SecurityFilterChain userNamePasswordSecurityFilterChain() {
         return new UserNamePasswordSecurityFilterChain(
                 USER_NAME_PASSWORD_AUTH_PATH,
-                List.of(new UserNamePasswordAuthFilter(authenticationManager(), securityContextRepository))
+                List.of(
+                        new SecurityContextHolderFilter(securityContextRepository),
+                        new UserNamePasswordAuthFilter(authenticationManager(), securityContextRepository)
+                )
         );
     }
 }

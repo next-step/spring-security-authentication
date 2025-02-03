@@ -16,6 +16,7 @@ public class SecurityContextHolder {
             context = SecurityContextImpl.empty();
             contextHolder.set(context);
         }
+
         return context;
     }
 

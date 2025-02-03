@@ -11,7 +11,7 @@ import nextstep.security.SecurityContextRepository;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.exception.AuthenticationException;
-import nextstep.security.authentication.exception.MemberHasNoRoleException;
+import nextstep.security.authentication.exception.MemberAccessDeniedException;
 import nextstep.security.user.UsernamePasswordAuthenticationToken;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.StringUtils;
@@ -40,10 +40,9 @@ public class BasicAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
-             HttpServletResponse response,
-             FilterChain filterChain
-    ) throws IOException, ServletException
-    {
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws IOException, ServletException {
         try {
             SecurityContext context = getSecurityContext(request);
             if (context.getAuthentication() instanceof UsernamePasswordAuthenticationToken authentication) {
@@ -53,11 +52,8 @@ public class BasicAuthFilter extends OncePerRequestFilter {
             handleError(response, e);
         }
 
-        try {
-            filterChain.doFilter(request, response);
-        } finally {
-            SecurityContextHolder.clearContext();
-        }
+        filterChain.doFilter(request, response);
+
     }
 
     private SecurityContext getSecurityContext(HttpServletRequest request) {
@@ -95,19 +91,19 @@ public class BasicAuthFilter extends OncePerRequestFilter {
     private void roleCheckByAuthentication(UsernamePasswordAuthenticationToken authenticationToken) {
         boolean hasNoRoles = authenticationToken.getAuthorities() == null || authenticationToken.getAuthorities().isEmpty();
         if (hasNoRoles) {
-            throw new MemberHasNoRoleException();
+            throw new MemberAccessDeniedException();
         }
 
         boolean isNormalUser = authenticationToken.getAuthorities().stream()
                 .map(Object::toString)
                 .anyMatch(NORMAL_USER::equalsIgnoreCase);
         if (isNormalUser) {
-            throw new MemberHasNoRoleException();
+            throw new MemberAccessDeniedException();
         }
     }
 
     private void handleError(HttpServletResponse response, RuntimeException e) throws IOException {
-        if (e instanceof MemberHasNoRoleException) {
+        if (e instanceof MemberAccessDeniedException) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
