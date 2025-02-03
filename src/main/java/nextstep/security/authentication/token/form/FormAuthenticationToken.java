@@ -1,16 +1,16 @@
-package nextstep.security.authentication.converter.form;
+package nextstep.security.authentication.token.form;
 
 import nextstep.security.authentication.token.UsernamePasswordAuthenticationToken;
 
 import java.util.Map;
 
-public class FormAuthentication extends UsernamePasswordAuthenticationToken {
-    public FormAuthentication(String username, String password) {
+public class FormAuthenticationToken extends UsernamePasswordAuthenticationToken {
+    public FormAuthenticationToken(String username, String password) {
         super(username, password);
     }
 
-    public static FormAuthentication of(Map<String, String[]> parameterMap) {
-        return new FormAuthentication(
+    public static FormAuthenticationToken of(Map<String, String[]> parameterMap) {
+        return new FormAuthenticationToken(
                 usernameParams(parameterMap)[0],
                 passwordParams(parameterMap)[0]
         );

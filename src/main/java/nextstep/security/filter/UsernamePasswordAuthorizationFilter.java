@@ -5,11 +5,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
-import nextstep.security.authentication.converter.AuthenticationConverter;
 import nextstep.security.authentication.manager.AuthenticationManager;
 import nextstep.security.authentication.manager.ProviderManager;
 import nextstep.security.authentication.provider.AuthenticationProvider;
 import nextstep.security.authentication.provider.UsernamePasswordAuthenticationProvider;
+import nextstep.security.authentication.token.AuthenticationTokenConverter;
 import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
@@ -24,27 +24,27 @@ import java.util.List;
 public class UsernamePasswordAuthorizationFilter extends OncePerRequestFilter {
     private final String uri;
     private final AuthenticationManager manager;
-    private final AuthenticationConverter converter;
+    private final AuthenticationTokenConverter tokenConverter;
     private final SecurityContextRepository securityContextRepository = HttpSessionSecurityContextRepository.getInstance();
 
     public UsernamePasswordAuthorizationFilter(
             UserDetailsService userDetailsService,
-            AuthenticationConverter converter,
+            AuthenticationTokenConverter tokenConverter,
             String uri
     ) {
         final List<AuthenticationProvider> providers = List.of(
                 new UsernamePasswordAuthenticationProvider(userDetailsService)
         );
         this.manager = new ProviderManager(providers);
-        this.converter = converter;
+        this.tokenConverter = tokenConverter;
         this.uri = uri;
     }
 
     public UsernamePasswordAuthorizationFilter(
             UserDetailsService userDetailsService,
-            AuthenticationConverter converter
+            AuthenticationTokenConverter tokenConverter
     ) {
-        this(userDetailsService, converter, null);
+        this(userDetailsService, tokenConverter, null);
     }
 
     @Override
@@ -71,10 +71,10 @@ public class UsernamePasswordAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private SecurityContext createSecurityContext(HttpServletRequest request) {
-        if (!converter.supports(request)) {
+        if (!tokenConverter.supports(request)) {
             return SecurityContext.empty();
         }
-        final Authentication authenticationToken = converter.convert(request);
+        final Authentication authenticationToken = tokenConverter.convert(request);
         return new SecurityContext(manager.authenticate(authenticationToken));
     }
 }

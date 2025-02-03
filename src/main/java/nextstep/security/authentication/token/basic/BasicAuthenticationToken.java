@@ -1,24 +1,29 @@
-package nextstep.security.authentication.converter.basic;
+package nextstep.security.authentication.token.basic;
 
 import nextstep.security.authentication.token.UsernamePasswordAuthenticationToken;
 import nextstep.security.exception.AuthenticationException;
 
 import java.util.Base64;
 
-public class BasicAuthentication extends UsernamePasswordAuthenticationToken {
-    public BasicAuthentication(String username, String password) {
+public class BasicAuthenticationToken extends UsernamePasswordAuthenticationToken {
+    public BasicAuthenticationToken(String username, String password) {
         super(username, password);
     }
 
-    public static BasicAuthentication of(String authorizationHeader) {
+    public static BasicAuthenticationToken of(String authorizationHeader) {
         try {
             final String[] usernameAndPassword = decode(
                     authorizationHeader.trim().split(" ")[1]
             ).split(":");
-            return new BasicAuthentication(usernameAndPassword[0], usernameAndPassword[1]);
+            return new BasicAuthenticationToken(usernameAndPassword[0], usernameAndPassword[1]);
         } catch (Exception e) {
             throw AuthenticationException.badToken();
         }
+    }
+
+    public static boolean supports(String authorizationHeader) {
+        return authorizationHeader != null
+                && authorizationHeader.trim().startsWith("Basic ");
     }
 
     private static String decode(String token) {
