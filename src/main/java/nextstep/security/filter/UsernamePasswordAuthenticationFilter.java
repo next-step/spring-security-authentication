@@ -6,6 +6,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationConverter;
 import nextstep.security.AuthenticationEntrypoint;
@@ -19,16 +20,17 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
-public class BasicAuthenticationFilter extends GenericFilterBean {
-    private static final Logger logger = LoggerFactory.getLogger(BasicAuthenticationFilter.class);
+public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
+    private static final Logger logger = LoggerFactory.getLogger(UsernamePasswordAuthenticationFilter.class);
+    private static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
     private final UserDetailsService userDetailsService;
     private final AuthenticationConverter authenticationConverter;
     private final AuthenticationEntrypoint authenticationEntrypoint;
 
-    public BasicAuthenticationFilter(UserDetailsService userDetailsService,
-                                     AuthenticationConverter authenticationConverter,
-                                     AuthenticationEntrypoint authenticationEntrypoint) {
+    public UsernamePasswordAuthenticationFilter(UserDetailsService userDetailsService,
+                                                AuthenticationConverter authenticationConverter,
+                                                AuthenticationEntrypoint authenticationEntrypoint) {
 
         this.userDetailsService = userDetailsService;
         this.authenticationConverter = authenticationConverter;
@@ -36,14 +38,13 @@ public class BasicAuthenticationFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
+            HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
             Authentication authRequest = this.authenticationConverter.convert(httpRequest);
 
             if (authRequest == null) {
-                filterChain.doFilter(request, response);
+                filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }
 
@@ -55,11 +56,15 @@ public class BasicAuthenticationFilter extends GenericFilterBean {
                 throw new BadCredentialsException("Bad Credentials %s".formatted(principal));
             }
 
+            HttpSession session = httpRequest.getSession();
+            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, userDetails);
+
         } catch (AuthenticationException e) {
             logger.error("Authentication error", e);
-            authenticationEntrypoint.commence((HttpServletRequest) request, (HttpServletResponse) response, e);
+            authenticationEntrypoint.commence((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse, e);
+        } catch (Exception e) {
+            logger.error("Authentication error", e);
+            ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-
-        filterChain.doFilter(request, response);
     }
 }

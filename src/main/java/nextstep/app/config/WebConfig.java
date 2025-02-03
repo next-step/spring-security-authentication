@@ -2,18 +2,17 @@ package nextstep.app.config;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.AuthenticationConverter;
-import nextstep.security.AuthenticationEntrypoint;
+import nextstep.security.UserDetails;
+import nextstep.security.UserDetailsService;
 import nextstep.security.basic.BasicAuthenticationConverter;
 import nextstep.security.basic.BasicAuthenticationEntrypoint;
 import nextstep.security.filter.BasicAuthenticationFilter;
-import nextstep.security.FormLoginInterceptor;
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
+import nextstep.security.filter.UsernamePasswordAuthenticationFilter;
+import nextstep.security.login.UsernamePasswordAuthenticationConverter;
+import nextstep.security.login.UsernamePasswordAuthenticationEntrypoint;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -22,11 +21,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     public WebConfig(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new FormLoginInterceptor(userDetailsService())).addPathPatterns("/login");
     }
 
     @Bean
@@ -49,13 +43,23 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public AuthenticationConverter authenticationConverter() {
+    public BasicAuthenticationConverter basicAuthenticationConverter() {
         return new BasicAuthenticationConverter();
     }
 
     @Bean
-    public AuthenticationEntrypoint authenticationEntrypoint() {
+    public UsernamePasswordAuthenticationConverter formLoginAuthenticationConverter() {
+        return new UsernamePasswordAuthenticationConverter();
+    }
+
+    @Bean
+    public BasicAuthenticationEntrypoint basicAuthenticationEntrypoint() {
         return new BasicAuthenticationEntrypoint();
+    }
+
+    @Bean
+    public UsernamePasswordAuthenticationEntrypoint formLoginAuthenticationEntrypoint() {
+        return new UsernamePasswordAuthenticationEntrypoint();
     }
 
     @Bean
@@ -63,11 +67,24 @@ public class WebConfig implements WebMvcConfigurer {
         FilterRegistrationBean<BasicAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
         BasicAuthenticationFilter filter = new BasicAuthenticationFilter(
                 userDetailsService(),
-                authenticationConverter(),
-                authenticationEntrypoint()
+                basicAuthenticationConverter(),
+                basicAuthenticationEntrypoint()
         );
         registrationBean.setFilter(filter);
         registrationBean.addUrlPatterns("/members");
+        return registrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean<UsernamePasswordAuthenticationFilter> formLoginAuthenticationFilter() {
+        FilterRegistrationBean<UsernamePasswordAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+        UsernamePasswordAuthenticationFilter filter = new UsernamePasswordAuthenticationFilter(
+                userDetailsService(),
+                formLoginAuthenticationConverter(),
+                formLoginAuthenticationEntrypoint()
+        );
+        registrationBean.setFilter(filter);
+        registrationBean.addUrlPatterns("/login");
         return registrationBean;
     }
 }
