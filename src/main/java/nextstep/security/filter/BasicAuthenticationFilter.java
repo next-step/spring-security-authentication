@@ -15,11 +15,11 @@ import nextstep.security.exception.AuthenticationException;
 import nextstep.security.exception.BadCredentialsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-public class BasicAuthenticationFilter extends GenericFilterBean {
+public class BasicAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(BasicAuthenticationFilter.class);
 
     private final UserDetailsService userDetailsService;
@@ -36,11 +36,16 @@ public class BasicAuthenticationFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
-            throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+
+        if (!request.getRequestURI().equals("/members")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
-            Authentication authRequest = this.authenticationConverter.convert(httpRequest);
+            Authentication authRequest = this.authenticationConverter.convert(request);
 
             if (authRequest == null) {
                 filterChain.doFilter(request, response);
@@ -56,10 +61,11 @@ public class BasicAuthenticationFilter extends GenericFilterBean {
             }
 
         } catch (AuthenticationException e) {
-            logger.error("Authentication error", e);
-            authenticationEntrypoint.commence((HttpServletRequest) request, (HttpServletResponse) response, e);
+            logger.error("Basic Authentication error", e);
+            authenticationEntrypoint.commence(request, response, e);
         }
 
         filterChain.doFilter(request, response);
+
     }
 }

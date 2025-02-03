@@ -38,16 +38,22 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+
+        if (!httpRequest.getRequestURI().equals("/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        Authentication authRequest = this.authenticationConverter.convert(httpRequest);
+
+        if (authRequest == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
-            HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
-            Authentication authRequest = this.authenticationConverter.convert(httpRequest);
-
-            if (authRequest == null) {
-                filterChain.doFilter(servletRequest, servletResponse);
-                return;
-            }
-
             String principal = authRequest.getPrincipal().toString();
             String credentials = authRequest.getCredentials().toString();
             UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
@@ -58,13 +64,12 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
 
             HttpSession session = httpRequest.getSession();
             session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, userDetails);
-
         } catch (AuthenticationException e) {
-            logger.error("Authentication error", e);
-            authenticationEntrypoint.commence((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse, e);
+            logger.error("UsernamePassword Authentication error", e);
+            authenticationEntrypoint.commence((HttpServletRequest) request, (HttpServletResponse) response, e);
         } catch (Exception e) {
             logger.error("Authentication error", e);
-            ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 }

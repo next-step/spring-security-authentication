@@ -2,11 +2,15 @@ package nextstep.app.config;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.security.SecurityFilterChain;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
 import nextstep.security.basic.BasicAuthenticationConverter;
 import nextstep.security.basic.BasicAuthenticationEntrypoint;
 import nextstep.security.filter.BasicAuthenticationFilter;
+import nextstep.security.filter.DefaultSecurityFilterChain;
+import nextstep.security.filter.DelegateFilterProxy;
+import nextstep.security.filter.FilterChainProxy;
 import nextstep.security.filter.UsernamePasswordAuthenticationFilter;
 import nextstep.security.login.UsernamePasswordAuthenticationConverter;
 import nextstep.security.login.UsernamePasswordAuthenticationEntrypoint;
@@ -15,11 +19,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+public class SecurityConfig implements WebMvcConfigurer {
     private final MemberRepository memberRepository;
 
-    public WebConfig(MemberRepository memberRepository) {
+    public SecurityConfig(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
@@ -48,7 +54,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public UsernamePasswordAuthenticationConverter formLoginAuthenticationConverter() {
+    public UsernamePasswordAuthenticationConverter usernamePasswordAuthenticationConverter() {
         return new UsernamePasswordAuthenticationConverter();
     }
 
@@ -58,33 +64,43 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public UsernamePasswordAuthenticationEntrypoint formLoginAuthenticationEntrypoint() {
+    public UsernamePasswordAuthenticationEntrypoint usernamePasswordAuthenticationEntrypoint() {
         return new UsernamePasswordAuthenticationEntrypoint();
     }
 
     @Bean
-    public FilterRegistrationBean<BasicAuthenticationFilter> basicAuthenticationFilter() {
-        FilterRegistrationBean<BasicAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
-        BasicAuthenticationFilter filter = new BasicAuthenticationFilter(
-                userDetailsService(),
-                basicAuthenticationConverter(),
-                basicAuthenticationEntrypoint()
-        );
+    public FilterRegistrationBean<DelegateFilterProxy> delegateFilterProxy(FilterChainProxy filterChainProxy) {
+        FilterRegistrationBean<DelegateFilterProxy> registrationBean = new FilterRegistrationBean<>();
+        DelegateFilterProxy filter = new DelegateFilterProxy(filterChainProxy);
+
         registrationBean.setFilter(filter);
-        registrationBean.addUrlPatterns("/members");
+        registrationBean.addUrlPatterns("/*");
         return registrationBean;
     }
 
     @Bean
-    public FilterRegistrationBean<UsernamePasswordAuthenticationFilter> formLoginAuthenticationFilter() {
-        FilterRegistrationBean<UsernamePasswordAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
-        UsernamePasswordAuthenticationFilter filter = new UsernamePasswordAuthenticationFilter(
-                userDetailsService(),
-                formLoginAuthenticationConverter(),
-                formLoginAuthenticationEntrypoint()
+    public FilterChainProxy filterChainProxy(SecurityFilterChain securityFilterChain) {
+        return new FilterChainProxy(
+                List.of(securityFilterChain)
         );
-        registrationBean.setFilter(filter);
-        registrationBean.addUrlPatterns("/login");
-        return registrationBean;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain() {
+        return new DefaultSecurityFilterChain(
+                List.of(
+                        new UsernamePasswordAuthenticationFilter(
+                                userDetailsService(),
+                                usernamePasswordAuthenticationConverter(),
+                                usernamePasswordAuthenticationEntrypoint()
+                        ),
+
+                        new BasicAuthenticationFilter(
+                                userDetailsService(),
+                                basicAuthenticationConverter(),
+                                basicAuthenticationEntrypoint()
+                        )
+                )
+        );
     }
 }
