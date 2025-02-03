@@ -1,10 +1,9 @@
-package nextstep.app.ui;
+package nextstep.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
+import nextstep.security.exception.AuthenticationException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Map;
@@ -27,7 +26,7 @@ public class FormLoginInterceptor implements HandlerInterceptor {
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (!userDetails.getPassword().equals(password)) {
-                throw new AuthenticationException();
+                throw new AuthenticationException("");
             }
 
             HttpSession session = request.getSession();

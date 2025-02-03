@@ -1,11 +1,16 @@
-package nextstep.app;
+package nextstep.app.config;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.app.ui.BasicAuthenticationInterceptor;
-import nextstep.app.ui.FormLoginInterceptor;
+import nextstep.security.AuthenticationConverter;
+import nextstep.security.AuthenticationEntrypoint;
+import nextstep.security.basic.BasicAuthenticationConverter;
+import nextstep.security.basic.BasicAuthenticationEntrypoint;
+import nextstep.security.filter.BasicAuthenticationFilter;
+import nextstep.security.FormLoginInterceptor;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -22,7 +27,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new FormLoginInterceptor(userDetailsService())).addPathPatterns("/login");
-        registry.addInterceptor(new BasicAuthenticationInterceptor(userDetailsService())).addPathPatterns("/members");
     }
 
     @Bean
@@ -42,5 +46,28 @@ public class WebConfig implements WebMvcConfigurer {
                 }
             };
         };
+    }
+
+    @Bean
+    public AuthenticationConverter authenticationConverter() {
+        return new BasicAuthenticationConverter();
+    }
+
+    @Bean
+    public AuthenticationEntrypoint authenticationEntrypoint() {
+        return new BasicAuthenticationEntrypoint();
+    }
+
+    @Bean
+    public FilterRegistrationBean<BasicAuthenticationFilter> basicAuthenticationFilter() {
+        FilterRegistrationBean<BasicAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+        BasicAuthenticationFilter filter = new BasicAuthenticationFilter(
+                userDetailsService(),
+                authenticationConverter(),
+                authenticationEntrypoint()
+        );
+        registrationBean.setFilter(filter);
+        registrationBean.addUrlPatterns("/members");
+        return registrationBean;
     }
 }
