@@ -2,6 +2,7 @@ package nextstep.app;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.app.domain.MemberRole;
 import nextstep.app.util.Base64Convertor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class BasicAuthTest {
-    private final Member TEST_MEMBER = new Member("a@a.com", "password", "a", "");
+    private final Member TEST_MEMBER = new Member("a@a.com", "password", "a", "", MemberRole.ADMIN);
 
     @Autowired
     private MockMvc mockMvc;
