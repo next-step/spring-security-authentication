@@ -11,25 +11,27 @@ public class FormAuthentication extends UsernamePasswordAuthenticationToken {
 
     public static FormAuthentication of(Map<String, String[]> parameterMap) {
         return new FormAuthentication(
-                username(parameterMap),
-                password(parameterMap)
+                usernameParams(parameterMap)[0],
+                passwordParams(parameterMap)[0]
         );
     }
 
     public static boolean supports(Map<String, String[]> parameterMap) {
-        return notBlank(username(parameterMap))
-                && notBlank(password(parameterMap));
+        return notBlank(usernameParams(parameterMap))
+                && notBlank(passwordParams(parameterMap));
     }
 
-    private static String username(Map<String, String[]> parameterMap) {
-        return parameterMap.get("username")[0];
+    private static String[] usernameParams(Map<String, String[]> parameterMap) {
+        return parameterMap.get("username");
     }
 
-    private static String password(Map<String, String[]> parameterMap) {
-        return parameterMap.get("password")[0];
+    private static String[] passwordParams(Map<String, String[]> parameterMap) {
+        return parameterMap.get("password");
     }
 
-    private static boolean notBlank(String string) {
-        return string != null && !string.isBlank();
+    private static boolean notBlank(String[] params) {
+        return params != null
+                && params.length > 0
+                && !params[0].isBlank();
     }
 }
