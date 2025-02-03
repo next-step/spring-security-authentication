@@ -16,6 +16,7 @@ import java.util.Objects;
 
 public class FormLoginAuthenticationFilter extends GenericFilterBean {
     private static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
+    private static final String DEFAULT_REQUEST_URI = "/login";
 
     private final UserDetailsService userDetailsService;
 
@@ -24,10 +25,14 @@ public class FormLoginAuthenticationFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        try {
-            HttpSession session = ((HttpServletRequest) request).getSession();
+    public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        if (!DEFAULT_REQUEST_URI.equals(request.getRequestURI())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
+        try {
             Map<String, String[]> parameterMap = request.getParameterMap();
             String username = parameterMap.get("username")[0];
             String password = parameterMap.get("password")[0];
@@ -38,6 +43,7 @@ public class FormLoginAuthenticationFilter extends GenericFilterBean {
                 throw new AuthenticationException();
             }
 
+            HttpSession session = request.getSession();
             session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, userDetails);
 
             filterChain.doFilter(request, response);
