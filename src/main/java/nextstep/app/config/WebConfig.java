@@ -2,8 +2,8 @@ package nextstep.app.config;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.BasicAuthInterceptor;
-import nextstep.security.FormLoginInterceptor;
+import nextstep.security.interceptor.BasicAuthInterceptor;
+import nextstep.security.interceptor.FormLoginInterceptor;
 import nextstep.security.UserDetailService;
 import nextstep.security.UserDetails;
 import org.springframework.context.annotation.Bean;
