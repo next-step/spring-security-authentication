@@ -1,8 +1,8 @@
 package nextstep.app;
 
 
-import nextstep.security.BasicAuthFilter;
-import nextstep.security.LoginAuthFilter;
+import nextstep.security.filter.BasicAuthFilter;
+import nextstep.security.filter.LoginAuthFilter;
 import nextstep.security.UserDetailsService;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

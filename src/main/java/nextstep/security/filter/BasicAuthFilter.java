@@ -1,10 +1,13 @@
-package nextstep.security;
+package nextstep.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.app.util.Base64Convertor;
+import nextstep.security.exception.AuthenticationException;
+import nextstep.security.UserDetails;
+import nextstep.security.UserDetailsService;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
