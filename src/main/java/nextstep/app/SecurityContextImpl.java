@@ -1,6 +1,6 @@
 package nextstep.app;
 
-import nextstep.security.Authentication;
+import nextstep.security.authentication.Authentication;
 import nextstep.security.SecurityContext;
 
 public class SecurityContextImpl implements SecurityContext {

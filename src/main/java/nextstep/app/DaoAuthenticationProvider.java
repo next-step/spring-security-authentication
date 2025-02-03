@@ -1,7 +1,11 @@
 package nextstep.app;
 
-import nextstep.security.*;
-import nextstep.security.exception.AuthenticationException;
+import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.AuthenticationProvider;
+import nextstep.security.authentication.exception.AuthenticationException;
+import nextstep.security.user.UserDetails;
+import nextstep.security.user.UserDetailsService;
+import nextstep.security.user.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;

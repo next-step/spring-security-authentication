@@ -1,6 +1,6 @@
 package nextstep.app.domain;
 
-import nextstep.security.UserDetails;
+import nextstep.security.user.UserDetails;
 import org.springframework.util.StringUtils;
 
 public record CustomUserDetails(String username, String password) implements UserDetails {
