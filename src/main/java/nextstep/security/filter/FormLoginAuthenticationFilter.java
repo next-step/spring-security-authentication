@@ -1,25 +1,35 @@
-package nextstep.app.ui;
+package nextstep.security.filter;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import nextstep.security.AuthenticationException;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
-import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.io.IOException;
 import java.util.Map;
 
-public class FormLoginInterceptor implements HandlerInterceptor {
+public class FormLoginAuthenticationFilter implements Filter {
+
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
     private final UserDetailsService userDetailsService;
 
-    public FormLoginInterceptor(UserDetailsService userDetailsService) {
+    public FormLoginAuthenticationFilter(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+
         try {
             Map<String, String[]> parameterMap = request.getParameterMap();
             String username = parameterMap.get("username")[0];
@@ -32,9 +42,11 @@ public class FormLoginInterceptor implements HandlerInterceptor {
 
             HttpSession session = request.getSession();
             session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, userDetails);
+
+            filterChain.doFilter(servletRequest, servletResponse);
+
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-        return false;
     }
 }

@@ -1,21 +1,32 @@
-package nextstep.app.ui;
+package nextstep.security.filter;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nextstep.app.util.Base64Convertor;
+import nextstep.security.AuthenticationException;
+import nextstep.security.Base64Convertor;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
-import org.springframework.web.servlet.HandlerInterceptor;
 
-public class BasicAuthenticationInterceptor implements HandlerInterceptor {
+import java.io.IOException;
+
+public class BasicAuthenticationFilter implements Filter {
+
     private final UserDetailsService userDetailsService;
 
-    public BasicAuthenticationInterceptor(UserDetailsService userDetailsService) {
+    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+
         try {
             String authorization = request.getHeader("Authorization");
             String credentials = authorization.split(" ")[1];
@@ -29,10 +40,10 @@ public class BasicAuthenticationInterceptor implements HandlerInterceptor {
                 throw new AuthenticationException();
             }
 
-            return true;
+            filterChain.doFilter(servletRequest, servletResponse);
+
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return false;
         }
     }
 }
