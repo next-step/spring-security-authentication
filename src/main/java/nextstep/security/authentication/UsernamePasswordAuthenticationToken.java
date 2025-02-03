@@ -21,17 +21,17 @@ public class UsernamePasswordAuthenticationToken implements Authentication {
 
     @Override
     public String getPrincipal() {
-        return null;
+        return this.principal;
     }
 
     @Override
     public String getCredentials() {
-        return null;
+        return this.credentials;
     }
 
     @Override
     public boolean isAuthenticated() {
-        return false;
+        return this.authenticated;
     }
 
     public void setAuthenticated(boolean authenticated) {

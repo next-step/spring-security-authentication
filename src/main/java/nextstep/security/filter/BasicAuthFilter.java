@@ -4,18 +4,17 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
-import nextstep.security.exception.AuthenticationException;
+import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.AuthenticationManager;
+import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
 import nextstep.security.util.Base64Convertor;
 
 import java.io.IOException;
 
-public class BasicAuthFilter extends CustomSecurityAuthFilter {
-    private final UserDetailsService userDetailsService;
+public class BasicAuthFilter extends AbstractAuthProcessingFilter {
 
-    public BasicAuthFilter(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public BasicAuthFilter(final AuthenticationManager authenticationManager) {
+        super(authenticationManager);
     }
 
     @Override
@@ -24,29 +23,23 @@ public class BasicAuthFilter extends CustomSecurityAuthFilter {
     }
 
     @Override
-    public void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
-        if (!match(request)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
+    public Authentication makeAuthentication(final HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
 
-        try {
-            String credentials = authorization.split(" ")[1];
-            String decodedString = Base64Convertor.decode(credentials);
-            String[] usernameAndPassword = decodedString.split(":");
-            String username = usernameAndPassword[0];
-            String password = usernameAndPassword[1];
+        String credentials = authorization.split(" ")[1];
+        String decodedString = Base64Convertor.decode(credentials);
+        String[] usernameAndPassword = decodedString.split(":");
+        String username = usernameAndPassword[0];
+        String password = usernameAndPassword[1];
 
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (!userDetails.getPassword().equals(password)) {
-                throw new AuthenticationException();
-            }
+        UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username,
+                password);
+        return authRequest;
+    }
 
-            filterChain.doFilter(request, response);
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        }
+    @Override
+    protected void successAuthentication(final HttpServletRequest request, final HttpServletResponse response,
+                                         final FilterChain filterChain) throws ServletException, IOException {
+        filterChain.doFilter(request, response);
     }
 }

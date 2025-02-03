@@ -2,13 +2,19 @@ package nextstep.app;
 
 import nextstep.app.domain.CustomUserDetailsService;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.filter.BasicAuthFilter;
 import nextstep.security.DefaultSecurityFilterChain;
 import nextstep.security.DelegatingFilterProxy;
 import nextstep.security.FilterChainProxy;
-import nextstep.security.filter.FormAuthFilter;
 import nextstep.security.SecurityFilterChain;
 import nextstep.security.UserDetailsService;
+import nextstep.security.authentication.AuthenticationManager;
+import nextstep.security.authentication.AuthenticationProvider;
+import nextstep.security.authentication.DaoAuthenticationProvider;
+import nextstep.security.authentication.ProviderManager;
+import nextstep.security.filter.BasicAuthFilter;
+import nextstep.security.filter.FormAuthFilter;
+import nextstep.security.util.PasswordMatcher;
+import nextstep.security.util.PlainTextPasswordMatcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,10 +42,27 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain() {
         return new DefaultSecurityFilterChain(
                 List.of(
-                        new FormAuthFilter(userDetailsService()),
-                        new BasicAuthFilter(userDetailsService())
+                        new FormAuthFilter(authenticationManager()),
+                        new BasicAuthFilter(authenticationManager())
                 )
         );
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        List<AuthenticationProvider> providers = List.of(daoAuthenticationProvider());
+        return new ProviderManager(providers);
+    }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(passwordMatcher(), userDetailsService());
+        return provider;
+    }
+
+    @Bean
+    public PasswordMatcher passwordMatcher() {
+        return new PlainTextPasswordMatcher();
     }
 
     @Bean
