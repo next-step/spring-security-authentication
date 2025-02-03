@@ -4,7 +4,7 @@ import nextstep.security.authentication.converter.form.FormAuthenticationConvert
 import nextstep.security.user.UserDetailsService;
 
 public class FormAuthorizationFilter extends UsernamePasswordAuthorizationFilter {
-    public FormAuthorizationFilter(UserDetailsService userDetailsService) {
-        super(userDetailsService, FormAuthenticationConverter.getInstance());
+    public FormAuthorizationFilter(UserDetailsService userDetailsService, String uri) {
+        super(userDetailsService, FormAuthenticationConverter.getInstance(), uri);
     }
 }

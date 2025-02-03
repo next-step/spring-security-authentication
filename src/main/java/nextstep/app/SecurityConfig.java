@@ -22,7 +22,7 @@ public class SecurityConfig {
         final SecurityFilterChain securityFilterChain = new DefaultSecurityFilterChain(List.of(
                 new SecurityContextHolderFilter(),
                 new BasicAuthorizationFilter(userDetailsService),
-                new FormAuthorizationFilter(userDetailsService)
+                new FormAuthorizationFilter(userDetailsService, "/login")
         ));
         return new DelegatingFilterProxy(new FilterChainProxy(
                 List.of(securityFilterChain)

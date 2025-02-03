@@ -22,36 +22,49 @@ import java.io.IOException;
 import java.util.List;
 
 public class UsernamePasswordAuthorizationFilter extends OncePerRequestFilter {
+    private final String uri;
     private final AuthenticationManager manager;
     private final AuthenticationConverter converter;
     private final SecurityContextRepository securityContextRepository = HttpSessionSecurityContextRepository.getInstance();
 
     public UsernamePasswordAuthorizationFilter(
             UserDetailsService userDetailsService,
-            AuthenticationConverter converter
+            AuthenticationConverter converter,
+            String uri
     ) {
         final List<AuthenticationProvider> providers = List.of(
                 new UsernamePasswordAuthenticationProvider(userDetailsService)
         );
         this.manager = new ProviderManager(providers);
         this.converter = converter;
+        this.uri = uri;
+    }
+
+    public UsernamePasswordAuthorizationFilter(
+            UserDetailsService userDetailsService,
+            AuthenticationConverter converter
+    ) {
+        this(userDetailsService, converter, null);
     }
 
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain
+            FilterChain chain
     ) throws ServletException, IOException {
         try {
             setContext(request, response);
-            filterChain.doFilter(request, response);
+            chain.doFilter(request, response);
         } catch (AuthenticationException e) {
             response.setStatus(401);
         }
     }
 
     private void setContext(HttpServletRequest request, HttpServletResponse response) {
+        if (uri != null && !uri.equals(request.getRequestURI())) {
+            return;
+        }
         final SecurityContext context = createSecurityContext(request);
         SecurityContextHolder.setContext(context);
         securityContextRepository.saveContext(context, request, response);
