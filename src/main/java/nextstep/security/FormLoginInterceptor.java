@@ -1,21 +1,18 @@
-package nextstep.app;
+package nextstep.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import nextstep.app.domain.Member;
-import nextstep.app.domain.MemberRepository;
-import nextstep.app.ui.AuthenticationException;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class FormLoginInterceptor implements HandlerInterceptor {
 
     private static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
-    private final MemberRepository memberRepository;
+    private final UserDetailService userDetailService;
 
-    public FormLoginInterceptor(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public FormLoginInterceptor(UserDetailService userDetailService) {
+        this.userDetailService = userDetailService;
     }
 
     @Override
@@ -24,20 +21,21 @@ public class FormLoginInterceptor implements HandlerInterceptor {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
 
-            Member member = memberRepository.findByEmail(username)
-                    .filter(it -> it.matchPassword(password))
-                    .orElseThrow(AuthenticationException::new);
+            UserDetails userDetail = userDetailService.getUserByUsername(username);
+            if (!userDetail.getPassword().equals(password)) {
+                throw new AuthenticationException();
+            }
 
-            addMemberToSession(request, member);
+            addMemberToSession(request, userDetail);
         }catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
         return false;
     }
 
-    private void addMemberToSession(HttpServletRequest request, Member member) {
+    private void addMemberToSession(HttpServletRequest request, UserDetails userDetail) {
         HttpSession session = request.getSession();
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, member);
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, userDetail);
     }
 
 }
