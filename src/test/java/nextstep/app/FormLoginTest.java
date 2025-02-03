@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -42,6 +43,7 @@ class FormLoginTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         );
 
+        loginResponse.andDo(print());
         loginResponse.andExpect(status().isOk());
 
         HttpSession session = loginResponse.andReturn().getRequest().getSession();
@@ -58,6 +60,7 @@ class FormLoginTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         );
 
+        response.andDo(print());
         response.andExpect(status().isUnauthorized());
     }
 
@@ -70,6 +73,7 @@ class FormLoginTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         );
 
+        response.andDo(print());
         response.andExpect(status().isUnauthorized());
     }
 }
