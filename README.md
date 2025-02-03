@@ -73,6 +73,6 @@ VirtualFilterChain 을 통해 필터들을 순차적으로 실행
 
 🚀 4단계 - SecurityContextHolderFilter 구현
 
-- [ ] SecurityContextRepository 인터페이스를 기반으로 HttpSessionSecurityContextRepository 구현
-- [ ] SecurityContextHolderFilter 작성 및 필터 체인에 등록
-- [ ] login_after_members 테스트로 동작 검증
+- [x] SecurityContextRepository 인터페이스를 기반으로 HttpSessionSecurityContextRepository 구현
+- [x] SecurityContextHolderFilter 작성 및 필터 체인에 등록
+- [x] login_after_members 테스트로 동작 검증
