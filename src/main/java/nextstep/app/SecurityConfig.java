@@ -1,13 +1,10 @@
 package nextstep.app;
 
 
-import nextstep.security.BasicSecurityFilterChain;
-import nextstep.security.FilterChainProxy;
-import nextstep.security.SecurityFilterChain;
+import nextstep.security.SecurityContextRepository;
 import nextstep.security.UserNamePasswordSecurityFilterChain;
 import nextstep.security.authentication.AuthenticationManager;
-import nextstep.security.filter.BasicAuthFilter;
-import nextstep.security.filter.UserNamePasswordAuthFilter;
+import nextstep.security.filter.*;
 import nextstep.security.user.UserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,9 +19,11 @@ public class SecurityConfig {
     private static final String[] USER_NAME_PASSWORD_AUTH_PATH = new String[]{"/login"};
 
     private final UserDetailsService userDetailsService;
+    private final SecurityContextRepository securityContextRepository;
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    public SecurityConfig(UserDetailsService userDetailsService, SecurityContextRepository securityContextRepository) {
         this.userDetailsService = userDetailsService;
+        this.securityContextRepository = securityContextRepository;
     }
 
     @Bean
@@ -45,7 +44,10 @@ public class SecurityConfig {
     public SecurityFilterChain basicSecurityFilterChain() {
         return new BasicSecurityFilterChain(
                 BASIC_AUTH_PATH,
-                List.of(new BasicAuthFilter(authenticationManager()))
+                List.of(
+                        new BasicAuthFilter(authenticationManager(), securityContextRepository),
+                        new SecurityContextHolderFilter(securityContextRepository)
+                )
         );
     }
 
@@ -53,7 +55,7 @@ public class SecurityConfig {
     public SecurityFilterChain userNamePasswordSecurityFilterChain() {
         return new UserNamePasswordSecurityFilterChain(
                 USER_NAME_PASSWORD_AUTH_PATH,
-                List.of(new UserNamePasswordAuthFilter(authenticationManager()))
+                List.of(new UserNamePasswordAuthFilter(authenticationManager(), securityContextRepository))
         );
     }
 }

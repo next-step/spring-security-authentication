@@ -6,10 +6,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.app.SecurityContextHolder;
 import nextstep.app.util.Base64Convertor;
+import nextstep.security.SecurityContext;
+import nextstep.security.SecurityContextRepository;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
-import nextstep.security.user.UsernamePasswordAuthenticationToken;
 import nextstep.security.authentication.exception.AuthenticationException;
+import nextstep.security.authentication.exception.MemberHasNoRoleException;
+import nextstep.security.user.UsernamePasswordAuthenticationToken;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,10 +22,14 @@ import java.io.IOException;
 public class BasicAuthFilter extends OncePerRequestFilter {
 
     private final AuthenticationManager authenticationManager;
-    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private final SecurityContextRepository securityContextRepository;
 
-    public BasicAuthFilter(AuthenticationManager authenticationManager) {
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String NORMAL_USER = "NORMAL_USER";
+
+    public BasicAuthFilter(AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
         this.authenticationManager = authenticationManager;
+        this.securityContextRepository = securityContextRepository;
     }
 
     @Override
@@ -31,12 +38,18 @@ public class BasicAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+             HttpServletResponse response,
+             FilterChain filterChain
+    ) throws IOException, ServletException
+    {
         try {
-            Authentication requestAuthentication = extractAuthenticationByRequest(request);
-            Authentication authenticationToken = getAuthentication(requestAuthentication);
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        } catch (AuthenticationException e) {
+            SecurityContext context = getSecurityContext(request);
+            if (context.getAuthentication() instanceof UsernamePasswordAuthenticationToken authentication) {
+                roleCheckByAuthentication(authentication);
+            }
+        } catch (RuntimeException e) {
             handleError(response, e);
         }
 
@@ -47,9 +60,24 @@ public class BasicAuthFilter extends OncePerRequestFilter {
         }
     }
 
-    private Authentication extractAuthenticationByRequest(HttpServletRequest request) {
-        String authorization = request.getHeader(AUTHORIZATION_HEADER);
+    private SecurityContext getSecurityContext(HttpServletRequest request) {
+        SecurityContext context = securityContextRepository.loadContext(request);
+        if (context != null) {
+            return context;
+        }
 
+        Authentication authenticationToken = authenticationManager.authenticate(authenticationByRequest(request));
+        if (!authenticationToken.isAuthenticated()) {
+            throw new AuthenticationException();
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        return SecurityContextHolder.getContext();
+    }
+
+    private Authentication authenticationByRequest(HttpServletRequest request) {
+        String authorization = request.getHeader(AUTHORIZATION_HEADER);
         if (!StringUtils.hasText(authorization)) {
             throw new AuthenticationException();
         }
@@ -57,33 +85,38 @@ public class BasicAuthFilter extends OncePerRequestFilter {
         String credentials = authorization.split(" ")[1];
         String decodedString = Base64Convertor.decode(credentials);
         String[] usernameAndPassword = decodedString.split(":");
-
         if (usernameAndPassword.length != 2) {
             throw new AuthenticationException();
         }
 
-        String username = usernameAndPassword[0];
-        String password = usernameAndPassword[1];
-
-        if (!StringUtils.hasText(username) || !StringUtils.hasText(password)) {
-            throw new AuthenticationException();
-        }
-
-        return UsernamePasswordAuthenticationToken.unAuthorizedToken(username, password);
+        return UsernamePasswordAuthenticationToken.unAuthorizedToken(usernameAndPassword[0], usernameAndPassword[1]);
     }
 
-    private Authentication getAuthentication(Authentication authentication1) {
-        Authentication result = authenticationManager.authenticate(authentication1);
-
-        if (result.isAuthenticated()) {
-            throw new AuthenticationException();
+    private void roleCheckByAuthentication(UsernamePasswordAuthenticationToken authenticationToken) {
+        boolean hasNoRoles = authenticationToken.getAuthorities() == null || authenticationToken.getAuthorities().isEmpty();
+        if (hasNoRoles) {
+            throw new MemberHasNoRoleException();
         }
 
-        return result;
+        boolean isNormalUser = authenticationToken.getAuthorities().stream()
+                .map(Object::toString)
+                .anyMatch(NORMAL_USER::equalsIgnoreCase);
+        if (isNormalUser) {
+            throw new MemberHasNoRoleException();
+        }
     }
 
-    private void handleError(HttpServletResponse response, AuthenticationException e) throws IOException {
-        SecurityContextHolder.clearContext();
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+    private void handleError(HttpServletResponse response, RuntimeException e) throws IOException {
+        if (e instanceof MemberHasNoRoleException) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        if (e instanceof AuthenticationException) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 }
