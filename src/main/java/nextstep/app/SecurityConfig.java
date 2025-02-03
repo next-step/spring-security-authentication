@@ -3,10 +3,10 @@ package nextstep.app;
 
 import nextstep.security.BasicAuthFilter;
 import nextstep.security.LoginAuthFilter;
-import nextstep.security.UserDetailService;
+import nextstep.security.UserDetailsService;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.filter.DelegatingFilterProxy;
 
 @Configuration
 public class SecurityConfig {
@@ -18,12 +18,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DelegatingFilterProxy basicAuthFilterProxy() {
-        return new DelegatingFilterProxy(new BasicAuthFilter(userDetailService));
+    public FilterRegistrationBean<BasicAuthFilter> basicAuthFilterRegister() {
+        FilterRegistrationBean<BasicAuthFilter> registrationBean = new FilterRegistrationBean<>(new BasicAuthFilter(userDetailsService));
+        registrationBean.addUrlPatterns(BASIC_AUTH_PATH);
+        registrationBean.setOrder(1);
+        return registrationBean;
     }
 
     @Bean
-    public DelegatingFilterProxy loginAuthFilterProxy() {
-        return new DelegatingFilterProxy(new LoginAuthFilter(userDetailService));
+    public FilterRegistrationBean<LoginAuthFilter> loginAuthFilterRegister() {
+        FilterRegistrationBean<LoginAuthFilter> registrationBean = new FilterRegistrationBean<>(new LoginAuthFilter(userDetailsService));
+        registrationBean.addUrlPatterns(LOGIN_AUTH_PATH);
+        registrationBean.setOrder(2);
+        return registrationBean;
     }
 }

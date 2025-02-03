@@ -18,7 +18,6 @@ public class LoginAuthFilter extends GenericFilterBean {
 
     private final UserDetailService userDetailService;
 
-    private static final String[] TARGET_PATH = new String[] { "/login" };
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
     public LoginAuthFilter(UserDetailService userDetailService) {
@@ -27,21 +26,20 @@ public class LoginAuthFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        if (servletRequest instanceof HttpServletRequest httpRequest) {
-            boolean isPostMethod = HttpMethod.POST.name().equalsIgnoreCase(httpRequest.getMethod());
-            boolean isMatchedPath = Arrays.stream(TARGET_PATH).anyMatch(it -> it.equalsIgnoreCase(httpRequest.getRequestURI()));
-            if (isPostMethod && isMatchedPath) {
-                try {
-                    login(httpRequest);
-                } catch (AuthenticationException e) {
-                    HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-                    httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-                    return;
-                }
+        if (servletRequest instanceof HttpServletRequest httpRequest
+                && (HttpMethod.POST.name().equalsIgnoreCase(httpRequest.getMethod()))
+        ) {
+            try {
+                login(httpRequest);
+            } catch (AuthenticationException e) {
                 HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+                httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
                 return;
             }
+
+            HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            return;
         }
 
         filterChain.doFilter(servletRequest, servletResponse);

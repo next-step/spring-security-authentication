@@ -15,7 +15,6 @@ import java.util.Arrays;
 public class BasicAuthFilter extends OncePerRequestFilter {
 
     private final UserDetailService userDetailService;
-    private static final String[] TARGET_PATH = new String[]{"/members"};
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     public BasicAuthFilter(UserDetailService userDetailService) {
@@ -23,9 +22,7 @@ public class BasicAuthFilter extends OncePerRequestFilter {
     }
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        boolean isNotGetMethod = !HttpMethod.GET.name().equalsIgnoreCase(request.getMethod());
-        boolean isNotMatchedPath = Arrays.stream(TARGET_PATH).noneMatch(it -> it.equalsIgnoreCase(request.getRequestURI()));
-        return isNotGetMethod || isNotMatchedPath;
+        return !HttpMethod.GET.name().equalsIgnoreCase(request.getMethod());
     }
 
     @Override
