@@ -10,15 +10,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class BasicAuthFilter extends OncePerRequestFilter {
 
-    private final UserDetailService userDetailService;
+    private final UserDetailsService userDetailsService;
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
-    public BasicAuthFilter(UserDetailService userDetailService) {
-        this.userDetailService = userDetailService;
+    public BasicAuthFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -56,7 +55,7 @@ public class BasicAuthFilter extends OncePerRequestFilter {
             throw new AuthenticationException();
         }
 
-        UserDetails userDetails = userDetailService.loadUserDetailsByUserName(username);
+        UserDetails userDetails = userDetailsService.loadUserDetailsByUserName(username);
         boolean isNotCorrectPassword = !password.equals(userDetails.password());
         if (isNotCorrectPassword) {
             throw new AuthenticationException();

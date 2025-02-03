@@ -1,5 +1,5 @@
 package nextstep.security;
 
-public interface UserDetailService {
+public interface UserDetailsService {
     UserDetails loadUserDetailsByUserName(String username) throws AuthenticationException;
 }

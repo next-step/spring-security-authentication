@@ -11,10 +11,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SecurityConfig {
 
-    private final UserDetailService userDetailService;
+    private final UserDetailsService userDetailsService;
+    private static final String[] BASIC_AUTH_PATH = new String[]{"/members"};
+    private static final String[] LOGIN_AUTH_PATH = new String[] { "/login" };
 
-    public SecurityConfig(UserDetailService userDetailService) {
-        this.userDetailService = userDetailService;
+    public SecurityConfig(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean

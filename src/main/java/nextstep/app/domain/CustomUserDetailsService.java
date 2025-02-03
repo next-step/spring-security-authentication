@@ -1,16 +1,16 @@
 package nextstep.app.domain;
 
 import nextstep.security.AuthenticationException;
-import nextstep.security.UserDetailService;
+import nextstep.security.UserDetailsService;
 import nextstep.security.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserDetailService implements UserDetailService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
-    public CustomUserDetailService(MemberRepository memberRepository) {
+    public CustomUserDetailsService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 

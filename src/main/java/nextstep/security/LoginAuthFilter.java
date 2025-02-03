@@ -11,17 +11,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
 
 public class LoginAuthFilter extends GenericFilterBean {
 
-    private final UserDetailService userDetailService;
+    private final UserDetailsService userDetailsService;
 
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
-    public LoginAuthFilter(UserDetailService userDetailService) {
-        this.userDetailService = userDetailService;
+    public LoginAuthFilter(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -50,7 +49,7 @@ public class LoginAuthFilter extends GenericFilterBean {
         String username = parameterMap.get("username")[0];
         String password = parameterMap.get("password")[0];
 
-        UserDetails userDetails = userDetailService.loadUserDetailsByUserName(username);
+        UserDetails userDetails = userDetailsService.loadUserDetailsByUserName(username);
         boolean isNotCorrectPassword = !password.equals(userDetails.password());
         if (isNotCorrectPassword) {
             throw new AuthenticationException();
