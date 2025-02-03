@@ -2,6 +2,7 @@ package nextstep.app.config;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.security.BasicAuthInterceptor;
 import nextstep.security.FormLoginInterceptor;
 import nextstep.security.UserDetailService;
 import nextstep.security.UserDetails;
@@ -22,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new FormLoginInterceptor(userDetailService())).addPathPatterns("/login");
-//        registry.addInterceptor(new BasicAuthInterceptor(userDetailService)).addPathPatterns("/members");
+        registry.addInterceptor(new BasicAuthInterceptor(userDetailService())).addPathPatterns("/members");
     }
 
     @Bean
