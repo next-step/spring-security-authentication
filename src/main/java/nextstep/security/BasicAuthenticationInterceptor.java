@@ -1,23 +1,20 @@
-package nextstep.app.interceptor;
+package nextstep.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nextstep.app.domain.MemberRepository;
-import nextstep.app.ui.AuthenticationException;
-import nextstep.app.util.Base64Convertor;
+import nextstep.security.util.Base64Convertor;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 public class BasicAuthenticationInterceptor implements HandlerInterceptor {
 
-    private final MemberRepository memberRepository;
+    private final MemberDetailService memberDetailService;
 
-    public BasicAuthenticationInterceptor(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public BasicAuthenticationInterceptor(MemberDetailService memberDetailService) {
+        this.memberDetailService = memberDetailService;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
         try {
             String authorization = request.getHeader("Authorization");
             String credentials = authorization.split(" ")[1];
@@ -26,9 +23,10 @@ public class BasicAuthenticationInterceptor implements HandlerInterceptor {
             String username = usernameAndPassword[0];
             String password = usernameAndPassword[1];
 
-            memberRepository.findByEmail(username)
-                    .filter(it -> it.matchPassword(password))
-                    .orElseThrow(AuthenticationException::new);
+            MemberDetail member = memberDetailService.findByUsername(username);
+            if (!member.isCorrectPassword(password)) {
+                throw new AuthenticationException();
+            }
 
         } catch (Exception e) {
             throw new AuthenticationException();
