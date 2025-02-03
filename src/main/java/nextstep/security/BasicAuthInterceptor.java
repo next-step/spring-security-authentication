@@ -2,22 +2,20 @@ package nextstep.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nextstep.app.domain.MemberRepository;
 import nextstep.app.util.Base64Convertor;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-@Component
 public class BasicAuthInterceptor implements HandlerInterceptor {
 
-    private final MemberRepository memberRepository;
+    private final UserDetailService userDetailService;
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
-    public BasicAuthInterceptor(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public BasicAuthInterceptor(UserDetailService userDetailService) {
+        this.userDetailService = userDetailService;
     }
+
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -35,10 +33,15 @@ public class BasicAuthInterceptor implements HandlerInterceptor {
 
         String username = usernameAndPassword[0];
         String password = usernameAndPassword[1];
+        if (!StringUtils.hasText(username) || !StringUtils.hasText(password)) {
+            throw new AuthenticationException();
+        }
 
-        memberRepository.findByEmail(username)
-                .filter(it -> it.matchPassword(password))
-                .orElseThrow(AuthenticationException::new);
+        UserDetails userDetails = userDetailService.loadUserDetailsByUserName(username);
+        boolean isNotCorrectPassword = !password.equals(userDetails.password());
+        if (isNotCorrectPassword) {
+            throw new AuthenticationException();
+        }
 
         return true;
     }
