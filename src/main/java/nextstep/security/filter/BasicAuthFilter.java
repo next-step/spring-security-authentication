@@ -5,9 +5,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.app.util.Base64Convertor;
+import nextstep.security.Authentication;
+import nextstep.security.AuthenticationManager;
+import nextstep.security.UsernamePasswordAuthenticationToken;
 import nextstep.security.exception.AuthenticationException;
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -16,12 +17,13 @@ import java.io.IOException;
 
 public class BasicAuthFilter extends OncePerRequestFilter {
 
-    private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
-    public BasicAuthFilter(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public BasicAuthFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return !HttpMethod.GET.name().equalsIgnoreCase(request.getMethod());
@@ -58,9 +60,9 @@ public class BasicAuthFilter extends OncePerRequestFilter {
             throw new AuthenticationException();
         }
 
-        UserDetails userDetails = userDetailsService.loadUserDetailsByUserName(username);
-        boolean isNotCorrectPassword = !password.equals(userDetails.password());
-        if (isNotCorrectPassword) {
+        UsernamePasswordAuthenticationToken authentication = UsernamePasswordAuthenticationToken.unAuthorizedToken(username, password);
+        Authentication authenticate = authenticationManager.authenticate(authentication);
+        if (authenticate.isAuthenticated()) {
             throw new AuthenticationException();
         }
     }

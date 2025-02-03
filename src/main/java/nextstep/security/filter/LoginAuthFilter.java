@@ -7,9 +7,10 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import nextstep.security.Authentication;
+import nextstep.security.AuthenticationManager;
+import nextstep.security.UsernamePasswordAuthenticationToken;
 import nextstep.security.exception.AuthenticationException;
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -18,12 +19,12 @@ import java.util.Map;
 
 public class LoginAuthFilter extends GenericFilterBean {
 
-    private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
-    public LoginAuthFilter(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public LoginAuthFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -34,13 +35,11 @@ public class LoginAuthFilter extends GenericFilterBean {
             try {
                 login(httpRequest);
             } catch (AuthenticationException e) {
-                HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-                httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+                ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
                 return;
             }
 
-            HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_OK);
             return;
         }
 
@@ -52,13 +51,13 @@ public class LoginAuthFilter extends GenericFilterBean {
         String username = parameterMap.get("username")[0];
         String password = parameterMap.get("password")[0];
 
-        UserDetails userDetails = userDetailsService.loadUserDetailsByUserName(username);
-        boolean isNotCorrectPassword = !password.equals(userDetails.password());
-        if (isNotCorrectPassword) {
+        UsernamePasswordAuthenticationToken authentication = UsernamePasswordAuthenticationToken.unAuthorizedToken(username, password);
+        Authentication authenticate = authenticationManager.authenticate(authentication);
+        if (authenticate.isAuthenticated()) {
             throw new AuthenticationException();
         }
 
         HttpSession session = httpRequest.getSession();
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, userDetails.toString());
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, authenticate.toString());
     }
 }
