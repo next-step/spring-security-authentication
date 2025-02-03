@@ -9,44 +9,36 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
-import nextstep.security.user.UsernamePasswordAuthenticationToken;
 import nextstep.security.authentication.exception.AuthenticationException;
-import org.springframework.http.HttpMethod;
+import nextstep.security.user.UsernamePasswordAuthenticationToken;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 import java.util.Map;
 
-public class LoginAuthFilter extends GenericFilterBean {
+public class UserNamePasswordAuthFilter extends GenericFilterBean {
 
     private final AuthenticationManager authenticationManager;
 
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
-    public LoginAuthFilter(AuthenticationManager authenticationManager) {
+    public UserNamePasswordAuthFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        if (servletRequest instanceof HttpServletRequest httpRequest
-                && (HttpMethod.POST.name().equalsIgnoreCase(httpRequest.getMethod()))
-        ) {
-            try {
-                login(httpRequest);
-            } catch (AuthenticationException e) {
-                ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-                return;
-            }
-
-            ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_OK);
+        try {
+            checkByUserNamePassword((HttpServletRequest) servletRequest);
+        } catch (AuthenticationException e) {
+            ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             return;
         }
 
-        filterChain.doFilter(servletRequest, servletResponse);
+        ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_OK);
     }
 
-    private void login(HttpServletRequest httpRequest) {
+    private void checkByUserNamePassword(HttpServletRequest httpRequest) {
         Map<String, String[]> parameterMap = httpRequest.getParameterMap();
         String username = parameterMap.get("username")[0];
         String password = parameterMap.get("password")[0];

@@ -1,23 +1,27 @@
 package nextstep.app;
 
 
-import nextstep.security.AuthenticationManager;
-import nextstep.security.UserDetailsService;
+import nextstep.security.BasicSecurityFilterChain;
+import nextstep.security.FilterChainProxy;
+import nextstep.security.SecurityFilterChain;
+import nextstep.security.UserNamePasswordSecurityFilterChain;
+import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.filter.BasicAuthFilter;
-import nextstep.security.filter.LoginAuthFilter;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import nextstep.security.filter.UserNamePasswordAuthFilter;
+import nextstep.security.user.UserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 import java.util.List;
 
 @Configuration
 public class SecurityConfig {
 
-    private final UserDetailsService userDetailsService;
-
     private static final String[] BASIC_AUTH_PATH = new String[]{"/members"};
-    private static final String[] LOGIN_AUTH_PATH = new String[]{"/login"};
+    private static final String[] USER_NAME_PASSWORD_AUTH_PATH = new String[]{"/login"};
+
+    private final UserDetailsService userDetailsService;
 
     public SecurityConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -31,20 +35,25 @@ public class SecurityConfig {
     }
 
     @Bean
-    public FilterRegistrationBean<BasicAuthFilter> basicAuthFilterRegister() {
-        BasicAuthFilter basicAuthFilter = new BasicAuthFilter(authenticationManager());
-        FilterRegistrationBean<BasicAuthFilter> registrationBean = new FilterRegistrationBean<>(basicAuthFilter);
-        registrationBean.addUrlPatterns(BASIC_AUTH_PATH);
-        registrationBean.setOrder(1);
-        return registrationBean;
+    public DelegatingFilterProxy delegatingFilterProxy() {
+        List<SecurityFilterChain> securityFilterChains = List.of(basicSecurityFilterChain(), userNamePasswordSecurityFilterChain());
+        FilterChainProxy delegate = new FilterChainProxy(securityFilterChains);
+        return new DelegatingFilterProxy(delegate);
     }
 
     @Bean
-    public FilterRegistrationBean<LoginAuthFilter> loginAuthFilterRegister() {
-        LoginAuthFilter loginAuthFilter = new LoginAuthFilter(authenticationManager());
-        FilterRegistrationBean<LoginAuthFilter> registrationBean = new FilterRegistrationBean<>(loginAuthFilter);
-        registrationBean.addUrlPatterns(LOGIN_AUTH_PATH);
-        registrationBean.setOrder(2);
-        return registrationBean;
+    public SecurityFilterChain basicSecurityFilterChain() {
+        return new BasicSecurityFilterChain(
+                BASIC_AUTH_PATH,
+                List.of(new BasicAuthFilter(authenticationManager()))
+        );
+    }
+
+    @Bean
+    public SecurityFilterChain userNamePasswordSecurityFilterChain() {
+        return new UserNamePasswordSecurityFilterChain(
+                USER_NAME_PASSWORD_AUTH_PATH,
+                List.of(new UserNamePasswordAuthFilter(authenticationManager()))
+        );
     }
 }
