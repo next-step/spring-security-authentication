@@ -15,7 +15,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 public abstract class AbstractAuthProcessingFilter extends OncePerRequestFilter {
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository;
 
