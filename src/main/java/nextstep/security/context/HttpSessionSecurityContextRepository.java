@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpSession;
 public class HttpSessionSecurityContextRepository implements SecurityContextRepository {
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
+    private HttpSessionSecurityContextRepository() {}
+
     public static HttpSessionSecurityContextRepository getInstance() {
         return SingletonHolder.INSTANCE;
     }
@@ -15,7 +17,7 @@ public class HttpSessionSecurityContextRepository implements SecurityContextRepo
     public SecurityContext loadContext(HttpServletRequest request) {
         final HttpSession session = request.getSession(false);
         return session == null
-                ? null
+                ? SecurityContext.empty()
                 : (SecurityContext) session.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
     }
 
