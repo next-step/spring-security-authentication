@@ -23,11 +23,11 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import java.util.Base64;
 import java.util.List;
 
-public final class MockFactory {
+public final class Fixture {
     public static final String USERNAME = "email@username.com";
     public static final String PASSWORD = "P@ssw0rD";
 
-    private MockFactory() {}
+    private Fixture() {}
 
     public static FilterChain createFilterChain() {
         final UserDetailsService userDetailsService = createUserDetailsService();
@@ -46,7 +46,7 @@ public final class MockFactory {
 
     public static UsernamePasswordAuthenticationProvider createUsernamePasswordAuthenticationProvider() {
         return new UsernamePasswordAuthenticationProvider(
-                MockFactory.createUserDetailsService()
+                Fixture.createUserDetailsService()
         );
     }
 

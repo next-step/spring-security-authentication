@@ -6,10 +6,10 @@ import nextstep.security.exception.AuthenticationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.security.MockFactory.PASSWORD;
-import static nextstep.security.MockFactory.USERNAME;
-import static nextstep.security.MockFactory.createAuthentication;
-import static nextstep.security.MockFactory.createProviderManager;
+import static nextstep.security.Fixture.PASSWORD;
+import static nextstep.security.Fixture.USERNAME;
+import static nextstep.security.Fixture.createAuthentication;
+import static nextstep.security.Fixture.createProviderManager;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;

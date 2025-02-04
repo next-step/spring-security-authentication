@@ -6,8 +6,8 @@ import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
 
-import static nextstep.security.MockFactory.PASSWORD;
-import static nextstep.security.MockFactory.USERNAME;
+import static nextstep.security.Fixture.PASSWORD;
+import static nextstep.security.Fixture.USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import static nextstep.security.MockFactory.PASSWORD;
-import static nextstep.security.MockFactory.USERNAME;
-import static nextstep.security.MockFactory.createSecurityContext;
+import static nextstep.security.Fixture.PASSWORD;
+import static nextstep.security.Fixture.USERNAME;
+import static nextstep.security.Fixture.createSecurityContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpSessionSecurityContextRepositoryTest {

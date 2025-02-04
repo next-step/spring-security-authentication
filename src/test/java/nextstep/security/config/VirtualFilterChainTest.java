@@ -2,7 +2,7 @@ package nextstep.security.config;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import nextstep.security.MockFactory;
+import nextstep.security.Fixture;
 import nextstep.security.filter.BasicAuthorizationFilter;
 import nextstep.security.filter.FormAuthorizationFilter;
 import nextstep.security.user.UserDetailsService;
@@ -15,8 +15,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import static nextstep.security.MockFactory.createBasicRequest;
-import static nextstep.security.MockFactory.createLoginRequest;
+import static nextstep.security.Fixture.createBasicRequest;
+import static nextstep.security.Fixture.createLoginRequest;
 import static nextstep.security.Steps.testAuthentication;
 
 class VirtualFilterChainTest {
@@ -24,7 +24,7 @@ class VirtualFilterChainTest {
 
     @BeforeEach
     void setUp() {
-        final UserDetailsService userDetailsService = MockFactory.createUserDetailsService();
+        final UserDetailsService userDetailsService = Fixture.createUserDetailsService();
         filterChain = new VirtualFilterChain(new MockFilterChain(), List.of(
                 new BasicAuthorizationFilter(userDetailsService),
                 new FormAuthorizationFilter(userDetailsService, "/login")

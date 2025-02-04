@@ -11,10 +11,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
-import static nextstep.security.MockFactory.PASSWORD;
-import static nextstep.security.MockFactory.USERNAME;
-import static nextstep.security.MockFactory.createFilterChain;
-import static nextstep.security.MockFactory.createSecurityContext;
+import static nextstep.security.Fixture.PASSWORD;
+import static nextstep.security.Fixture.USERNAME;
+import static nextstep.security.Fixture.createFilterChain;
+import static nextstep.security.Fixture.createSecurityContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 

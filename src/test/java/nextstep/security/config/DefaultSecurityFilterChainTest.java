@@ -1,7 +1,7 @@
 package nextstep.security.config;
 
 import jakarta.servlet.Filter;
-import nextstep.security.MockFactory;
+import nextstep.security.Fixture;
 import nextstep.security.filter.BasicAuthorizationFilter;
 import nextstep.security.filter.FormAuthorizationFilter;
 import nextstep.security.user.UserDetailsService;
@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static nextstep.security.MockFactory.createBasicRequest;
-import static nextstep.security.MockFactory.createLoginRequest;
+import static nextstep.security.Fixture.createBasicRequest;
+import static nextstep.security.Fixture.createLoginRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DefaultSecurityFilterChainTest {
@@ -21,7 +21,7 @@ class DefaultSecurityFilterChainTest {
 
     @BeforeEach
     void setUp() {
-        final UserDetailsService userDetailsService = MockFactory.createUserDetailsService();
+        final UserDetailsService userDetailsService = Fixture.createUserDetailsService();
         filters = List.of(
                 new BasicAuthorizationFilter(userDetailsService),
                 new FormAuthorizationFilter(userDetailsService, "/login")

@@ -13,8 +13,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.io.IOException;
 
-import static nextstep.security.MockFactory.createLoginRequest;
-import static nextstep.security.MockFactory.createUserDetailsService;
+import static nextstep.security.Fixture.createLoginRequest;
+import static nextstep.security.Fixture.createUserDetailsService;
 import static nextstep.security.Steps.testAuthentication;
 
 class FormAuthorizationFilterTest {
