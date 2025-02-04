@@ -21,17 +21,22 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
-        String credentials = authorization.split(" ")[1];
-        String decodedString = Base64Convertor.decode(credentials);
-        String[] usernameAndPassword = decodedString.split(":");
-        String username = usernameAndPassword[0];
-        String password = usernameAndPassword[1];
+        try {
+            String authorization = request.getHeader("Authorization");
+            String credentials = authorization.split(" ")[1];
+            String decodedString = Base64Convertor.decode(credentials);
+            String[] usernameAndPassword = decodedString.split(":");
+            String username = usernameAndPassword[0];
+            String password = usernameAndPassword[1];
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        if (!userDetails.getPassword().equals(password)) {
-            throw new AuthenticationException();
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (!userDetails.getPassword().equals(password)) {
+                throw new AuthenticationException();
+            }
+
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-        filterChain.doFilter(request, response);
     }
 }
