@@ -1,10 +1,7 @@
 package nextstep.security;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.Servlet;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import nextstep.app.auth.MemberUserDetailsService;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
@@ -13,13 +10,17 @@ import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.manager.AuthenticationManager;
 import nextstep.security.authentication.manager.ProviderManager;
 import nextstep.security.authentication.provider.UsernamePasswordAuthenticationProvider;
+import nextstep.security.config.VirtualFilterChain;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolderFilter;
 import nextstep.security.filter.BasicAuthorizationFilter;
 import nextstep.security.filter.FormAuthorizationFilter;
 import nextstep.security.user.UserDetailsService;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockFilterChain;
+import org.springframework.mock.web.MockHttpServletRequest;
 
+import java.util.Base64;
 import java.util.List;
 
 public final class MockFactory {
@@ -28,15 +29,13 @@ public final class MockFactory {
 
     private MockFactory() {}
 
-    public static FilterChain createSecurityFilterChain() {
+    public static FilterChain createFilterChain() {
         final UserDetailsService userDetailsService = createUserDetailsService();
-        final MockFilterChain filterChain = new MockFilterChain(
-                createServlet(),
+        return new VirtualFilterChain(new MockFilterChain(), List.of(
                 new SecurityContextHolderFilter(),
                 new BasicAuthorizationFilter(userDetailsService),
                 new FormAuthorizationFilter(userDetailsService, "/login")
-        );
-        return filterChain;
+        ));
     }
 
     public static AuthenticationManager createProviderManager() {
@@ -51,7 +50,7 @@ public final class MockFactory {
         );
     }
 
-    private static UserDetailsService createUserDetailsService() {
+    public static UserDetailsService createUserDetailsService() {
         return new MemberUserDetailsService(createMemberRepository());
     }
 
@@ -63,6 +62,25 @@ public final class MockFactory {
 
     private static Member createMember() {
         return new Member(USERNAME, PASSWORD, "My Name", "My Image URL");
+    }
+
+    public static HttpServletRequest createBasicRequest() {
+        final String authorization = "Basic " + Base64.getEncoder().encodeToString(
+                (USERNAME + ":" + PASSWORD).getBytes()
+        );
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("Authorization", authorization);
+        request.setRequestURI("/members");
+        return request;
+    }
+
+    public static HttpServletRequest createLoginRequest() {
+        final MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRequestURI("/login");
+        request.setParameter("username", USERNAME);
+        request.setParameter("password", PASSWORD);
+        request.setContentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+        return request;
     }
 
     public static SecurityContext createSecurityContext(String username, String password) {
@@ -80,29 +98,6 @@ public final class MockFactory {
             public Object getCredentials() {
                 return password;
             }
-        };
-    }
-
-    private static Servlet createServlet() {
-        return new Servlet() {
-            @Override
-            public void init(ServletConfig servletConfig) {}
-
-            @Override
-            public ServletConfig getServletConfig() {
-                return null;
-            }
-
-            @Override
-            public void service(ServletRequest servletRequest, ServletResponse servletResponse) {}
-
-            @Override
-            public String getServletInfo() {
-                return "";
-            }
-
-            @Override
-            public void destroy() {}
         };
     }
 }

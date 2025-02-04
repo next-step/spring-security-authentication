@@ -13,8 +13,8 @@ import java.io.IOException;
 
 import static nextstep.security.MockFactory.PASSWORD;
 import static nextstep.security.MockFactory.USERNAME;
+import static nextstep.security.MockFactory.createFilterChain;
 import static nextstep.security.MockFactory.createSecurityContext;
-import static nextstep.security.MockFactory.createSecurityFilterChain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -43,9 +43,9 @@ class SecurityContextHolderFilterTest {
                 () -> assertThat(repository.loadContext(request))
                         .isEqualTo(SecurityContext.empty())
         );
-        
+
         // when
-        filter.doFilter(request, new MockHttpServletResponse(), createSecurityFilterChain());
+        filter.doFilter(request, new MockHttpServletResponse(), createFilterChain());
 
         // then
         assertAll(
