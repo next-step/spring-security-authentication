@@ -7,19 +7,24 @@ import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
+import nextstep.security.core.context.SecurityContextRepository;
 import nextstep.security.util.Base64Convertor;
 
 import java.io.IOException;
 
 public class BasicAuthFilter extends AbstractAuthProcessingFilter {
 
-    public BasicAuthFilter(final AuthenticationManager authenticationManager) {
-        super(authenticationManager);
+    public BasicAuthFilter(final AuthenticationManager authenticationManager, final SecurityContextRepository securityContextRepository) {
+        super(authenticationManager, securityContextRepository);
     }
 
     @Override
     boolean match(final HttpServletRequest request) {
-        return request.getRequestURI().equals("/members");
+        return existAuthorizationHeader(request);
+    }
+
+    private boolean existAuthorizationHeader(final HttpServletRequest request) {
+        return request.getHeader("Authorization") != null;
     }
 
     @Override
