@@ -1,4 +1,4 @@
-package nextstep.security;
+package nextstep.security.filter.config;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
