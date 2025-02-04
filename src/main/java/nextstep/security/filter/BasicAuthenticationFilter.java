@@ -1,16 +1,13 @@
 package nextstep.security.filter;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.app.ui.AuthenticationException;
-import nextstep.app.util.Base64Convertor;
 import nextstep.security.user.UserDetails;
 import nextstep.security.user.UserDetailsService;
+import nextstep.security.util.Base64Convertor;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
 
 public class BasicAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
@@ -20,7 +17,7 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         try {
             String authorization = request.getHeader("Authorization");
             String credentials = authorization.split(" ")[1];
