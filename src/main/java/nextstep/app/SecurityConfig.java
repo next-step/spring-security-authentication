@@ -1,15 +1,15 @@
 package nextstep.app;
 
-import nextstep.security.DefaultSecurityFilterChain;
-import nextstep.security.FilterChainProxy;
-import nextstep.security.UserDetailsService;
+import nextstep.security.*;
 import nextstep.security.filter.BasicAuthenticationFilter;
 import nextstep.security.filter.FormLoginAuthenticationFilter;
+import nextstep.security.provider.DaoAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 import java.util.List;
+import java.util.Set;
 
 @Configuration
 public class SecurityConfig {
@@ -21,10 +21,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DelegatingFilterProxy delegatingFilterProxy() {
+    public AuthenticationManager authenticationManager() {
+        return new ProviderManager(Set.of(new DaoAuthenticationProvider(userDetailsService)));
+    }
+
+    @Bean
+    public DelegatingFilterProxy delegatingFilterProxy(AuthenticationManager authenticationManager) {
         DefaultSecurityFilterChain securityFilterChains = new DefaultSecurityFilterChain(
-                List.of(new BasicAuthenticationFilter(userDetailsService)
-                      , new FormLoginAuthenticationFilter(userDetailsService))
+                List.of(new BasicAuthenticationFilter(authenticationManager)
+                      , new FormLoginAuthenticationFilter(authenticationManager))
         );
 
         FilterChainProxy filterChainProxy = new FilterChainProxy(List.of(securityFilterChains));

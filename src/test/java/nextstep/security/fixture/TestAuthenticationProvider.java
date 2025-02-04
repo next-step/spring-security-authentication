@@ -5,10 +5,10 @@ import nextstep.security.AuthenticationException;
 import nextstep.security.AuthenticationProvider;
 
 public class TestAuthenticationProvider implements AuthenticationProvider {
-    private boolean surpport;
+    private boolean support;
 
     public TestAuthenticationProvider(boolean support) {
-        this.surpport = surpport;
+        this.support = support;
     }
 
     @Override
@@ -18,6 +18,6 @@ public class TestAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return surpport;
+        return support;
     }
 }
