@@ -2,11 +2,11 @@ package nextstep.app;
 
 import nextstep.app.domain.CustomUserDetailsService;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.DefaultSecurityFilterChain;
-import nextstep.security.DelegatingFilterProxy;
-import nextstep.security.FilterChainProxy;
-import nextstep.security.SecurityFilterChain;
-import nextstep.security.UserDetailsService;
+import nextstep.security.filter.config.DefaultSecurityFilterChain;
+import nextstep.security.filter.config.DelegatingFilterProxy;
+import nextstep.security.filter.config.FilterChainProxy;
+import nextstep.security.filter.config.SecurityFilterChain;
+import nextstep.security.core.uesrdetails.UserDetailsService;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.AuthenticationProvider;
 import nextstep.security.authentication.DaoAuthenticationProvider;

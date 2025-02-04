@@ -1,7 +1,7 @@
 package nextstep.security.authentication;
 
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
+import nextstep.security.core.uesrdetails.UserDetails;
+import nextstep.security.core.uesrdetails.UserDetailsService;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.util.PasswordMatcher;
 

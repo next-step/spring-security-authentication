@@ -1,7 +1,7 @@
 package nextstep.app.domain;
 
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
+import nextstep.security.core.uesrdetails.UserDetails;
+import nextstep.security.core.uesrdetails.UserDetailsService;
 
 public class CustomUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;

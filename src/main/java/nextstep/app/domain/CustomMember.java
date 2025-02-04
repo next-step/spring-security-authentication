@@ -1,6 +1,6 @@
 package nextstep.app.domain;
 
-import nextstep.security.UserDetails;
+import nextstep.security.core.uesrdetails.UserDetails;
 
 public class CustomMember implements UserDetails {
     private final Member member;
