@@ -9,11 +9,11 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
-public class DelegateFilterProxy extends GenericFilterBean {
+public class DelegatingFilterProxy extends GenericFilterBean {
 
     private final Filter delegate;
 
-    public DelegateFilterProxy(Filter delegate) {
+    public DelegatingFilterProxy(Filter delegate) {
         this.delegate = delegate;
     }
 

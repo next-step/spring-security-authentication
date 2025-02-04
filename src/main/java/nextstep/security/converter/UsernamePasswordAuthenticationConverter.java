@@ -1,4 +1,4 @@
-package nextstep.security.login;
+package nextstep.security.converter;
 
 import jakarta.servlet.http.HttpServletRequest;
 import nextstep.security.Authentication;

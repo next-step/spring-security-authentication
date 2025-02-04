@@ -4,20 +4,22 @@ import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.security.AuthenticationManager;
 import nextstep.security.AuthenticationProvider;
+import nextstep.security.SecurityContextRepository;
 import nextstep.security.SecurityFilterChain;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
 import nextstep.security.authentication.DaoAuthenticationProvider;
 import nextstep.security.authentication.ProviderManager;
-import nextstep.security.basic.BasicAuthenticationConverter;
-import nextstep.security.basic.BasicAuthenticationEntrypoint;
+import nextstep.security.context.DelegatingSecurityContextRepository;
+import nextstep.security.context.HttpSessionSecurityContextRepository;
+import nextstep.security.converter.BasicAuthenticationConverter;
+import nextstep.security.converter.UsernamePasswordAuthenticationConverter;
 import nextstep.security.filter.BasicAuthenticationFilter;
 import nextstep.security.filter.DefaultSecurityFilterChain;
-import nextstep.security.filter.DelegateFilterProxy;
+import nextstep.security.filter.DelegatingFilterProxy;
 import nextstep.security.filter.FilterChainProxy;
+import nextstep.security.filter.SecurityContextHolderFilter;
 import nextstep.security.filter.UsernamePasswordAuthenticationFilter;
-import nextstep.security.login.UsernamePasswordAuthenticationConverter;
-import nextstep.security.login.UsernamePasswordAuthenticationEntrypoint;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -63,19 +65,9 @@ public class SecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public BasicAuthenticationEntrypoint basicAuthenticationEntrypoint() {
-        return new BasicAuthenticationEntrypoint();
-    }
-
-    @Bean
-    public UsernamePasswordAuthenticationEntrypoint usernamePasswordAuthenticationEntrypoint() {
-        return new UsernamePasswordAuthenticationEntrypoint();
-    }
-
-    @Bean
-    public FilterRegistrationBean<DelegateFilterProxy> delegateFilterProxy(FilterChainProxy filterChainProxy) {
-        FilterRegistrationBean<DelegateFilterProxy> registrationBean = new FilterRegistrationBean<>();
-        DelegateFilterProxy filter = new DelegateFilterProxy(filterChainProxy);
+    public FilterRegistrationBean<DelegatingFilterProxy> delegateFilterProxy(FilterChainProxy filterChainProxy) {
+        FilterRegistrationBean<DelegatingFilterProxy> registrationBean = new FilterRegistrationBean<>();
+        DelegatingFilterProxy filter = new DelegatingFilterProxy(filterChainProxy);
 
         registrationBean.setFilter(filter);
         registrationBean.addUrlPatterns("/*");
@@ -100,21 +92,29 @@ public class SecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(AuthenticationManager authenticationManager) {
+    public SecurityFilterChain securityFilterChain(AuthenticationManager authenticationManager,
+                                                   SecurityContextRepository securityContextRepository) {
         return new DefaultSecurityFilterChain(
                 List.of(
+                        new SecurityContextHolderFilter(
+                                securityContextRepository
+                        ),
                         new UsernamePasswordAuthenticationFilter(
                                 authenticationManager,
                                 usernamePasswordAuthenticationConverter(),
-                                usernamePasswordAuthenticationEntrypoint()
+                                securityContextRepository
                         ),
-
                         new BasicAuthenticationFilter(
                                 authenticationManager,
                                 basicAuthenticationConverter(),
-                                basicAuthenticationEntrypoint()
+                                securityContextRepository
                         )
                 )
         );
+    }
+
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new DelegatingSecurityContextRepository(new HttpSessionSecurityContextRepository());
     }
 }
