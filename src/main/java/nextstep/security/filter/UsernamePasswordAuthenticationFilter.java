@@ -1,19 +1,21 @@
-package nextstep.security;
+package nextstep.security.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import nextstep.security.domain.MemberDetail;
+import nextstep.security.domain.MemberDetailService;
+import nextstep.security.exception.AuthenticationException;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 import java.util.Map;
 
-import static nextstep.security.UsernamePasswordAuthenticationInterceptor.SPRING_SECURITY_CONTEXT_KEY;
-
 public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
 
+    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
     private final MemberDetailService memberDetailService;
 
     public UsernamePasswordAuthenticationFilter(MemberDetailService memberDetailService) {
@@ -24,7 +26,7 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        if (!httpRequest.getContextPath().startsWith("/login")) {
+        if (!httpRequest.getRequestURI().startsWith("/login")) {
             chain.doFilter(request, response);
             return;
         }
@@ -39,7 +41,5 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
         }
 
         httpRequest.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, member);
-
-        chain.doFilter(request, response);
     }
 }

@@ -1,7 +1,10 @@
-package nextstep.security;
+package nextstep.security.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import nextstep.security.domain.MemberDetail;
+import nextstep.security.domain.MemberDetailService;
+import nextstep.security.exception.AuthenticationException;
 import nextstep.security.util.Base64Convertor;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -20,7 +23,7 @@ public class BasicAuthenticationFilter extends GenericFilterBean {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        if (!httpRequest.getContextPath().startsWith("/members")) {
+        if (!httpRequest.getRequestURI().startsWith("/members")) {
             chain.doFilter(request, response);
             return;
         }
