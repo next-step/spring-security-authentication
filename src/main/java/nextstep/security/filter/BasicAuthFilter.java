@@ -37,7 +37,6 @@ public class BasicAuthFilter implements Filter {
             }
             return;
         }
-
         throw new ServletException("BasicAuthFilter only supports HTTP requests");
     }
 
