@@ -20,6 +20,6 @@
 - [x] 기존 세션 방식에서 스레드 로컬 방식으로 인증 정보 관리 변경
 
 ## 🚀 4단계 - SecurityContextHolderFilter 구현
-- [ ] SecurityContextHolder를 Filter로 관리하는 SecurityContextHolderFilter 구현
-- [ ] SecurityContextHolderFilter 작성 및 필터 체인에 등록
-- [ ] login_after_members 테스트로 동작 검증
+- [x] SecurityContextHolder를 Filter로 관리하는 SecurityContextHolderFilter 구현
+- [x] SecurityContextHolderFilter 작성 및 필터 체인에 등록
+- [x] login_after_members 테스트로 동작 검증

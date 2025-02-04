@@ -43,7 +43,6 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
         try {
             return userDetailsService.loadUserByUsername(principal);
         } catch (Exception e) {
-            logger.error("Fail to get Authentication user", e);
             throw new UsernameNotFoundException("Fail to get Authentication user", e);
         }
     }

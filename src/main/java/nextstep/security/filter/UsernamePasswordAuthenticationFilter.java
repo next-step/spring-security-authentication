@@ -49,24 +49,30 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
 
         try {
             Authentication authRequest = this.authenticationConverter.convert(httpRequest);
-
-            if (authRequest == null) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
             Authentication authResult = this.authenticationManager.authenticate(authRequest);
 
-            SecurityContext ctx = setSecurityContext(authResult);
-            securityContextRepository.saveContext(ctx, httpRequest, (HttpServletResponse) response);
+            onAuthenticationSuccess(httpRequest, httpResponse, authResult);
         } catch (AuthenticationException e) {
-            logger.error("UsernamePassword Authentication failed", e);
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            onAuthenticationFailure(httpResponse, e);
         }
     }
 
     private boolean requireAuthentication(HttpServletRequest httpRequest) {
-        return httpRequest.getRequestURI().equals(DEFAULT_FILTER_PROCESS_URL);
+        return httpRequest.getRequestURI().equals(DEFAULT_FILTER_PROCESS_URL)
+                && httpRequest.getMethod().equals("POST");
+    }
+
+    private void onAuthenticationSuccess(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+                                         Authentication authResult) {
+        SecurityContext ctx = setSecurityContext(authResult);
+        securityContextRepository.saveContext(ctx, httpRequest, httpResponse);
+    }
+
+    private void onAuthenticationFailure(HttpServletResponse httpResponse,
+                                         AuthenticationException e) throws IOException {
+        SecurityContextHolder.clearContext();
+        logger.error("UsernamePassword Authentication failed", e);
+        httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
     }
 
     private SecurityContext setSecurityContext(Authentication authResult) {

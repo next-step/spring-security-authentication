@@ -11,10 +11,12 @@ public class UsernamePasswordAuthenticationConverter implements AuthenticationCo
 
     @Override
     public Authentication convert(HttpServletRequest request) {
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        String username = parameterMap.get("username")[0];
-        String password = parameterMap.get("password")[0];
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
 
-        return new UsernamePasswordAuthenticationToken(username, password);
+        String authRequestUsername = (username != null) ? username : "";
+        String authRequestPassword = (password != null) ? password : "";
+
+        return new UsernamePasswordAuthenticationToken(authRequestUsername, authRequestPassword);
     }
 }

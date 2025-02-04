@@ -65,20 +65,17 @@ public class SecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public FilterRegistrationBean<DelegatingFilterProxy> delegateFilterProxy(FilterChainProxy filterChainProxy) {
+    public FilterRegistrationBean<DelegatingFilterProxy> delegateFilterProxy(SecurityFilterChain securityFilterChain) {
         FilterRegistrationBean<DelegatingFilterProxy> registrationBean = new FilterRegistrationBean<>();
-        DelegatingFilterProxy filter = new DelegatingFilterProxy(filterChainProxy);
+        DelegatingFilterProxy filter = new DelegatingFilterProxy(
+                new FilterChainProxy(
+                        List.of(securityFilterChain)
+                )
+        );
 
         registrationBean.setFilter(filter);
         registrationBean.addUrlPatterns("/*");
         return registrationBean;
-    }
-
-    @Bean
-    public FilterChainProxy filterChainProxy(SecurityFilterChain securityFilterChain) {
-        return new FilterChainProxy(
-                List.of(securityFilterChain)
-        );
     }
 
     @Bean

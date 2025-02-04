@@ -38,23 +38,15 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
             Authentication authRequest = this.authenticationConverter.convert(request);
-
             if (authRequest == null) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
             Authentication authResult = this.authenticationManager.authenticate(authRequest);
-
-            SecurityContext ctx = setSecurityContext(authResult);
-            securityContextRepository.saveContext(ctx, request, response);
-
+            onAuthenticationSuccess(request, response, authResult);
         } catch (AuthenticationException e) {
-            logger.error("Basic Authentication failed", e);
-            SecurityContextHolder.clearContext();
-
-            response.addHeader("WWW-Authenticate", "Basic realm=\"nextstep\"");
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            onAuthenticationFailure(response, e);
         }
 
         try {
@@ -62,6 +54,20 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
         } finally {
             SecurityContextHolder.clearContext();
         }
+    }
+
+    private void onAuthenticationSuccess(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+                                         Authentication authResult) {
+        SecurityContext ctx = setSecurityContext(authResult);
+        securityContextRepository.saveContext(ctx, httpRequest, httpResponse);
+    }
+
+    private void onAuthenticationFailure(HttpServletResponse httpResponse,
+                                         AuthenticationException e) throws IOException {
+        SecurityContextHolder.clearContext();
+        logger.error("Basic Authentication failed", e);
+        httpResponse.addHeader("WWW-Authenticate", "Basic realm=\"nextstep\"");
+        httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
     }
 
     private SecurityContext setSecurityContext(Authentication authResult) {
