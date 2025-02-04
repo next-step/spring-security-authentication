@@ -15,11 +15,11 @@ public class DefaultFilterChain implements SecurityFilterChain {
 
     @Override
     public List<Filter> getFilters() {
-        return List.of();
+        return this.filters;
     }
 
     @Override
     public boolean supports(ServletRequest servletRequest) {
-        return false;
+        return true;
     }
 }
