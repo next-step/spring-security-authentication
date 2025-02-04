@@ -1,6 +1,7 @@
 package nextstep.security;
 
 import jakarta.servlet.Filter;
+import nextstep.security.fixture.TestSimpleFilter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
