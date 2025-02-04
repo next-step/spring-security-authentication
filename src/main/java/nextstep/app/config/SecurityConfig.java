@@ -32,7 +32,7 @@ public class SecurityConfig {
         return new DefaultSecurityFilterChain(
                 List.of(new ExceptionHandlerFilter(),
                         new BasicAuthenticationFilter(memberDetailService),
-                        new UsernamePasswordAuthenticationFilter(memberDetailService))
+                        new LoginAuthenticationFilter(memberDetailService))
         );
     }
 }

@@ -13,12 +13,12 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 import java.util.Map;
 
-public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
+public class LoginAuthenticationFilter extends GenericFilterBean {
 
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
     private final MemberDetailService memberDetailService;
 
-    public UsernamePasswordAuthenticationFilter(MemberDetailService memberDetailService) {
+    public LoginAuthenticationFilter(MemberDetailService memberDetailService) {
         this.memberDetailService = memberDetailService;
     }
 
