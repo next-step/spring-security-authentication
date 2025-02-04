@@ -1,4 +1,4 @@
-package nextstep.security;
+package nextstep.security.domain;
 
 public class MemberDetail {
     String username;

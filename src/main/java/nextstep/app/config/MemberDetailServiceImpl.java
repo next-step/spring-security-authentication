@@ -2,9 +2,9 @@ package nextstep.app.config;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.AuthenticationException;
-import nextstep.security.MemberDetail;
-import nextstep.security.MemberDetailService;
+import nextstep.security.exception.AuthenticationException;
+import nextstep.security.domain.MemberDetail;
+import nextstep.security.domain.MemberDetailService;
 import org.springframework.stereotype.Service;
 
 @Service
