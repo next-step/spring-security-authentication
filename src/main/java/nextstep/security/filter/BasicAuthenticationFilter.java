@@ -1,9 +1,12 @@
-package nextstep.security;
+package nextstep.security.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.app.util.Base64Convertor;
+import nextstep.security.AuthenticationException;
+import nextstep.security.UserDetails;
+import nextstep.security.UserDetailsService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 

@@ -1,6 +1,10 @@
 package nextstep.app;
 
-import nextstep.security.*;
+import nextstep.security.DefaultSecurityFilterChain;
+import nextstep.security.FilterChainProxy;
+import nextstep.security.UserDetailsService;
+import nextstep.security.filter.BasicAuthenticationFilter;
+import nextstep.security.filter.FormLoginAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;
