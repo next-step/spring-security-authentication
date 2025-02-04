@@ -4,8 +4,10 @@ import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.app.ui.BasicAuthenticationInterceptor;
 import nextstep.app.ui.FormLoginInterceptor;
+import nextstep.security.BasicAuthenticationFilter;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -22,7 +24,15 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new FormLoginInterceptor(userDetailsService())).addPathPatterns("/login");
-        registry.addInterceptor(new BasicAuthenticationInterceptor(userDetailsService())).addPathPatterns("/members");
+//        registry.addInterceptor(new BasicAuthenticationInterceptor(userDetailsService())).addPathPatterns("/members");
+    }
+
+    @Bean
+    public FilterRegistrationBean basicAuthenticationFilterRegister() {
+        final FilterRegistrationBean registrationBean = new FilterRegistrationBean(new BasicAuthenticationFilter(userDetailsService()));
+        registrationBean.addUrlPatterns("/members");
+
+        return registrationBean;
     }
 
     @Bean
