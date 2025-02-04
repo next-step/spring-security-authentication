@@ -1,14 +1,14 @@
 package nextstep.security.context;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nextstep.security.authentication.Authentication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import static nextstep.security.authentication.MockFactory.PASSWORD;
-import static nextstep.security.authentication.MockFactory.USERNAME;
+import static nextstep.security.MockFactory.PASSWORD;
+import static nextstep.security.MockFactory.USERNAME;
+import static nextstep.security.MockFactory.createSecurityContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpSessionSecurityContextRepositoryTest {
@@ -25,7 +25,7 @@ class HttpSessionSecurityContextRepositoryTest {
     @Test
     void sameContext() {
         final HttpServletRequest request = new MockHttpServletRequest();
-        final SecurityContext context = createContext();
+        final SecurityContext context = createSecurityContext(USERNAME, PASSWORD);
         repository.saveContext(context, request, new MockHttpServletResponse());
         assertThat(repository.loadContext(request))
                 .isEqualTo(context);
@@ -34,25 +34,10 @@ class HttpSessionSecurityContextRepositoryTest {
     @DisplayName("ServletRequest 가 다르면, SecurityContext 도 다르다.")
     @Test
     void differentContext() {
-        final SecurityContext context = createContext();
+        final SecurityContext context = createSecurityContext(USERNAME, PASSWORD);
         repository.saveContext(context, new MockHttpServletRequest(), new MockHttpServletResponse());
         assertThat(repository.loadContext(new MockHttpServletRequest()))
                 .isNotEqualTo(context);
     }
 
-    private SecurityContext createContext() {
-        return new SecurityContext(
-                new Authentication() {
-                    @Override
-                    public Object getPrincipal() {
-                        return USERNAME;
-                    }
-
-                    @Override
-                    public Object getCredentials() {
-                        return PASSWORD;
-                    }
-                }
-        );
-    }
 }

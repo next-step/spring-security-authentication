@@ -5,8 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.security.authentication.MockFactory.PASSWORD;
-import static nextstep.security.authentication.MockFactory.USERNAME;
+import static nextstep.security.MockFactory.PASSWORD;
+import static nextstep.security.MockFactory.USERNAME;
+import static nextstep.security.MockFactory.createAuthentication;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -27,26 +28,18 @@ class SecurityContextHolderTest {
     @DisplayName("SecurityContextHolder 의 SecurityContext 를 수정할 수 있다.")
     @Test
     void setContext() {
-        SecurityContextHolder.setContext(new SecurityContext(
-                new Authentication() {
-                    @Override
-                    public Object getPrincipal() {
-                        return USERNAME;
-                    }
-
-                    @Override
-                    public Object getCredentials() {
-                        return PASSWORD;
-                    }
-                }
-        ));
-        final Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
+        final Authentication authentication = createAuthentication(USERNAME, PASSWORD);
+        final SecurityContext context = new SecurityContext(authentication);
+        SecurityContextHolder.setContext(context);
+        assertThat(SecurityContextHolder.getContext().getAuthentication())
+                .isEqualTo(authentication);
         assertAll(
-                () -> assertThat(authentication.getPrincipal())
-                        .isEqualTo(USERNAME),
-                () -> assertThat(authentication.getCredentials())
-                        .isEqualTo(PASSWORD)
+                () -> assertThat(SecurityContextHolder.getContext())
+                        .isNotEqualTo(SecurityContext.empty()),
+                () -> assertThat(SecurityContextHolder.getContext())
+                        .isEqualTo(context),
+                () -> assertThat(SecurityContextHolder.getContext().getAuthentication())
+                        .isEqualTo(authentication)
         );
     }
 }

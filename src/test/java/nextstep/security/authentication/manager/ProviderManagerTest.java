@@ -6,9 +6,10 @@ import nextstep.security.exception.AuthenticationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.security.authentication.MockFactory.PASSWORD;
-import static nextstep.security.authentication.MockFactory.USERNAME;
-import static nextstep.security.authentication.MockFactory.createProviderManager;
+import static nextstep.security.MockFactory.PASSWORD;
+import static nextstep.security.MockFactory.USERNAME;
+import static nextstep.security.MockFactory.createAuthentication;
+import static nextstep.security.MockFactory.createProviderManager;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -33,17 +34,7 @@ class ProviderManagerTest {
     @DisplayName("AuthenticationToken 제공에 실패하면 AuthenticationException 이 발생한다.")
     @Test
     void failAuthentication() {
-        final Authentication invalidToken = new Authentication() {
-            @Override
-            public Object getPrincipal() {
-                return null;
-            }
-
-            @Override
-            public Object getCredentials() {
-                return null;
-            }
-        };
+        final Authentication invalidToken = createAuthentication(null, null);
         assertThatExceptionOfType(AuthenticationException.class)
                 .isThrownBy(() -> manager.authenticate(invalidToken));
     }

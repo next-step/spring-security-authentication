@@ -4,8 +4,9 @@ import nextstep.security.authentication.Authentication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.security.authentication.MockFactory.PASSWORD;
-import static nextstep.security.authentication.MockFactory.USERNAME;
+import static nextstep.security.MockFactory.PASSWORD;
+import static nextstep.security.MockFactory.USERNAME;
+import static nextstep.security.MockFactory.createAuthentication;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -27,17 +28,7 @@ class SecurityContextTest {
     @Test
     void getAuthentication() {
         final Authentication authentication = new SecurityContext(
-                new Authentication() {
-                    @Override
-                    public Object getPrincipal() {
-                        return USERNAME;
-                    }
-
-                    @Override
-                    public Object getCredentials() {
-                        return PASSWORD;
-                    }
-                }
+                createAuthentication(USERNAME, PASSWORD)
         ).getAuthentication();
         assertAll(
                 () -> assertThat(authentication.getPrincipal())
