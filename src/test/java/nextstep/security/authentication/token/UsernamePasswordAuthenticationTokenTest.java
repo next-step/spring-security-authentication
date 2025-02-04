@@ -5,12 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.security.authentication.MockFactory.PASSWORD;
+import static nextstep.security.authentication.MockFactory.USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UsernamePasswordAuthenticationTokenTest {
-    private static final String USERNAME = "My Name";
-    private static final String PASSWORD = "My Password";
-
     private Authentication authentication;
 
     @BeforeEach

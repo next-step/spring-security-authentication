@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static nextstep.security.authentication.MockFactory.PASSWORD;
+import static nextstep.security.authentication.MockFactory.USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -14,20 +16,18 @@ class FormAuthenticationTokenTest {
     @DisplayName("form 형태를 authentication token 으로 만들 수 있다.")
     @Test
     void of() {
-        final String username = "My Name";
-        final String password = "My Password";
         final Map<String, String[]> parameterMap = Map.of(
-                "username", new String[]{username},
-                "password", new String[]{password}
+                "username", new String[]{USERNAME},
+                "password", new String[]{PASSWORD}
         );
         final Authentication authentication = FormAuthenticationToken.of(parameterMap);
         assertAll(
                 () -> assertThat(FormAuthenticationToken.supports(parameterMap))
                         .isTrue(),
                 () -> assertThat(authentication.getPrincipal())
-                        .isEqualTo(username),
+                        .isEqualTo(USERNAME),
                 () -> assertThat(authentication.getCredentials())
-                        .isEqualTo(password)
+                        .isEqualTo(PASSWORD)
         );
     }
 

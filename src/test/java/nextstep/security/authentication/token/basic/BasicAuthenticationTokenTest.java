@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Base64;
 
+import static nextstep.security.authentication.MockFactory.PASSWORD;
+import static nextstep.security.authentication.MockFactory.USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -14,19 +16,17 @@ class BasicAuthenticationTokenTest {
     @DisplayName("Basic token 을 디코딩할 수 있다.")
     @Test
     void of() {
-        final String username = "My Name";
-        final String password = "My Password";
-        final String basicToken = encode(username, password);
+        final String basicToken = encode(USERNAME, PASSWORD);
         final Authentication authentication = BasicAuthenticationToken.of(
-                encode(username, password)
+                encode(USERNAME, PASSWORD)
         );
         assertAll(
                 () -> assertThat(BasicAuthenticationToken.supports(basicToken))
                         .isTrue(),
                 () -> assertThat(authentication.getPrincipal())
-                        .isEqualTo(username),
+                        .isEqualTo(USERNAME),
                 () -> assertThat(authentication.getCredentials())
-                        .isEqualTo(password)
+                        .isEqualTo(PASSWORD)
         );
     }
 
