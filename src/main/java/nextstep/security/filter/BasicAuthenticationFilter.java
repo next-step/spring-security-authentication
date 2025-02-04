@@ -47,6 +47,7 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
             onAuthenticationSuccess(request, response, authResult);
         } catch (AuthenticationException e) {
             onAuthenticationFailure(response, e);
+            return;
         }
 
         try {

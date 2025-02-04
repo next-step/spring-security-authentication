@@ -19,6 +19,7 @@ import nextstep.security.filter.DefaultSecurityFilterChain;
 import nextstep.security.filter.DelegatingFilterProxy;
 import nextstep.security.filter.FilterChainProxy;
 import nextstep.security.filter.SecurityContextHolderFilter;
+import nextstep.security.filter.SimpleAuthorizationFilter;
 import nextstep.security.filter.UsernamePasswordAuthenticationFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -105,7 +106,10 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 authenticationManager,
                                 basicAuthenticationConverter(),
                                 securityContextRepository
-                        )
+                        ),
+                        // for test
+                        new SimpleAuthorizationFilter()
+
                 )
         );
     }

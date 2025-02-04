@@ -1,6 +1,5 @@
 package nextstep.app;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpSession;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
@@ -13,19 +12,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class FormLoginTest {
     private final Member TEST_MEMBER = new Member("a@a.com", "password", "a", "");
+    private final Member UNAUTHORIZED_TEST_MEMBER = new Member("b@b.com", "password", "a", "");
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,6 +34,7 @@ class FormLoginTest {
     @BeforeEach
     void setUp() {
         memberRepository.save(TEST_MEMBER);
+        memberRepository.save(UNAUTHORIZED_TEST_MEMBER);
     }
 
     @DisplayName("로그인 성공")
@@ -78,14 +77,14 @@ class FormLoginTest {
         response.andExpect(status().isUnauthorized());
     }
 
-    @DisplayName("로그인 성공 - 세션을 통해 인증 정보 전달 & 멤버 조회 기능 정상 동작")
+    @DisplayName("일반 회원은 회원 목록 조회 불가능")
     @Test
     void user_login_after_members() throws Exception {
         MockHttpSession session = new MockHttpSession();
 
         ResultActions loginResponse = mockMvc.perform(post("/login")
-                .param("username", TEST_MEMBER.getEmail())
-                .param("password", TEST_MEMBER.getPassword())
+                .param("username", UNAUTHORIZED_TEST_MEMBER.getEmail())
+                .param("password", UNAUTHORIZED_TEST_MEMBER.getPassword())
                 .session(session)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         );
@@ -97,28 +96,6 @@ class FormLoginTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         );
 
-        membersResponse.andExpect(status().isOk());
-    }
-
-    @DisplayName("로그인 실패 - 멤버 조회 기능 조회 실패")
-    @Test
-    void user_login_fail_after_members() throws Exception {
-        MockHttpSession session = new MockHttpSession();
-
-        ResultActions loginResponse = mockMvc.perform(post("/login")
-                .param("username", TEST_MEMBER.getEmail())
-                .param("password", "invalid")
-                .session(session)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-        );
-
-        loginResponse.andExpect(status().isUnauthorized());
-
-        ResultActions membersResponse = mockMvc.perform(get("/members")
-                .session(session)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-        );
-
-        membersResponse.andExpect(status().isUnauthorized());
+        membersResponse.andExpect(status().isForbidden());
     }
 }
