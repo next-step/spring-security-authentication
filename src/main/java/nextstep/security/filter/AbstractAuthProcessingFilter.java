@@ -4,9 +4,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
+import nextstep.security.core.context.SecurityContext;
+import nextstep.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -18,10 +19,6 @@ public abstract class AbstractAuthProcessingFilter extends OncePerRequestFilter 
     protected AbstractAuthProcessingFilter(final AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
-
-    abstract boolean match(final HttpServletRequest request);
-
-    abstract Authentication makeAuthentication(final HttpServletRequest request);
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
@@ -35,19 +32,25 @@ public abstract class AbstractAuthProcessingFilter extends OncePerRequestFilter 
 
             Authentication authenticationResult = this.authenticationManager.authenticate(authRequest);
 
-            saveAuthentication(request, authenticationResult);
+            saveAuthentication(authenticationResult);
 
             successAuthentication(request, response, filterChain);
         } catch (Exception e) {
+            SecurityContextHolder.clearContext();
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 
+    abstract boolean match(final HttpServletRequest request);
+
+    private void saveAuthentication(final Authentication authentication) {
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
+    }
+
+    abstract Authentication makeAuthentication(final HttpServletRequest request);
+
     protected abstract void successAuthentication(final HttpServletRequest request, final HttpServletResponse response,
                                                   final FilterChain filterChain) throws ServletException, IOException;
-
-    private static void saveAuthentication(final HttpServletRequest request, final Authentication authenticationResult) {
-        HttpSession session = request.getSession();
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, authenticationResult);
-    }
 }
