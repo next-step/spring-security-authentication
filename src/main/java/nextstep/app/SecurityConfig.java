@@ -2,8 +2,10 @@ package nextstep.app;
 
 import nextstep.app.domain.CustomUserDetailsService;
 import nextstep.app.domain.MemberRepository;
+import nextstep.security.authentication.Role;
 import nextstep.security.core.context.HttpSessionSecurityContextRepository;
 import nextstep.security.core.context.SecurityContextRepository;
+import nextstep.security.filter.AuthorizationFilter;
 import nextstep.security.filter.SecurityContextHolderFilter;
 import nextstep.security.filter.config.DefaultSecurityFilterChain;
 import nextstep.security.filter.config.DelegatingFilterProxy;
@@ -22,6 +24,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 public class SecurityConfig {
@@ -47,7 +50,9 @@ public class SecurityConfig {
                 List.of(
                         new SecurityContextHolderFilter(securityContextRepository()),
                         new FormAuthFilter(authenticationManager(), securityContextRepository()),
-                        new BasicAuthFilter(authenticationManager(), securityContextRepository())
+                        new BasicAuthFilter(authenticationManager(), securityContextRepository()),
+                        new AuthorizationFilter(Map.of("/members", List.of(Role.NORMAL))
+                        )
                 )
         );
     }

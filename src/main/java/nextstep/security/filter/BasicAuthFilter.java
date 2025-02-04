@@ -6,13 +6,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
+import nextstep.security.authentication.Role;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
+import nextstep.security.core.context.SecurityContextHolder;
 import nextstep.security.core.context.SecurityContextRepository;
 import nextstep.security.util.Base64Convertor;
 
 import java.io.IOException;
 
 public class BasicAuthFilter extends AbstractAuthProcessingFilter {
+
+    public static final String AUTHORIZATION = "Authorization";
 
     public BasicAuthFilter(final AuthenticationManager authenticationManager, final SecurityContextRepository securityContextRepository) {
         super(authenticationManager, securityContextRepository);
@@ -24,12 +28,12 @@ public class BasicAuthFilter extends AbstractAuthProcessingFilter {
     }
 
     private boolean existAuthorizationHeader(final HttpServletRequest request) {
-        return request.getHeader("Authorization") != null;
+        return request.getHeader(AUTHORIZATION) != null;
     }
 
     @Override
     public Authentication makeAuthentication(final HttpServletRequest request) {
-        String authorization = request.getHeader("Authorization");
+        String authorization = request.getHeader(AUTHORIZATION);
 
         String credentials = authorization.split(" ")[1];
         String decodedString = Base64Convertor.decode(credentials);
@@ -45,6 +49,9 @@ public class BasicAuthFilter extends AbstractAuthProcessingFilter {
     @Override
     protected void successAuthentication(final HttpServletRequest request, final HttpServletResponse response,
                                          final FilterChain filterChain) throws ServletException, IOException {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        authentication.getAuthorities().add(Role.ADMIN);
+
         filterChain.doFilter(request, response);
     }
 }
