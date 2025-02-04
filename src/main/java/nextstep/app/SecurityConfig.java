@@ -2,6 +2,9 @@ package nextstep.app;
 
 import nextstep.app.domain.CustomUserDetailsService;
 import nextstep.app.domain.MemberRepository;
+import nextstep.security.core.context.HttpSessionSecurityContextRepository;
+import nextstep.security.core.context.SecurityContextRepository;
+import nextstep.security.filter.SecurityContextHolderFilter;
 import nextstep.security.filter.config.DefaultSecurityFilterChain;
 import nextstep.security.filter.config.DelegatingFilterProxy;
 import nextstep.security.filter.config.FilterChainProxy;
@@ -42,10 +45,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain() {
         return new DefaultSecurityFilterChain(
                 List.of(
-                        new FormAuthFilter(authenticationManager()),
-                        new BasicAuthFilter(authenticationManager())
+                        new SecurityContextHolderFilter(securityContextRepository()),
+                        new FormAuthFilter(authenticationManager(), securityContextRepository()),
+                        new BasicAuthFilter(authenticationManager(), securityContextRepository())
                 )
         );
+    }
+
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
     }
 
     @Bean

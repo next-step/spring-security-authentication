@@ -1,5 +1,6 @@
 package nextstep.app;
 
+import jakarta.servlet.http.HttpSession;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.security.authentication.Authentication;
@@ -47,8 +48,9 @@ class FormLoginTest {
 
         loginResponse.andExpect(status().isOk());
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        assertThat(authentication).isNotNull();
+        HttpSession session = loginResponse.andReturn().getRequest().getSession();
+        assertThat(session).isNotNull();
+        assertThat(session.getAttribute("SPRING_SECURITY_CONTEXT")).isNotNull();
     }
 
     @DisplayName("로그인 실패 - 사용자 없음")
