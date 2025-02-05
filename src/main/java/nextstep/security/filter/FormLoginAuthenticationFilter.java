@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import nextstep.security.Authentication;
-import nextstep.security.AuthenticationException;
 import nextstep.security.AuthenticationManager;
 import nextstep.security.UsernamePasswordAuthenticationToken;
 import org.springframework.http.HttpStatus;
@@ -41,10 +40,6 @@ public class FormLoginAuthenticationFilter extends GenericFilterBean {
             String password = parameterMap.get("password")[0];
 
             Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-
-            if (!authenticate.isAuthenticated()) {
-                throw new AuthenticationException();
-            }
 
             HttpSession session = request.getSession();
             session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, authenticate.getPrincipal());
