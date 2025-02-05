@@ -14,12 +14,12 @@ import nextstep.security.core.context.SecurityContextHolder;
 import nextstep.security.core.context.SecurityContextRepository;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class FormAuthFilter extends AbstractAuthProcessingFilter {
-    public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
-
-    public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
+    private static final String LOGIN_URI = "/login";
+    private static final String HTTP_POST = "POST";
+    private static final String PARAM_USERNAME = "username";
+    private static final String PARAM_PASSWORD = "password";
 
     private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
@@ -29,20 +29,24 @@ public class FormAuthFilter extends AbstractAuthProcessingFilter {
 
     @Override
     boolean match(final HttpServletRequest request) {
-        return request.getRequestURI().equals("/login") && request.getMethod().equals("POST");
+        return isFormLoginRequest(request);
+    }
+
+    private boolean isFormLoginRequest(final HttpServletRequest request) {
+        return LOGIN_URI.equals(request.getRequestURI()) && HTTP_POST.equals(request.getMethod());
     }
 
     @Override
     public Authentication makeAuthentication(final HttpServletRequest request) {
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        String username = parameterMap.get(SPRING_SECURITY_FORM_USERNAME_KEY)[0];
-        String password = parameterMap.get(SPRING_SECURITY_FORM_PASSWORD_KEY)[0];
-        username = (username != null) ? username.trim() : "";
-        password = (password != null) ? password.trim() : "";
+        String username = getParameterOrDefault(request, PARAM_USERNAME);
+        String password = getParameterOrDefault(request, PARAM_PASSWORD);
 
-        UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username,
-                password);
-        return authRequest;
+        return UsernamePasswordAuthenticationToken.unauthenticated(username, password);
+    }
+
+    private String getParameterOrDefault(HttpServletRequest request, String paramName) {
+        String[] values = request.getParameterMap().get(paramName);
+        return (values != null && values.length > 0) ? values[0].trim() : "";
     }
 
     @Override

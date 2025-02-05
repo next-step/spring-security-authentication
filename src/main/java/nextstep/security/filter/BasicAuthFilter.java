@@ -18,8 +18,11 @@ import nextstep.security.util.Base64Convertor;
 import java.io.IOException;
 
 public class BasicAuthFilter extends AbstractAuthProcessingFilter {
-    private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+    public static final String BASIC_HEADER_COLON = ":";
+    public static final String BASIC_HEADER_COMMA = " ";
+    public static final String BASIC_HEADER_PREFIX = "Basic ";
     public static final String AUTHORIZATION = "Authorization";
+    private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
     public BasicAuthFilter(final AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -36,21 +39,38 @@ public class BasicAuthFilter extends AbstractAuthProcessingFilter {
 
     @Override
     public Authentication makeAuthentication(final HttpServletRequest request) {
-        String authorization = request.getHeader(AUTHORIZATION);
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
 
-        if (authorization == null) {
+        if (isValidBasicAuthHeader(authorizationHeader)) {
             throw new AuthenticationException();
         }
 
-        String credentials = authorization.split(" ")[1];
-        String decodedString = Base64Convertor.decode(credentials);
-        String[] usernameAndPassword = decodedString.split(":");
-        String username = usernameAndPassword[0];
-        String password = usernameAndPassword[1];
+        String credentials = extractCredentials(authorizationHeader);
+        String[] usernameAndPassword = parseCredentials(credentials);
 
-        UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username,
-                password);
-        return authRequest;
+        return UsernamePasswordAuthenticationToken.unauthenticated(usernameAndPassword[0], usernameAndPassword[1]);
+    }
+
+    private boolean isValidBasicAuthHeader(final String authorizationHeader) {
+        return authorizationHeader == null || !authorizationHeader.startsWith(BASIC_HEADER_PREFIX);
+    }
+
+    private String extractCredentials(String authorizationHeader) {
+        String[] parts = authorizationHeader.split(BASIC_HEADER_COMMA);
+        if (parts.length != 2) {
+            throw new AuthenticationException();
+        }
+
+        return Base64Convertor.decode(parts[1]);
+    }
+
+    private String[] parseCredentials(String decodedString) {
+        String[] usernameAndPassword = decodedString.split(BASIC_HEADER_COLON);
+        if (usernameAndPassword.length != 2) {
+            throw new AuthenticationException();
+        }
+
+        return usernameAndPassword;
     }
 
     @Override
