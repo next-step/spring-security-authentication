@@ -27,6 +27,11 @@ public abstract class AbstractAuthProcessingFilter extends OncePerRequestFilter 
             return;
         }
 
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             Authentication authRequest = makeAuthentication(request);
 
