@@ -28,27 +28,23 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(Set.of(new DaoAuthenticationProvider(userDetailsService)));
-    }
-
-    @Bean
     public SecurityContextRepository securityContextRepository() {
         return new HttpSessionSecurityContextRepository();
     }
 
     @Bean
-    public DelegatingFilterProxy delegatingFilterProxy(AuthenticationManager authenticationManager
-                                                       , SecurityContextRepository securityContextRepository
-    ) {
-        DefaultSecurityFilterChain securityFilterChains = new DefaultSecurityFilterChain(
-                List.of(  new SecurityContextHolderFilter(securityContextRepository)
-                        , new UsernamePasswordAuthenticationFilter(authenticationManager)
-                        , new BasicAuthenticationFilter(authenticationManager)
-                ));
+    public DefaultSecurityFilterChain securityFilterChain(SecurityContextRepository securityContextRepository) {
+        AuthenticationManager providerManager = new ProviderManager(Set.of(new DaoAuthenticationProvider(userDetailsService)));
 
-        FilterChainProxy filterChainProxy = new FilterChainProxy(List.of(securityFilterChains));
+        return new DefaultSecurityFilterChain(
+                List.of(new SecurityContextHolderFilter(securityContextRepository)
+                        , new UsernamePasswordAuthenticationFilter(providerManager)
+                        , new BasicAuthenticationFilter(providerManager))
+        );
+    }
 
-        return new DelegatingFilterProxy(filterChainProxy);
+    @Bean
+    public DelegatingFilterProxy delegatingFilterProxy(DefaultSecurityFilterChain defaultSecurityFilterChain) {
+        return new DelegatingFilterProxy(new FilterChainProxy(List.of(defaultSecurityFilterChain)));
     }
 }

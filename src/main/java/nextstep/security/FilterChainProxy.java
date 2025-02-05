@@ -2,12 +2,13 @@ package nextstep.security;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class FilterChainProxy implements Filter {
+public class FilterChainProxy extends GenericFilterBean {
 
     private final List<SecurityFilterChain> securityFilterChains;
 
