@@ -8,7 +8,6 @@ import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.core.context.SecurityContext;
 import nextstep.security.core.context.SecurityContextHolder;
-import nextstep.security.core.context.SecurityContextRepository;
 import nextstep.security.exception.AuthenticationException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -16,11 +15,9 @@ import java.io.IOException;
 
 public abstract class AbstractAuthProcessingFilter extends OncePerRequestFilter {
     private final AuthenticationManager authenticationManager;
-    private final SecurityContextRepository securityContextRepository;
 
-    protected AbstractAuthProcessingFilter(final AuthenticationManager authenticationManager, final SecurityContextRepository securityContextRepository) {
+    protected AbstractAuthProcessingFilter(final AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.securityContextRepository = securityContextRepository;
     }
 
     @Override
@@ -59,8 +56,6 @@ public abstract class AbstractAuthProcessingFilter extends OncePerRequestFilter 
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         securityContext.setAuthentication(authentication);
         SecurityContextHolder.setContext(securityContext);
-
-        securityContextRepository.saveContext(securityContext, request, response);
     }
 
     abstract Authentication makeAuthentication(final HttpServletRequest request);

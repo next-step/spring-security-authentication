@@ -9,15 +9,14 @@ import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.Role;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
 import nextstep.security.core.context.SecurityContextHolder;
-import nextstep.security.core.context.SecurityContextRepository;
 
 import java.io.IOException;
 import java.util.Map;
 
 public class FormAuthFilter extends AbstractAuthProcessingFilter {
 
-    public FormAuthFilter(final AuthenticationManager authenticationManager, final SecurityContextRepository securityContextRepository) {
-        super(authenticationManager, securityContextRepository);
+    public FormAuthFilter(final AuthenticationManager authenticationManager) {
+        super(authenticationManager);
     }
 
     @Override

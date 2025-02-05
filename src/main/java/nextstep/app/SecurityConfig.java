@@ -48,8 +48,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain() {
         return new DefaultSecurityFilterChain(
                 new SecurityContextHolderFilter(securityContextRepository()),
-                new FormAuthFilter(authenticationManager(), securityContextRepository()),
-                new BasicAuthFilter(authenticationManager(), securityContextRepository()),
+                new FormAuthFilter(authenticationManager()),
+                new BasicAuthFilter(authenticationManager()),
                 new AuthorizationFilter(Map.of("/members", List.of(Role.NORMAL))
             )
         );

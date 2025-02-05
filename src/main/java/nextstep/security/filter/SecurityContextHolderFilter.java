@@ -26,6 +26,9 @@ public class SecurityContextHolderFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } finally {
+            final SecurityContext context = SecurityContextHolder.getContext();
+            securityContextRepository.saveContext(context, request, response);
+
             SecurityContextHolder.clearContext();
         }
     }
