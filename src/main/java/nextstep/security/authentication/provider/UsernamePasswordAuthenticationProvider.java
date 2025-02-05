@@ -2,6 +2,7 @@ package nextstep.security.authentication.provider;
 
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.token.UsernamePasswordAuthenticationToken;
+import nextstep.security.exception.AuthenticationCredentialException;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.user.UserDetails;
 import nextstep.security.user.UserDetailsService;
@@ -21,7 +22,7 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
         if (!userDetails.getPassword().equals(
                 authenticationToken.getCredentials().toString()
         )) {
-            throw AuthenticationException.invalidCredentials();
+            throw new AuthenticationCredentialException();
         }
         return new UsernamePasswordAuthenticationToken(
                 userDetails.getUsername(), userDetails.getPassword()

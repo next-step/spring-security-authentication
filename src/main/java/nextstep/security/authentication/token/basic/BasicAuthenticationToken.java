@@ -1,7 +1,7 @@
 package nextstep.security.authentication.token.basic;
 
 import nextstep.security.authentication.token.UsernamePasswordAuthenticationToken;
-import nextstep.security.exception.AuthenticationException;
+import nextstep.security.exception.AuthenticationTokenException;
 
 import java.util.Base64;
 
@@ -17,7 +17,7 @@ public class BasicAuthenticationToken extends UsernamePasswordAuthenticationToke
             ).split(":");
             return new BasicAuthenticationToken(usernameAndPassword[0], usernameAndPassword[1]);
         } catch (Exception e) {
-            throw AuthenticationException.badToken();
+            throw new AuthenticationTokenException();
         }
     }
 

@@ -2,7 +2,7 @@ package nextstep.security.authentication.manager;
 
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.token.UsernamePasswordAuthenticationToken;
-import nextstep.security.exception.AuthenticationException;
+import nextstep.security.exception.AuthenticationProviderException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +35,7 @@ class ProviderManagerTest {
     @Test
     void failAuthentication() {
         final Authentication invalidToken = createAuthentication(null, null);
-        assertThatExceptionOfType(AuthenticationException.class)
+        assertThatExceptionOfType(AuthenticationProviderException.class)
                 .isThrownBy(() -> manager.authenticate(invalidToken));
     }
 }
