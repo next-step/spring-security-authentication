@@ -1,10 +1,16 @@
 package nextstep.app;
 
-import nextstep.security.*;
+import nextstep.security.DefaultSecurityFilterChain;
+import nextstep.security.FilterChainProxy;
+import nextstep.security.UserDetailsService;
+import nextstep.security.authentication.AuthenticationManager;
+import nextstep.security.authentication.DaoAuthenticationProvider;
+import nextstep.security.authentication.ProviderManager;
+import nextstep.security.context.HttpSessionSecurityContextRepository;
+import nextstep.security.context.SecurityContextRepository;
 import nextstep.security.filter.BasicAuthenticationFilter;
 import nextstep.security.filter.SecurityContextHolderFilter;
 import nextstep.security.filter.UsernamePasswordAuthenticationFilter;
-import nextstep.security.provider.DaoAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;

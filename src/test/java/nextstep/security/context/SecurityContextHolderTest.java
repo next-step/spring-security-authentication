@@ -1,5 +1,6 @@
-package nextstep.security;
+package nextstep.security.context;
 
+import nextstep.security.authentication.Authentication;
 import nextstep.security.fixture.TestAuthentication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

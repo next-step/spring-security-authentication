@@ -1,9 +1,6 @@
-package nextstep.security.provider;
+package nextstep.security.authentication;
 
 
-import nextstep.security.Authentication;
-import nextstep.security.AuthenticationException;
-import nextstep.security.UsernamePasswordAuthenticationToken;
 import nextstep.security.fixture.TestUserDetails;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

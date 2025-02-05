@@ -1,8 +1,8 @@
 package nextstep.security.fixture;
 
-import nextstep.security.Authentication;
-import nextstep.security.AuthenticationException;
-import nextstep.security.AuthenticationProvider;
+import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.AuthenticationException;
+import nextstep.security.authentication.AuthenticationProvider;
 
 public class TestAuthenticationProvider implements AuthenticationProvider {
     private boolean support;

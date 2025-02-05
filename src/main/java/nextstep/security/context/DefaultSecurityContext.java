@@ -1,4 +1,6 @@
-package nextstep.security;
+package nextstep.security.context;
+
+import nextstep.security.authentication.Authentication;
 
 public class DefaultSecurityContext implements SecurityContext {
     private Authentication authentication;

@@ -1,4 +1,4 @@
-package nextstep.security;
+package nextstep.security.authentication;
 
 import java.util.Optional;
 import java.util.Set;

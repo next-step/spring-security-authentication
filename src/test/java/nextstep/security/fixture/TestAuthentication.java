@@ -1,6 +1,6 @@
 package nextstep.security.fixture;
 
-import nextstep.security.Authentication;
+import nextstep.security.authentication.Authentication;
 
 public class TestAuthentication implements Authentication {
     private final Object principal;
