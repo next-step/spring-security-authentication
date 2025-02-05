@@ -6,10 +6,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import nextstep.security.Authentication;
-import nextstep.security.AuthenticationManager;
-import nextstep.security.UsernamePasswordAuthenticationToken;
+import nextstep.security.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -41,8 +38,8 @@ public class FormLoginAuthenticationFilter extends GenericFilterBean {
 
             Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-            HttpSession session = request.getSession();
-            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, authenticate.getPrincipal());
+            SecurityContext context = SecurityContextHolder.getContext();
+            context.setAuthentication(authenticate);
 
             filterChain.doFilter(request, response);
         } catch (Exception e) {

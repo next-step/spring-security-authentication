@@ -48,4 +48,4 @@
 ### 요구사항 
 -[X] SecurityContext 및 SecurityContextHolder 작성
 -[X] BasicAuthenticationFilter에서 SecurityContextHolder 활용
--[ ] 기존 세션 방식에서 스레드 로컬 방식으로 인증 정보 관리 변경
+-[X] 기존 세션 방식에서 스레드 로컬 방식으로 인증 정보 관리 변경
