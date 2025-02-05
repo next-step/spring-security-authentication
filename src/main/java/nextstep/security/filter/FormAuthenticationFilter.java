@@ -1,6 +1,6 @@
 package nextstep.security.filter;
 
-import nextstep.security.authentication.token.form.FormAuthenticationTokenConverter;
+import nextstep.security.authentication.token.FormAuthenticationTokenConverter;
 import nextstep.security.user.UserDetailsService;
 
 public class FormAuthenticationFilter extends UsernamePasswordAuthenticationFilter {

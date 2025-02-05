@@ -1,6 +1,6 @@
 package nextstep.security.filter;
 
-import nextstep.security.authentication.token.basic.BasicAuthenticationTokenConverter;
+import nextstep.security.authentication.token.BasicAuthenticationTokenConverter;
 import nextstep.security.user.UserDetailsService;
 
 public class BasicAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
