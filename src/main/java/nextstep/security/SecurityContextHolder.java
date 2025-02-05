@@ -13,7 +13,10 @@ public class SecurityContextHolder {
     }
 
     public static void setContext(SecurityContext context) {
-        contextHolder.set(context);
+        if (context != null) {
+            contextHolder.set(context);
+        }
+
     }
 
     public static void clearContext() {

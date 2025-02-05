@@ -2,7 +2,8 @@ package nextstep.app;
 
 import nextstep.security.*;
 import nextstep.security.filter.BasicAuthenticationFilter;
-import nextstep.security.filter.FormLoginAuthenticationFilter;
+import nextstep.security.filter.SecurityContextHolderFilter;
+import nextstep.security.filter.UsernamePasswordAuthenticationFilter;
 import nextstep.security.provider.DaoAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,11 +27,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DelegatingFilterProxy delegatingFilterProxy(AuthenticationManager authenticationManager) {
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
+    }
+
+    @Bean
+    public DelegatingFilterProxy delegatingFilterProxy(AuthenticationManager authenticationManager
+                                                       , SecurityContextRepository securityContextRepository
+    ) {
         DefaultSecurityFilterChain securityFilterChains = new DefaultSecurityFilterChain(
-                List.of(new BasicAuthenticationFilter(authenticationManager)
-                      , new FormLoginAuthenticationFilter(authenticationManager))
-        );
+                List.of(  new SecurityContextHolderFilter(securityContextRepository)
+                        , new UsernamePasswordAuthenticationFilter(authenticationManager)
+                        , new BasicAuthenticationFilter(authenticationManager)
+                ));
 
         FilterChainProxy filterChainProxy = new FilterChainProxy(List.of(securityFilterChains));
 

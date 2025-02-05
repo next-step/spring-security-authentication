@@ -55,6 +55,6 @@
 
 ### 요구 사항
 - [X] SecurityContextRepository 인터페이스를 기반으로 HttpSessionSecurityContextRepository 구현
-- [ ] SecurityContextHolderFilter 작성 및 필터 체인에 등록
-- [ ] login_after_members 테스트로 동작 검증
+- [X] SecurityContextHolderFilter 작성 및 필터 체인에 등록
+- [X] login_after_members 테스트로 동작 검증
 

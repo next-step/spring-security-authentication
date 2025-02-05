@@ -13,13 +13,12 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 import java.util.Map;
 
-public class FormLoginAuthenticationFilter extends GenericFilterBean {
-    private static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
+public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
     private static final String DEFAULT_REQUEST_URI = "/login";
 
     private final AuthenticationManager authenticationManager;
 
-    public FormLoginAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public UsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
@@ -31,19 +30,32 @@ public class FormLoginAuthenticationFilter extends GenericFilterBean {
             return;
         }
 
+        if (alreadyStoredAuthentication()) {
+            return;
+        }
+
         try {
             Map<String, String[]> parameterMap = request.getParameterMap();
             String username = parameterMap.get("username")[0];
             String password = parameterMap.get("password")[0];
 
-            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            final Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
-            SecurityContext context = SecurityContextHolder.getContext();
-            context.setAuthentication(authenticate);
+            storeAuthentication(authenticate);
 
-            filterChain.doFilter(request, response);
         } catch (Exception e) {
             ((HttpServletResponse) response).setStatus(HttpStatus.UNAUTHORIZED.value());
         }
+    }
+
+    private static void storeAuthentication(Authentication authenticate) {
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authenticate);
+        SecurityContextHolder.setContext(securityContext);
+    }
+
+    private boolean alreadyStoredAuthentication() {
+        final SecurityContext context = SecurityContextHolder.getContext();
+        return context.getAuthentication() != null;
     }
 }
