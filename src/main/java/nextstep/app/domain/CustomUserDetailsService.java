@@ -12,9 +12,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String username) {
-        Member member = memberRepository.findByEmail(username)
+        return memberRepository.findByEmail(username)
+                .map(CustomMember::new)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자를 찾을 수 없습니다."));
-
-        return new CustomMember(member);
     }
 }
