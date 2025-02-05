@@ -4,7 +4,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import nextstep.security.authentication.*;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.user.UserDetailsService;
@@ -41,9 +40,7 @@ public class FormLoginFilter extends OncePerRequestFilter {
             if (!authenticate.isAuthenticated()) {
                 throw new AuthenticationException();
             }
-            HttpSession session = request.getSession();
-            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, authenticate);
-
+            SecurityContextHolder.getContext().setAuthentication(authenticate);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }

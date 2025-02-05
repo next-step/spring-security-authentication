@@ -38,14 +38,16 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
             Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-
+            
             if (!authenticate.isAuthenticated()) {
                 throw new AuthenticationException();
             }
-
+            SecurityContextHolder.getContext().setAuthentication(authenticate);
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } finally {
+            SecurityContextHolder.clearContext();
         }
     }
 }
