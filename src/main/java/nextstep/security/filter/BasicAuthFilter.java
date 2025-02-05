@@ -4,7 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nextstep.app.SecurityContextHolder;
+import nextstep.security.SecurityContextHolder;
 import nextstep.app.util.Base64Convertor;
 import nextstep.security.SecurityContext;
 import nextstep.security.SecurityContextRepository;
@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class BasicAuthFilter extends OncePerRequestFilter {
@@ -27,6 +28,7 @@ public class BasicAuthFilter extends OncePerRequestFilter {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String NORMAL_USER = "NORMAL_USER";
+    private static final String[] BASIC_AUTH_PATH = new String[]{"/members"};
 
     public BasicAuthFilter(AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
         this.authenticationManager = Objects.requireNonNull(authenticationManager);
@@ -35,7 +37,9 @@ public class BasicAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return !HttpMethod.GET.name().equalsIgnoreCase(request.getMethod());
+        boolean isNotGetMethod = !HttpMethod.GET.name().equalsIgnoreCase(request.getMethod());
+        boolean shouldNotFilterURI = Arrays.stream(BASIC_AUTH_PATH).noneMatch(it -> it.equalsIgnoreCase(request.getRequestURI()));
+        return isNotGetMethod || shouldNotFilterURI;
     }
 
     @Override
@@ -44,6 +48,7 @@ public class BasicAuthFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws IOException, ServletException {
+
         try {
             SecurityContext context = getSecurityContext(request);
             if (context.getAuthentication() instanceof UsernamePasswordAuthenticationToken authentication) {
@@ -54,7 +59,6 @@ public class BasicAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-
     }
 
     private SecurityContext getSecurityContext(HttpServletRequest request) {
