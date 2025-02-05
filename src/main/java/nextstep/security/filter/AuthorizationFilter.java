@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.Role;
 import nextstep.security.core.context.SecurityContextHolder;
-import nextstep.security.exception.ForbiddenException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -23,32 +22,31 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
-        try {
-            final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            authorization(request, authentication);
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final boolean checkedAuthorization = checkAuthorization(request, authentication);
 
-            filterChain.doFilter(request, response);
-        } catch (ForbiddenException e) {
+        if (checkedAuthorization) {
             SecurityContextHolder.clearContext();
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
         }
+
+        filterChain.doFilter(request, response);
     }
 
-    private void authorization(final HttpServletRequest request, final Authentication authentication) {
+    private boolean checkAuthorization(final HttpServletRequest request, final Authentication authentication) {
         final String requestURI = request.getRequestURI();
         if (restrictedRoutes.containsKey(requestURI)) {
-            roleCheck(authentication, requestURI);
+            return blockedRoleCheck(authentication, requestURI);
         }
+
+        return false;
     }
 
-    private void roleCheck(final Authentication authentication, final String requestUri) {
+    private boolean blockedRoleCheck(final Authentication authentication, final String requestUri) {
         List<Role> blockedRoles = restrictedRoutes.get(requestUri);
 
-        boolean hasBlockedRole = authentication.getAuthorities().stream()
+        return authentication.getAuthorities().stream()
                 .anyMatch(blockedRoles::contains);
-
-        if (hasBlockedRole) {
-            throw new ForbiddenException();
-        }
     }
 }
