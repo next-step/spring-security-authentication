@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationManager;
+import nextstep.security.SecurityContextHolder;
 import nextstep.security.UsernamePasswordAuthenticationToken;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.util.Base64Convertor;
@@ -39,10 +40,16 @@ public class BasicAuthenticationFilter extends GenericFilterBean {
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password);
             Authentication resultAuthentication = authenticationManager.authenticate(authentication);
+            SecurityContextHolder.getContext().setAuthentication(resultAuthentication);
         } catch (Exception e) {
+            SecurityContextHolder.clearContext();
             throw new AuthenticationException();
         }
 
-        chain.doFilter(request, response);
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
     }
 }
