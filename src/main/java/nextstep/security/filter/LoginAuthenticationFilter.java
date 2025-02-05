@@ -7,6 +7,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationManager;
+import nextstep.security.SecurityContextHolder;
 import nextstep.security.UsernamePasswordAuthenticationToken;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -38,5 +39,7 @@ public class LoginAuthenticationFilter extends GenericFilterBean {
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password);
         Authentication afterAuthentication = authenticationManager.authenticate(authentication);
         httpRequest.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, afterAuthentication.getPrincipal());
+
+        chain.doFilter(request, response);
     }
 }
