@@ -18,12 +18,14 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class FormLoginTest {
     private final Member TEST_MEMBER = new Member("a@a.com", "password", "a", "", MemberRole.NORMAL_USER);
+    private final Member TEST_ADMIN = new Member("b@b.com", "password", "b", "", MemberRole.ADMIN);
 
     @Autowired
     private MockMvc mockMvc;
@@ -34,6 +36,7 @@ class FormLoginTest {
     @BeforeEach
     void setUp() {
         memberRepository.save(TEST_MEMBER);
+        memberRepository.save(TEST_ADMIN);
     }
 
     @DisplayName("로그인 성공")
@@ -74,6 +77,27 @@ class FormLoginTest {
         );
 
         response.andExpect(status().isUnauthorized());
+    }
+
+    @DisplayName("로그인 후 세션을 통해 회원 목록 조회")
+    @Test
+    void login_after_members() throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        ResultActions loginResponse = mockMvc.perform(post("/login")
+                .param("username", TEST_ADMIN.getEmail())
+                .param("password", TEST_ADMIN.getPassword())
+                .session(session)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+        ).andDo(print());
+
+        loginResponse.andExpect(status().isOk());
+
+        ResultActions membersResponse = mockMvc.perform(get("/members")
+                .session(session)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+        );
+
+        membersResponse.andExpect(status().isOk());
     }
 
     @DisplayName("일반 회원은 회원 목록 조회 불가능")
