@@ -49,3 +49,12 @@
 -[X] SecurityContext 및 SecurityContextHolder 작성
 -[X] BasicAuthenticationFilter에서 SecurityContextHolder 활용
 -[X] 기존 세션 방식에서 스레드 로컬 방식으로 인증 정보 관리 변경
+
+## 4단계 - SecurityContextHolderFilter 구현
+* 세션에 보관된 인증 정보를 SecurityContextHolder로 옮기기 위한 SecurityContextHolderFilter를 구현한다.
+
+### 요구 사항
+- [X] SecurityContextRepository 인터페이스를 기반으로 HttpSessionSecurityContextRepository 구현
+- [ ] SecurityContextHolderFilter 작성 및 필터 체인에 등록
+- [ ] login_after_members 테스트로 동작 검증
+
