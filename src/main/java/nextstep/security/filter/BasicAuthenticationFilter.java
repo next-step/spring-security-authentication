@@ -9,9 +9,7 @@ import nextstep.security.authentication.AuthenticationConverter;
 import nextstep.security.authentication.AuthenticationErrorHandler;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.exception.AuthenticationException;
-import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
-import nextstep.security.context.SecurityContextRepository;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -19,18 +17,16 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class SecurityContextFilter extends OncePerRequestFilter {
+public class BasicAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthenticationManager authenticationManager;
     private final AuthenticationConverter converter = new AuthenticationConverter();
-    private final SecurityContextRepository securityContextRepository;
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String[] BASIC_AUTH_PATH = new String[]{"/members"};
 
-    public SecurityContextFilter(AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
+    public BasicAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = Objects.requireNonNull(authenticationManager);
-        this.securityContextRepository = Objects.requireNonNull(securityContextRepository);
     }
 
     @Override
@@ -48,13 +44,13 @@ public class SecurityContextFilter extends OncePerRequestFilter {
     ) throws IOException, ServletException {
 
         try {
-            SecurityContext context = securityContextRepository.loadContext(request);
-            if (context != null) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            Authentication authentication = authenticateByRequestHeader(request);
+            authentication = authenticateByRequestHeader(request);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 

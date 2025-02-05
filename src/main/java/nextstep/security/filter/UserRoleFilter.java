@@ -10,44 +10,35 @@ import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationErrorHandler;
 import nextstep.security.authentication.UserRoleVerifier;
 import nextstep.security.authentication.exception.MemberAccessDeniedException;
-import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
-import nextstep.security.context.SecurityContextRepository;
 import nextstep.security.user.UsernamePasswordAuthenticationToken;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class UserRoleFilter extends GenericFilterBean {
 
     private final UserRoleVerifier userRoleVerifier = new UserRoleVerifier();
-    private final SecurityContextRepository securityContextRepository;
 
     private static final String[] BASIC_AUTH_PATH = new String[]{"/members"};
-
-    public UserRoleFilter(SecurityContextRepository securityContextRepository) {
-        this.securityContextRepository = Objects.requireNonNull(securityContextRepository);
-    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         if (servletRequest instanceof HttpServletRequest request
                 && (shouldFilter(request))
         ) {
-            SecurityContext context = securityContextRepository.loadContext(request);
-            Authentication authentication = context != null
-                    ? context.getAuthentication()
-                    : SecurityContextHolder.getContext().getAuthentication();
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             try {
+
                 if (authentication == null) {
                     throw new MemberAccessDeniedException();
                 } else if (authentication instanceof UsernamePasswordAuthenticationToken authenticationToken) {
                     userRoleVerifier.verify(authenticationToken);
                 }
+
             } catch (RuntimeException e) {
                 AuthenticationErrorHandler.handleError((HttpServletResponse) servletResponse, e);
                 return;

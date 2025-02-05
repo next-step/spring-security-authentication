@@ -5,26 +5,26 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import nextstep.security.context.SecurityContextHolder;
 import nextstep.security.context.SecurityContext;
+import nextstep.security.context.SecurityContextHolder;
 import nextstep.security.context.SecurityContextRepository;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 import java.util.Objects;
 
-public class SecurityContextHolderFilter extends GenericFilterBean {
+public class SecurityContextLoaderFilter extends GenericFilterBean {
 
-    private final SecurityContextRepository contextRepository;
+    private final SecurityContextRepository securityContextRepository;
 
-    public SecurityContextHolderFilter(SecurityContextRepository contextRepository) {
-        this.contextRepository = Objects.requireNonNull(contextRepository);
+    public SecurityContextLoaderFilter(SecurityContextRepository securityContextRepository) {
+        this.securityContextRepository = Objects.requireNonNull(securityContextRepository);
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         if (servletRequest instanceof HttpServletRequest request) {
-            SecurityContext context = contextRepository.loadContext(request);
+            SecurityContext context = securityContextRepository.loadContext(request);
             if (context != null) {
                 SecurityContextHolder.setContext(context);
             }

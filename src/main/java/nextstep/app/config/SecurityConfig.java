@@ -1,7 +1,8 @@
 package nextstep.app.config;
 
 
-import nextstep.security.*;
+import nextstep.security.FilterChainGenerator;
+import nextstep.security.ProviderManager;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.DaoAuthenticationProvider;
 import nextstep.security.filter.config.FilterChainProxy;
@@ -33,7 +34,8 @@ public class SecurityConfig {
     @Bean
     public DelegatingFilterProxy delegatingFilterProxy(AuthenticationManager authenticationManager) {
         FilterChainGenerator filterChainGenerator = new FilterChainGenerator(authenticationManager);
-        List<SecurityFilterChain> securityFilterChains = List.of(filterChainGenerator.generate());
+        SecurityFilterChain securityFilterChain = filterChainGenerator.generate();
+        List<SecurityFilterChain> securityFilterChains = List.of(securityFilterChain);
         FilterChainProxy delegate = new FilterChainProxy(securityFilterChains);
 
         return new DelegatingFilterProxy(delegate);
