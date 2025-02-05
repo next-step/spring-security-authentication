@@ -27,7 +27,7 @@ public abstract class AbstractAuthProcessingFilter extends OncePerRequestFilter 
             return;
         }
 
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+        if (isAlreadyAuthenticated()) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -44,6 +44,10 @@ public abstract class AbstractAuthProcessingFilter extends OncePerRequestFilter 
             SecurityContextHolder.clearContext();
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
+    }
+
+    private static boolean isAlreadyAuthenticated() {
+        return SecurityContextHolder.getContext().getAuthentication() != null;
     }
 
     private Authentication authenticate(final Authentication authRequest) {
