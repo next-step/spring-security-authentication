@@ -23,10 +23,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final boolean checkedAuthorization = checkAuthorization(request, authentication);
 
-        if (checkedAuthorization) {
-            SecurityContextHolder.clearContext();
+        if (isUnauthorized(request, authentication)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
@@ -34,17 +32,15 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean checkAuthorization(final HttpServletRequest request, final Authentication authentication) {
+    private boolean isUnauthorized(final HttpServletRequest request, final Authentication authentication) {
         final String requestURI = request.getRequestURI();
-        if (restrictedRoutes.containsKey(requestURI)) {
-            return blockedRoleCheck(authentication, requestURI);
-        }
 
-        return false;
+        return restrictedRoutes.containsKey(requestURI) && isBlockedRole(authentication, requestURI);
+
     }
 
-    private boolean blockedRoleCheck(final Authentication authentication, final String requestUri) {
-        List<Role> blockedRoles = restrictedRoutes.get(requestUri);
+    private boolean isBlockedRole(final Authentication authentication, final String requestUri) {
+        List<Role> blockedRoles = restrictedRoutes.getOrDefault(requestUri, List.of());
 
         return authentication.getAuthorities().stream()
                 .anyMatch(blockedRoles::contains);
