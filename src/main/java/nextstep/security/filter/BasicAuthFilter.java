@@ -12,6 +12,7 @@ import nextstep.security.core.context.HttpSessionSecurityContextRepository;
 import nextstep.security.core.context.SecurityContext;
 import nextstep.security.core.context.SecurityContextHolder;
 import nextstep.security.core.context.SecurityContextRepository;
+import nextstep.security.exception.AuthenticationException;
 import nextstep.security.util.Base64Convertor;
 
 import java.io.IOException;
@@ -36,6 +37,10 @@ public class BasicAuthFilter extends AbstractAuthProcessingFilter {
     @Override
     public Authentication makeAuthentication(final HttpServletRequest request) {
         String authorization = request.getHeader(AUTHORIZATION);
+
+        if (authorization == null) {
+            throw new AuthenticationException();
+        }
 
         String credentials = authorization.split(" ")[1];
         String decodedString = Base64Convertor.decode(credentials);

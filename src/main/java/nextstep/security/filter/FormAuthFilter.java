@@ -17,6 +17,10 @@ import java.io.IOException;
 import java.util.Map;
 
 public class FormAuthFilter extends AbstractAuthProcessingFilter {
+    public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
+
+    public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
+
     private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
     public FormAuthFilter(final AuthenticationManager authenticationManager) {
@@ -25,14 +29,16 @@ public class FormAuthFilter extends AbstractAuthProcessingFilter {
 
     @Override
     boolean match(final HttpServletRequest request) {
-        return request.getRequestURI().equals("/login");
+        return request.getRequestURI().equals("/login") && request.getMethod().equals("POST");
     }
 
     @Override
     public Authentication makeAuthentication(final HttpServletRequest request) {
         Map<String, String[]> parameterMap = request.getParameterMap();
-        String username = parameterMap.get("username")[0];
-        String password = parameterMap.get("password")[0];
+        String username = parameterMap.get(SPRING_SECURITY_FORM_USERNAME_KEY)[0];
+        String password = parameterMap.get(SPRING_SECURITY_FORM_PASSWORD_KEY)[0];
+        username = (username != null) ? username.trim() : "";
+        password = (password != null) ? password.trim() : "";
 
         UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username,
                 password);
