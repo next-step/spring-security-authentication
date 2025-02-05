@@ -1,6 +1,6 @@
 package nextstep.security.authentication;
 
-import nextstep.app.ui.AuthenticationException;
+import nextstep.security.exception.AuthenticationException;
 
 public interface AuthenticationProvider {
     Authentication authenticate(Authentication authentication) throws AuthenticationException;

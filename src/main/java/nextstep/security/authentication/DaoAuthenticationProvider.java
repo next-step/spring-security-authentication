@@ -1,6 +1,6 @@
 package nextstep.security.authentication;
 
-import nextstep.app.ui.AuthenticationException;
+import nextstep.security.exception.AuthenticationException;
 import nextstep.security.user.UserDetailsService;
 
 public class DaoAuthenticationProvider implements AuthenticationProvider {

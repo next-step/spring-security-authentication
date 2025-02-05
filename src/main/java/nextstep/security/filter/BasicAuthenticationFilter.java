@@ -3,7 +3,7 @@ package nextstep.security.filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nextstep.app.ui.AuthenticationException;
+import nextstep.security.exception.AuthenticationException;
 import nextstep.security.user.UserDetails;
 import nextstep.security.user.UserDetailsService;
 import nextstep.security.util.Base64Convertor;

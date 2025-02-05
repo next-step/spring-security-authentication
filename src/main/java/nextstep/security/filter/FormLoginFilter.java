@@ -5,7 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import nextstep.app.ui.AuthenticationException;
+import nextstep.security.exception.AuthenticationException;
 import nextstep.security.user.UserDetails;
 import nextstep.security.user.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
