@@ -1,16 +1,15 @@
-package nextstep.security;
+package nextstep.security.filterchain;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletRequest;
-import nextstep.security.filter.config.SecurityFilterChain;
 
 import java.util.List;
 import java.util.Objects;
 
-public class UserNamePasswordSecurityFilterChain implements SecurityFilterChain {
+public class BasicSecurityFilterChain implements SecurityFilterChain {
     private final List<Filter> filters;
 
-    public UserNamePasswordSecurityFilterChain(List<Filter> filters) {
+    public BasicSecurityFilterChain(List<Filter> filters) {
         this.filters = Objects.requireNonNull(filters);
     }
 

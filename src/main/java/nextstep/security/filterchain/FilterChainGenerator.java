@@ -1,4 +1,4 @@
-package nextstep.security;
+package nextstep.security.filterchain;
 
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.context.SecurityContextRepository;
@@ -7,7 +7,6 @@ import nextstep.security.filter.BasicAuthenticationFilter;
 import nextstep.security.filter.SecurityContextLoaderFilter;
 import nextstep.security.filter.UserNamePasswordAuthFilter;
 import nextstep.security.filter.UserRoleFilter;
-import nextstep.security.filter.config.SecurityFilterChain;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class FilterChainGenerator {
     }
 
     public SecurityFilterChain generate() {
-        return new UserNamePasswordSecurityFilterChain(
+        return new BasicSecurityFilterChain(
                 List.of(
                         new SecurityContextLoaderFilter(securityContextRepository),
                         new BasicAuthenticationFilter(authenticationManager),

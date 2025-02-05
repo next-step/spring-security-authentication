@@ -1,8 +1,5 @@
-package nextstep.security;
+package nextstep.security.authentication;
 
-import nextstep.security.authentication.Authentication;
-import nextstep.security.authentication.AuthenticationManager;
-import nextstep.security.authentication.AuthenticationProvider;
 import nextstep.security.authentication.exception.AuthenticationException;
 
 import java.util.List;

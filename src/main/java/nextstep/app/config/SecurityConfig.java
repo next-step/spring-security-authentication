@@ -1,12 +1,12 @@
 package nextstep.app.config;
 
 
-import nextstep.security.FilterChainGenerator;
-import nextstep.security.ProviderManager;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.DaoAuthenticationProvider;
-import nextstep.security.filter.config.FilterChainProxy;
-import nextstep.security.filter.config.SecurityFilterChain;
+import nextstep.security.authentication.ProviderManager;
+import nextstep.security.filterchain.FilterChainGenerator;
+import nextstep.security.filterchain.FilterChainProxy;
+import nextstep.security.filterchain.SecurityFilterChain;
 import nextstep.security.user.UserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
