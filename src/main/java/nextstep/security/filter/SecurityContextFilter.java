@@ -4,12 +4,14 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nextstep.security.authentication.*;
+import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.AuthenticationConverter;
+import nextstep.security.authentication.AuthenticationErrorHandler;
+import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.exception.AuthenticationException;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
 import nextstep.security.context.SecurityContextRepository;
-import nextstep.security.user.UsernamePasswordAuthenticationToken;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,17 +19,16 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class BasicAuthFilter extends OncePerRequestFilter {
+public class SecurityContextFilter extends OncePerRequestFilter {
 
     private final AuthenticationManager authenticationManager;
     private final AuthenticationConverter converter = new AuthenticationConverter();
-    private final UserRoleVerifier userRoleVerifier = new UserRoleVerifier();
     private final SecurityContextRepository securityContextRepository;
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String[] BASIC_AUTH_PATH = new String[]{"/members"};
 
-    public BasicAuthFilter(AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
+    public SecurityContextFilter(AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
         this.authenticationManager = Objects.requireNonNull(authenticationManager);
         this.securityContextRepository = Objects.requireNonNull(securityContextRepository);
     }
@@ -47,28 +48,22 @@ public class BasicAuthFilter extends OncePerRequestFilter {
     ) throws IOException, ServletException {
 
         try {
-            SecurityContext context = getSecurityContext(request);
-            Authentication authentication = context.getAuthentication();
-
-            if (authentication instanceof UsernamePasswordAuthenticationToken authenticationToken) {
-                userRoleVerifier.verify(authenticationToken);
+            SecurityContext context = securityContextRepository.loadContext(request);
+            if (context != null) {
+                filterChain.doFilter(request, response);
+                return;
             }
-        } catch (RuntimeException e) {
+
+            Authentication authentication = authenticateByRequestHeader(request);
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (AuthenticationException e) {
             AuthenticationErrorHandler.handleError(response, e);
+            return;
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    private SecurityContext getSecurityContext(HttpServletRequest request) {
-        SecurityContext context = securityContextRepository.loadContext(request);
-        if (context != null) {
-            return context;
-        }
-
-        Authentication authentication = authenticateByRequestHeader(request);
-
-        return SecurityContextHolder.createContextBy(authentication);
     }
 
     private Authentication authenticateByRequestHeader(HttpServletRequest request) {

@@ -1,7 +1,5 @@
 package nextstep.security.context;
 
-import nextstep.security.authentication.Authentication;
-
 public class SecurityContextHolder {
 
     protected SecurityContextHolder() {
@@ -17,12 +15,6 @@ public class SecurityContextHolder {
             contextHolder.set(context);
         }
 
-        return context;
-    }
-
-    public static SecurityContext createContextBy(Authentication authentication) {
-        SecurityContext context = getContext();
-        context.setAuthentication(authentication);
         return context;
     }
 

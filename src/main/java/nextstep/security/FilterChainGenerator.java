@@ -1,14 +1,16 @@
-package nextstep.app.config;
+package nextstep.security;
 
+import jakarta.servlet.Filter;
+import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.context.SecurityContextRepository;
 import nextstep.security.context.SecurityContextRepositoryImpl;
-import nextstep.security.UserNamePasswordSecurityFilterChain;
-import nextstep.security.authentication.AuthenticationManager;
-import nextstep.security.filter.BasicAuthFilter;
+import nextstep.security.filter.SecurityContextFilter;
 import nextstep.security.filter.SecurityContextHolderFilter;
 import nextstep.security.filter.UserNamePasswordAuthFilter;
+import nextstep.security.filter.UserRoleFilter;
 import nextstep.security.filter.config.SecurityFilterChain;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class FilterChainGenerator {
@@ -22,12 +24,12 @@ public class FilterChainGenerator {
     }
 
     public SecurityFilterChain generate() {
-        return new UserNamePasswordSecurityFilterChain(
-                List.of(
-                        new SecurityContextHolderFilter(securityContextRepository),
-                        new BasicAuthFilter(authenticationManager, securityContextRepository),
-                        new UserNamePasswordAuthFilter(authenticationManager, securityContextRepository)
-                )
-        );
+        List<Filter> filters = new LinkedList<>();
+        filters.add(new SecurityContextHolderFilter(securityContextRepository));
+        filters.add(new SecurityContextFilter(authenticationManager, securityContextRepository));
+        filters.add(new UserNamePasswordAuthFilter(authenticationManager, securityContextRepository));
+        filters.add(new UserRoleFilter(securityContextRepository));
+
+        return new UserNamePasswordSecurityFilterChain(filters);
     }
 }
