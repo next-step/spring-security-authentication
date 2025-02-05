@@ -3,6 +3,7 @@ package nextstep.app.config;
 
 import nextstep.security.*;
 import nextstep.security.authentication.AuthenticationManager;
+import nextstep.security.authentication.DaoAuthenticationProvider;
 import nextstep.security.filter.config.FilterChainProxy;
 import nextstep.security.filter.config.SecurityFilterChain;
 import nextstep.security.user.UserDetailsService;

@@ -1,4 +1,4 @@
-package nextstep.security;
+package nextstep.security.context;
 
 import nextstep.security.authentication.Authentication;
 

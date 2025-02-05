@@ -1,7 +1,7 @@
 package nextstep.app.config;
 
-import nextstep.security.SecurityContextRepository;
-import nextstep.security.SecurityContextRepositoryImpl;
+import nextstep.security.context.SecurityContextRepository;
+import nextstep.security.context.SecurityContextRepositoryImpl;
 import nextstep.security.UserNamePasswordSecurityFilterChain;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.filter.BasicAuthFilter;
