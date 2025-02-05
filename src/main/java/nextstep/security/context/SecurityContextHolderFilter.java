@@ -18,10 +18,13 @@ public class SecurityContextHolderFilter extends GenericFilterBean {
             ServletResponse response,
             FilterChain chain
     ) throws IOException, ServletException {
-        SecurityContextHolder.setContext(
-                securityContextRepository.loadContext((HttpServletRequest) request)
-        );
-        chain.doFilter(request, response);
-        SecurityContextHolder.clearContext();
+        try {
+            SecurityContextHolder.setContext(
+                    securityContextRepository.loadContext((HttpServletRequest) request)
+            );
+            chain.doFilter(request, response);
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
     }
 }
