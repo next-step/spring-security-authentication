@@ -4,6 +4,7 @@ import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.security.filter.BasicAuthenticationFilter;
 import nextstep.security.filter.FormLoginFilter;
+import nextstep.security.filter.SecurityContextHolderFilter;
 import nextstep.security.filterchain.DefaultFilterChain;
 import nextstep.security.filterchain.SecurityFilterChain;
 import nextstep.security.proxy.DelegatingFilterProxy;
@@ -35,7 +36,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain() {
-        return new DefaultFilterChain(List.of(new FormLoginFilter(userDetailsService())
+        return new DefaultFilterChain(List.of(new SecurityContextHolderFilter()
+                , new FormLoginFilter(userDetailsService())
                 , new BasicAuthenticationFilter(userDetailsService())));
     }
 

@@ -5,7 +5,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.*;
-import nextstep.security.exception.AuthenticationException;
 import nextstep.security.user.UserDetailsService;
 import nextstep.security.util.Base64Convertor;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -14,8 +13,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class BasicAuthenticationFilter extends OncePerRequestFilter {
-    private static final String MATCH_URI = "/members";
-
     private final AuthenticationManager authenticationManager;
 
     public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
@@ -24,12 +21,13 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (!request.getRequestURI().equals(MATCH_URI)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         try {
             String authorization = request.getHeader("Authorization");
+            if (authorization == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String credentials = authorization.split(" ")[1];
             String decodedString = Base64Convertor.decode(credentials);
             String[] usernameAndPassword = decodedString.split(":");
@@ -38,16 +36,10 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
             Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-            
-            if (!authenticate.isAuthenticated()) {
-                throw new AuthenticationException();
-            }
             SecurityContextHolder.getContext().setAuthentication(authenticate);
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        } finally {
-            SecurityContextHolder.clearContext();
         }
     }
 }

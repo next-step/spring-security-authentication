@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 public class FormLoginFilter extends OncePerRequestFilter {
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
     private static final String MATCH_URI = "/login";
 
     private final AuthenticationManager authenticationManager;
@@ -40,7 +39,8 @@ public class FormLoginFilter extends OncePerRequestFilter {
             if (!authenticate.isAuthenticated()) {
                 throw new AuthenticationException();
             }
-            SecurityContextHolder.getContext().setAuthentication(authenticate);
+            SecurityContext context = SecurityContextHolder.getContext();
+            context.setAuthentication(authenticate);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
