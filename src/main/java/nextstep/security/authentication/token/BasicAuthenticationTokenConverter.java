@@ -6,9 +6,9 @@ import nextstep.security.exception.AuthenticationTokenException;
 
 import java.util.Base64;
 
-public class BasicAuthenticationTokenConverter implements AuthenticationTokenConverter {
-    private static final String AUTHORIZATION_HEADER = "Authorization";
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+public class BasicAuthenticationTokenConverter implements AuthenticationTokenConverter {
     private BasicAuthenticationTokenConverter() {}
 
     public static AuthenticationTokenConverter getInstance() {
@@ -19,7 +19,7 @@ public class BasicAuthenticationTokenConverter implements AuthenticationTokenCon
     public Authentication convert(HttpServletRequest request) {
         try {
             final byte[] decoded = Base64.getDecoder().decode(
-                    request.getHeader(AUTHORIZATION_HEADER).trim().split(" ")[1]
+                    request.getHeader(AUTHORIZATION).trim().split(" ")[1]
             );
             final String[] usernameAndPassword = new String(decoded).split(":");
             return new UsernamePasswordAuthenticationToken(usernameAndPassword[0], usernameAndPassword[1]);
@@ -30,7 +30,7 @@ public class BasicAuthenticationTokenConverter implements AuthenticationTokenCon
 
     @Override
     public boolean supports(HttpServletRequest request) {
-        final String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
+        final String authorizationHeader = request.getHeader(AUTHORIZATION);
         return authorizationHeader != null
                 && authorizationHeader.trim().startsWith("Basic ");
     }

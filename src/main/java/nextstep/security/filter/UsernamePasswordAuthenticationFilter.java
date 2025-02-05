@@ -21,6 +21,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+import static org.apache.tomcat.websocket.Constants.UNAUTHORIZED;
+
 public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
     private final String uri;
     private final AuthenticationManager manager;
@@ -57,7 +59,7 @@ public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
             setContext(request, response);
             chain.doFilter(request, response);
         } catch (AuthenticationException e) {
-            response.setStatus(401);
+            response.setStatus(UNAUTHORIZED);
         }
     }
 
