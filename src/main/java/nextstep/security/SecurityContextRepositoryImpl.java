@@ -1,13 +1,9 @@
-package nextstep.app;
+package nextstep.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import nextstep.security.SecurityContext;
-import nextstep.security.SecurityContextRepository;
-import org.springframework.stereotype.Component;
 
-@Component
 public class SecurityContextRepositoryImpl implements SecurityContextRepository {
 
     private static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";

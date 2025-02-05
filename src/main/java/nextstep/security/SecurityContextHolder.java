@@ -1,6 +1,4 @@
-package nextstep.app;
-
-import nextstep.security.SecurityContext;
+package nextstep.security;
 
 public class SecurityContextHolder {
 
