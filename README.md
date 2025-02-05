@@ -38,3 +38,14 @@
 - [X] 제공된 AuthenticationManager를 기반으로 ProviderManager 구현
 - [X] 제공된 AuthenticationProvider를 기반으로 DaoAuthenticationProvider 구현
 - [X] 기존 인증 필터에서 인증 로직 분리 및 AuthenticationManager로 통합
+
+## 3단계 - SecurityContextHolder 적용
+- 인증 성공 후 생성된 Authentication 객체를 기존의 세션 방식 대신 스레드 로컬(Thread Local)에 보관하도록 변경한다.
+- 각 필터에서 스레드 로컬에 보관된 인증 정보를 접근할 수 있도록 SecurityContextHolder와 SecurityContext 구조를 구현한다.
+
+![SecurityContextHolder.png](docs-img/SecurityContextHolder.png)
+
+### 요구사항 
+-[ ] SecurityContext 및 SecurityContextHolder 작성
+-[ ] BasicAuthenticationFilter에서 SecurityContextHolder 활용
+-[ ] 기존 세션 방식에서 스레드 로컬 방식으로 인증 정보 관리 변경
