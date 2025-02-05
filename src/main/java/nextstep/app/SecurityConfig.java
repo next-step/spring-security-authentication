@@ -47,13 +47,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain() {
         return new DefaultSecurityFilterChain(
-                List.of(
-                        new SecurityContextHolderFilter(securityContextRepository()),
-                        new FormAuthFilter(authenticationManager(), securityContextRepository()),
-                        new BasicAuthFilter(authenticationManager(), securityContextRepository()),
-                        new AuthorizationFilter(Map.of("/members", List.of(Role.NORMAL))
-                        )
-                )
+                new SecurityContextHolderFilter(securityContextRepository()),
+                new FormAuthFilter(authenticationManager(), securityContextRepository()),
+                new BasicAuthFilter(authenticationManager(), securityContextRepository()),
+                new AuthorizationFilter(Map.of("/members", List.of(Role.NORMAL))
+            )
         );
     }
 
