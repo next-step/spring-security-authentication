@@ -15,10 +15,10 @@ public class ProviderManager implements AuthenticationManager {
 
     @Override
     public Authentication authenticate(Authentication authenticationToken) {
-        return providers.stream().filter(
-                provider -> provider.supports(authenticationToken.getClass())
-        ).findFirst().orElseThrow(
-                AuthenticationProviderException::new
-        ).authenticate(authenticationToken);
+        return providers.stream()
+                .filter(provider -> provider.supports(authenticationToken.getClass()))
+                .findFirst()
+                .orElseThrow(AuthenticationProviderException::new)
+                .authenticate(authenticationToken);
     }
 }
