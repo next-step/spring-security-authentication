@@ -5,9 +5,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import nextstep.security.domain.MemberDetail;
+import nextstep.security.Authentication;
+import nextstep.security.AuthenticationManager;
+import nextstep.security.UsernamePasswordAuthenticationToken;
 import nextstep.security.domain.MemberDetailService;
-import nextstep.security.exception.AuthenticationException;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -17,9 +18,11 @@ public class LoginAuthenticationFilter extends GenericFilterBean {
 
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
     private final MemberDetailService memberDetailService;
+    private final AuthenticationManager authenticationManager;
 
-    public LoginAuthenticationFilter(MemberDetailService memberDetailService) {
+    public LoginAuthenticationFilter(MemberDetailService memberDetailService, AuthenticationManager authenticationManager) {
         this.memberDetailService = memberDetailService;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -35,11 +38,8 @@ public class LoginAuthenticationFilter extends GenericFilterBean {
         String username = parameterMap.get("username")[0];
         String password = parameterMap.get("password")[0];
 
-        MemberDetail member = memberDetailService.findByUsername(username);
-        if (!member.isCorrectPassword(password)) {
-            throw new AuthenticationException();
-        }
-
-        httpRequest.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, member);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password);
+        Authentication afterAuthentication = authenticationManager.authenticate(authentication);
+        httpRequest.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, afterAuthentication.getPrincipal());
     }
 }
