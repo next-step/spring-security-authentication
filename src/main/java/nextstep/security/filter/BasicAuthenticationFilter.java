@@ -66,7 +66,6 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
     private void onAuthenticationFailure(HttpServletResponse httpResponse,
                                          AuthenticationException e) throws IOException {
         SecurityContextHolder.clearContext();
-        logger.error("Basic Authentication failed", e);
         httpResponse.addHeader("WWW-Authenticate", "Basic realm=\"nextstep\"");
         httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
     }

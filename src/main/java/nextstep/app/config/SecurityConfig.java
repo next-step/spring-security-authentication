@@ -1,12 +1,10 @@
 package nextstep.app.config;
 
-import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.security.AuthenticationManager;
 import nextstep.security.AuthenticationProvider;
 import nextstep.security.SecurityContextRepository;
 import nextstep.security.SecurityFilterChain;
-import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
 import nextstep.security.authentication.DaoAuthenticationProvider;
 import nextstep.security.authentication.ProviderManager;
@@ -37,21 +35,8 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> {
-            Member member = memberRepository.findByEmail(username)
-                    .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자를 찾을 수 없습니다."));
-            return new UserDetails() {
-                @Override
-                public String getUsername() {
-                    return member.getEmail();
-                }
-
-                @Override
-                public String getPassword() {
-                    return member.getPassword();
-                }
-            };
-        };
+        return username -> memberRepository.findByEmail(username)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자를 찾을 수 없습니다."));
     }
 
     @Bean

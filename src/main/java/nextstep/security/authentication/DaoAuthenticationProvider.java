@@ -20,18 +20,10 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) {
-        try {
-            UserDetails user = tryRetrieveUser((String) authentication.getPrincipal());
-            checkPassword(user, (String) authentication.getCredentials());
+        UserDetails user = tryRetrieveUser((String) authentication.getPrincipal());
+        checkPassword(user, (String) authentication.getCredentials());
 
-            return UsernamePasswordAuthenticationToken.authenticated(user);
-        } catch (UsernameNotFoundException e) {
-            logger.error("Fail to retrieve user", e);
-            throw e;
-        } catch (BadCredentialsException e) {
-            logger.error("Bad credentials", e);
-            throw e;
-        }
+        return UsernamePasswordAuthenticationToken.authenticated(user);
     }
 
     @Override

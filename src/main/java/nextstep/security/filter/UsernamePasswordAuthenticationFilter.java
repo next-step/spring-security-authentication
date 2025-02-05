@@ -71,7 +71,6 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
     private void onAuthenticationFailure(HttpServletResponse httpResponse,
                                          AuthenticationException e) throws IOException {
         SecurityContextHolder.clearContext();
-        logger.error("UsernamePassword Authentication failed", e);
         httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
     }
 
