@@ -1,7 +1,6 @@
 package nextstep.security.authentication;
 
-import nextstep.security.Authentication;
-import nextstep.security.UserDetails;
+import nextstep.security.userdetails.UserDetails;
 
 public class UsernamePasswordAuthenticationToken implements Authentication {
     private final String principal;

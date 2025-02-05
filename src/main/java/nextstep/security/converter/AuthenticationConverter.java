@@ -1,6 +1,7 @@
-package nextstep.security;
+package nextstep.security.converter;
 
 import jakarta.servlet.http.HttpServletRequest;
+import nextstep.security.authentication.Authentication;
 
 public interface AuthenticationConverter {
 

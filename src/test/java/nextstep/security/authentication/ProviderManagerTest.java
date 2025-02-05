@@ -1,12 +1,9 @@
 package nextstep.security.authentication;
 
 import nextstep.app.domain.Member;
-import nextstep.security.Authentication;
-import nextstep.security.AuthenticationProvider;
-import nextstep.security.UserDetails;
+import nextstep.security.userdetails.UserDetails;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.util.List;
 

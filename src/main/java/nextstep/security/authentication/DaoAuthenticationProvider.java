@@ -1,9 +1,7 @@
 package nextstep.security.authentication;
 
-import nextstep.security.Authentication;
-import nextstep.security.AuthenticationProvider;
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
+import nextstep.security.userdetails.UserDetails;
+import nextstep.security.userdetails.UserDetailsService;
 import nextstep.security.exception.BadCredentialsException;
 import nextstep.security.exception.UsernameNotFoundException;
 import org.slf4j.Logger;

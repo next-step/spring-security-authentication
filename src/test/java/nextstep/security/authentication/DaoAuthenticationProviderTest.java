@@ -1,9 +1,8 @@
 package nextstep.security.authentication;
 
 import nextstep.app.domain.Member;
-import nextstep.security.Authentication;
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
+import nextstep.security.userdetails.UserDetails;
+import nextstep.security.userdetails.UserDetailsService;
 import nextstep.security.exception.BadCredentialsException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

@@ -1,7 +1,5 @@
 package nextstep.security.context;
 
-import nextstep.security.SecurityContext;
-
 public class SecurityContextHolder {
     private static final ThreadLocal<SecurityContext> contextHolder = new ThreadLocal<>();
 

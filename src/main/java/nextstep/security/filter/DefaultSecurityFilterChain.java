@@ -2,7 +2,6 @@ package nextstep.security.filter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletRequest;
-import nextstep.security.SecurityFilterChain;
 
 import java.util.List;
 

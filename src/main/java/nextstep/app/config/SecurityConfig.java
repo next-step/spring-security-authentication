@@ -1,11 +1,11 @@
 package nextstep.app.config;
 
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.AuthenticationManager;
-import nextstep.security.AuthenticationProvider;
-import nextstep.security.SecurityContextRepository;
-import nextstep.security.SecurityFilterChain;
-import nextstep.security.UserDetailsService;
+import nextstep.security.authentication.AuthenticationManager;
+import nextstep.security.authentication.AuthenticationProvider;
+import nextstep.security.context.SecurityContextRepository;
+import nextstep.security.filter.SecurityFilterChain;
+import nextstep.security.userdetails.UserDetailsService;
 import nextstep.security.authentication.DaoAuthenticationProvider;
 import nextstep.security.authentication.ProviderManager;
 import nextstep.security.context.DelegatingSecurityContextRepository;

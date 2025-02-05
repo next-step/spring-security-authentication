@@ -1,9 +1,5 @@
 package nextstep.security.authentication;
 
-import nextstep.security.Authentication;
-import nextstep.security.AuthenticationManager;
-import nextstep.security.AuthenticationProvider;
-
 import java.util.List;
 
 public class ProviderManager implements AuthenticationManager {

@@ -1,6 +1,6 @@
 package nextstep.app.domain;
 
-import nextstep.security.UserDetails;
+import nextstep.security.userdetails.UserDetails;
 
 public class Member implements UserDetails {
     private final String email;

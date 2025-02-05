@@ -3,8 +3,6 @@ package nextstep.security.context;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import nextstep.security.SecurityContext;
-import nextstep.security.SecurityContextRepository;
 
 public class HttpSessionSecurityContextRepository implements SecurityContextRepository {
     private static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";

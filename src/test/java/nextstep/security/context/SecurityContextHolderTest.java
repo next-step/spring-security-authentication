@@ -1,6 +1,5 @@
 package nextstep.security.context;
 
-import nextstep.security.SecurityContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 

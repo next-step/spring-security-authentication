@@ -1,7 +1,7 @@
 package nextstep.security.converter;
 
 import jakarta.servlet.http.HttpServletRequest;
-import nextstep.security.Authentication;
+import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
