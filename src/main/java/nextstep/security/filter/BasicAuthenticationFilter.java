@@ -5,8 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationManager;
 import nextstep.security.UsernamePasswordAuthenticationToken;
-import nextstep.security.domain.MemberDetail;
-import nextstep.security.domain.MemberDetailService;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.util.Base64Convertor;
 import org.springframework.web.filter.GenericFilterBean;
@@ -15,15 +13,9 @@ import java.io.IOException;
 
 public class BasicAuthenticationFilter extends GenericFilterBean {
 
-    private final MemberDetailService memberDetailService;
     private final AuthenticationManager authenticationManager;
 
-//    public BasicAuthenticationFilter(MemberDetailService memberDetailService) {
-//        this.memberDetailService = memberDetailService;
-//    }
-
-    public BasicAuthenticationFilter(MemberDetailService memberDetailService, AuthenticationManager authenticationManager) {
-        this.memberDetailService = memberDetailService;
+    public BasicAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 

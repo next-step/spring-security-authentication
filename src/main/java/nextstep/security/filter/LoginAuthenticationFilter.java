@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationManager;
 import nextstep.security.UsernamePasswordAuthenticationToken;
-import nextstep.security.domain.MemberDetailService;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -17,11 +16,9 @@ import java.util.Map;
 public class LoginAuthenticationFilter extends GenericFilterBean {
 
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
-    private final MemberDetailService memberDetailService;
     private final AuthenticationManager authenticationManager;
 
-    public LoginAuthenticationFilter(MemberDetailService memberDetailService, AuthenticationManager authenticationManager) {
-        this.memberDetailService = memberDetailService;
+    public LoginAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
