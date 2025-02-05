@@ -6,4 +6,6 @@ public interface Authentication {
     String getCredentials();
 
     boolean isAuthenticated();
+
+    void setAuthenticated(boolean b);
 }

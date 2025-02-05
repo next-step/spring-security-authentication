@@ -1,23 +1,23 @@
 package nextstep.security.authentication;
 
 public class UsernamePasswordAuthenticationToken implements Authentication {
-    private final String username;
-    private final String password;
-    private Boolean authenticated;
+    private final String principal;
+    private final String credentials;
+    private Boolean authenticated = false;
 
-    public UsernamePasswordAuthenticationToken(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public UsernamePasswordAuthenticationToken(String principal, String credentials) {
+        this.principal = principal;
+        this.credentials = credentials;
     }
 
     @Override
     public String getPrincipal() {
-        return this.username;
+        return this.principal;
     }
 
     @Override
     public String getCredentials() {
-        return this.password;
+        return this.credentials;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class UsernamePasswordAuthenticationToken implements Authentication {
         return this.authenticated;
     }
 
-    public void setIsAuthenticated(boolean isAuthenticated) {
+    public void setAuthenticated(boolean isAuthenticated) {
         this.authenticated = isAuthenticated;
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.security.authentication;
 
 import nextstep.security.exception.AuthenticationException;
+import nextstep.security.user.UserDetails;
 import nextstep.security.user.UserDetailsService;
 
 public class DaoAuthenticationProvider implements AuthenticationProvider {
@@ -12,8 +13,12 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        //인증절차
-        return null;
+        UserDetails userDetails = userDetailsService.loadUserByUsername(authentication.getPrincipal());
+        if (!userDetails.getPassword().equals(authentication.getCredentials())) {
+            return authentication;
+        }
+        authentication.setAuthenticated(true);
+        return authentication;
     }
 
     @Override

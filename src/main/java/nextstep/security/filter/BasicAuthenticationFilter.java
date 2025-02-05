@@ -4,20 +4,22 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import nextstep.security.authentication.*;
 import nextstep.security.exception.AuthenticationException;
-import nextstep.security.user.UserDetails;
 import nextstep.security.user.UserDetailsService;
 import nextstep.security.util.Base64Convertor;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 public class BasicAuthenticationFilter extends OncePerRequestFilter {
-    private final UserDetailsService userDetailsService;
     private static final String MATCH_URI = "/members";
 
+    private final AuthenticationManager authenticationManager;
+
     public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+        this.authenticationManager = new ProviderManager(List.of(new DaoAuthenticationProvider(userDetailsService)));
     }
 
     @Override
@@ -34,8 +36,10 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
             String username = usernameAndPassword[0];
             String password = usernameAndPassword[1];
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (!userDetails.getPassword().equals(password)) {
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+            Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+
+            if (!authenticate.isAuthenticated()) {
                 throw new AuthenticationException();
             }
 
