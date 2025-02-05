@@ -2,8 +2,8 @@ package nextstep.security.config;
 
 import jakarta.servlet.Filter;
 import nextstep.security.Fixture;
-import nextstep.security.filter.BasicAuthorizationFilter;
-import nextstep.security.filter.FormAuthorizationFilter;
+import nextstep.security.filter.BasicAuthenticationFilter;
+import nextstep.security.filter.FormAuthenticationFilter;
 import nextstep.security.user.UserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,8 +23,8 @@ class DefaultSecurityFilterChainTest {
     void setUp() {
         final UserDetailsService userDetailsService = Fixture.createUserDetailsService();
         filters = List.of(
-                new BasicAuthorizationFilter(userDetailsService),
-                new FormAuthorizationFilter(userDetailsService, "/login")
+                new BasicAuthenticationFilter(userDetailsService),
+                new FormAuthenticationFilter(userDetailsService, "/login")
         );
         filterChain = new DefaultSecurityFilterChain(filters);
     }

@@ -15,12 +15,12 @@ import static nextstep.security.Fixture.createBasicRequest;
 import static nextstep.security.Fixture.createUserDetailsService;
 import static nextstep.security.Steps.testAuthentication;
 
-class BasicAuthorizationFilterTest {
+class BasicAuthenticationFilterTest {
     private Filter filter;
 
     @BeforeEach
     void setUp() {
-        filter = new BasicAuthorizationFilter(createUserDetailsService());
+        filter = new BasicAuthenticationFilter(createUserDetailsService());
     }
 
     @DisplayName("Basic Authorization 이 필터를 통해 인증될 수 있다.")

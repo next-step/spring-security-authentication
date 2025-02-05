@@ -21,13 +21,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-public class UsernamePasswordAuthorizationFilter extends OncePerRequestFilter {
+public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
     private final String uri;
     private final AuthenticationManager manager;
     private final AuthenticationTokenConverter tokenConverter;
     private final SecurityContextRepository securityContextRepository = HttpSessionSecurityContextRepository.getInstance();
 
-    public UsernamePasswordAuthorizationFilter(
+    public UsernamePasswordAuthenticationFilter(
             UserDetailsService userDetailsService,
             AuthenticationTokenConverter tokenConverter,
             String uri
@@ -40,7 +40,7 @@ public class UsernamePasswordAuthorizationFilter extends OncePerRequestFilter {
         this.uri = uri;
     }
 
-    public UsernamePasswordAuthorizationFilter(
+    public UsernamePasswordAuthenticationFilter(
             UserDetailsService userDetailsService,
             AuthenticationTokenConverter tokenConverter
     ) {

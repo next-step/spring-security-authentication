@@ -5,8 +5,8 @@ import nextstep.security.config.DelegatingFilterProxy;
 import nextstep.security.config.FilterChainProxy;
 import nextstep.security.config.SecurityFilterChain;
 import nextstep.security.context.SecurityContextHolderFilter;
-import nextstep.security.filter.BasicAuthorizationFilter;
-import nextstep.security.filter.FormAuthorizationFilter;
+import nextstep.security.filter.BasicAuthenticationFilter;
+import nextstep.security.filter.FormAuthenticationFilter;
 import nextstep.security.user.UserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,8 +21,8 @@ public class SecurityConfig {
     ) {
         final SecurityFilterChain securityFilterChain = new DefaultSecurityFilterChain(List.of(
                 new SecurityContextHolderFilter(),
-                new BasicAuthorizationFilter(userDetailsService),
-                new FormAuthorizationFilter(userDetailsService, "/login")
+                new BasicAuthenticationFilter(userDetailsService),
+                new FormAuthenticationFilter(userDetailsService, "/login")
         ));
         return new DelegatingFilterProxy(new FilterChainProxy(
                 List.of(securityFilterChain)

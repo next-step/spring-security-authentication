@@ -13,8 +13,8 @@ import nextstep.security.authentication.provider.UsernamePasswordAuthenticationP
 import nextstep.security.config.VirtualFilterChain;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolderFilter;
-import nextstep.security.filter.BasicAuthorizationFilter;
-import nextstep.security.filter.FormAuthorizationFilter;
+import nextstep.security.filter.BasicAuthenticationFilter;
+import nextstep.security.filter.FormAuthenticationFilter;
 import nextstep.security.user.UserDetailsService;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockFilterChain;
@@ -33,8 +33,8 @@ public final class Fixture {
         final UserDetailsService userDetailsService = createUserDetailsService();
         return new VirtualFilterChain(new MockFilterChain(), List.of(
                 new SecurityContextHolderFilter(),
-                new BasicAuthorizationFilter(userDetailsService),
-                new FormAuthorizationFilter(userDetailsService, "/login")
+                new BasicAuthenticationFilter(userDetailsService),
+                new FormAuthenticationFilter(userDetailsService, "/login")
         ));
     }
 

@@ -17,13 +17,13 @@ import static nextstep.security.Fixture.createLoginRequest;
 import static nextstep.security.Fixture.createUserDetailsService;
 import static nextstep.security.Steps.testAuthentication;
 
-class FormAuthorizationFilterTest {
+class FormAuthenticationFilterTest {
     private final SecurityContextRepository repository = HttpSessionSecurityContextRepository.getInstance();
     private Filter filter;
 
     @BeforeEach
     void setUp() {
-        filter = new FormAuthorizationFilter(createUserDetailsService(), "/login");
+        filter = new FormAuthenticationFilter(createUserDetailsService(), "/login");
     }
 
     @DisplayName("로그인 Request 가 필터를 통해 인증정보로 바뀐다.")
