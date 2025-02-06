@@ -7,26 +7,22 @@ import nextstep.security.exception.BadCredentialsException;
 import nextstep.security.util.Base64Convertor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class BasicAuthenticationConverterTest {
 
     private BasicAuthenticationConverter converter;
-    private HttpServletRequest mockRequest;
 
     @BeforeEach
     void setUp() {
         converter = new BasicAuthenticationConverter();
-        mockRequest = mock(HttpServletRequest.class);
     }
 
     @Test
     void convert_ShouldReturnNull_WhenAuthorizationHeaderIsMissing() {
-        when(mockRequest.getHeader("Authorization")).thenReturn(null);
-
+        HttpServletRequest mockRequest = new MockHttpServletRequest();
         Authentication authentication = converter.convert(mockRequest);
 
         assertNull(authentication);
@@ -34,7 +30,8 @@ class BasicAuthenticationConverterTest {
 
     @Test
     void convert_ShouldReturnNull_WhenAuthorizationHeaderIsNotBasic() {
-        when(mockRequest.getHeader("Authorization")).thenReturn("Bearer token");
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        mockRequest.addHeader("Authorization", "Bearer token");
 
         Authentication authentication = converter.convert(mockRequest);
 
@@ -47,7 +44,8 @@ class BasicAuthenticationConverterTest {
         String password = "pass";
         String encodedCredentials = Base64Convertor.encode((username + ":" + password));
 
-        when(mockRequest.getHeader("Authorization")).thenReturn("Basic " + encodedCredentials);
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        mockRequest.addHeader("Authorization", "Basic " + encodedCredentials);
 
         Authentication authentication = converter.convert(mockRequest);
 
@@ -60,7 +58,8 @@ class BasicAuthenticationConverterTest {
     @Test
     void convert_ShouldThrowException_WhenInvalidBasicAuthFormat() {
         String invalidToken = Base64Convertor.encode("invalidFormat");
-        when(mockRequest.getHeader("Authorization")).thenReturn("Basic " + invalidToken);
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        mockRequest.addHeader("Authorization", "Basic " + invalidToken);
 
         assertThrows(BadCredentialsException.class, () -> converter.convert(mockRequest));
     }
