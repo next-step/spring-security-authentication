@@ -1,6 +1,8 @@
 package nextstep.security.authentication;
 
-import java.util.Collection;
+import nextstep.security.role.GrantedAuthority;
+
+import java.util.List;
 
 public interface Authentication {
     String getPrincipal();
@@ -9,9 +11,9 @@ public interface Authentication {
 
     boolean isAuthenticated();
 
-    Collection<Role> getAuthorities();
+    List<GrantedAuthority> getAuthorities();
 
-    void addAuthority(Role role);
+    void addAuthority(GrantedAuthority grantedAuthority);
 
     public boolean isNoPermission();
 }

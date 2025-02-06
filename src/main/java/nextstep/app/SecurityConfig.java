@@ -2,7 +2,7 @@ package nextstep.app;
 
 import nextstep.app.domain.CustomUserDetailsService;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.authentication.Role;
+import nextstep.security.role.Role;
 import nextstep.security.core.context.HttpSessionSecurityContextRepository;
 import nextstep.security.core.context.SecurityContextRepository;
 import nextstep.security.filter.AuthorizationFilter;
@@ -52,7 +52,7 @@ public class SecurityConfig {
                 new SecurityContextHolderFilter(securityContextRepository()),
                 new FormAuthFilter(authenticationManager()),
                 new BasicAuthFilter(authenticationManager()),
-                new AuthorizationFilter(Map.of("/members", List.of(Role.NORMAL))
+                new AuthorizationFilter(Map.of("/members", List.of(new Role("NORMAL")))
             )
         );
     }

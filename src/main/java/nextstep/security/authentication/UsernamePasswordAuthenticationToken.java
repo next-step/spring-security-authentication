@@ -1,27 +1,28 @@
 package nextstep.security.authentication;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import nextstep.security.role.GrantedAuthority;
+
+import java.util.List;
 
 public class UsernamePasswordAuthenticationToken implements Authentication {
     private final String principal;
     private final String credentials;
     private boolean authenticated = false;
-    private Collection<Role> authorities = Collections.synchronizedList(new ArrayList<>());
+    private List<GrantedAuthority> authorities;
 
-    public static UsernamePasswordAuthenticationToken unauthenticated(String principal, String credentials) {
-        return new UsernamePasswordAuthenticationToken(principal, credentials, false);
-    }
-
-    public static UsernamePasswordAuthenticationToken authenticated(String principal, String credentials) {
-        return new UsernamePasswordAuthenticationToken(principal, credentials, true);
-    }
-
-    private UsernamePasswordAuthenticationToken(String principal, String credentials, boolean authenticated) {
+    private UsernamePasswordAuthenticationToken(String principal, String credentials, boolean authenticated, List<GrantedAuthority> authorities) {
         this.principal = principal;
         this.credentials = credentials;
         this.authenticated = authenticated;
+        this.authorities = authorities;
+    }
+
+    public static UsernamePasswordAuthenticationToken unauthenticated(String principal, String credentials) {
+        return new UsernamePasswordAuthenticationToken(principal, credentials, false, null);
+    }
+
+    public static UsernamePasswordAuthenticationToken authenticated(String principal, String credentials, List<GrantedAuthority> authorities) {
+        return new UsernamePasswordAuthenticationToken(principal, credentials, true, authorities);
     }
 
     @Override
@@ -40,21 +41,17 @@ public class UsernamePasswordAuthenticationToken implements Authentication {
     }
 
     @Override
-    public Collection<Role> getAuthorities() {
+    public List<GrantedAuthority> getAuthorities() {
         return this.authorities;
     }
 
     @Override
-    public void addAuthority(final Role role) {
-        this.authorities.add(role);
+    public void addAuthority(final GrantedAuthority grantedAuthority) {
+        this.authorities.add(grantedAuthority);
     }
 
     @Override
     public boolean isNoPermission() {
         return authorities == null || authorities.isEmpty();
-    }
-
-    public void setAuthenticated(boolean authenticated) {
-        this.authenticated = authenticated;
     }
 }

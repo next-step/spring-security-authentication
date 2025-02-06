@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
-import nextstep.security.authentication.Role;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
 import nextstep.security.core.context.SecurityContext;
 import nextstep.security.core.context.SecurityContextHolder;
@@ -75,6 +74,6 @@ public class BasicAuthFilter extends AbstractAuthProcessingFilter {
                                          final FilterChain filterChain) throws ServletException, IOException {
         final SecurityContext context = SecurityContextHolder.getContext();
         final Authentication authentication = context.getAuthentication();
-        authentication.getAuthorities().add(Role.ADMIN);
+        authentication.getAuthorities().clear();
     }
 }

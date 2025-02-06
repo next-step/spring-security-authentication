@@ -34,7 +34,7 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
     }
 
     private Authentication createSuccessAuthentication(final UserDetails user, final Authentication authentication) {
-        return UsernamePasswordAuthenticationToken.authenticated(user.getUsername(), authentication.getCredentials());
+        return UsernamePasswordAuthenticationToken.authenticated(user.getUsername(), authentication.getCredentials(), user.getAuthorities());
     }
 
     @Override

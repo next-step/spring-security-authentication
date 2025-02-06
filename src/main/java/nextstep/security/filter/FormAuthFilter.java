@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
-import nextstep.security.authentication.Role;
+import nextstep.security.role.Role;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
 import nextstep.security.core.context.SecurityContext;
 import nextstep.security.core.context.SecurityContextHolder;
@@ -48,9 +48,9 @@ public class FormAuthFilter extends AbstractAuthProcessingFilter {
 
     @Override
     protected void successAuthentication(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
-        final SecurityContext context = SecurityContextHolder.getContext();
-        final Authentication authentication = context.getAuthentication();
-        authentication.getAuthorities().add(Role.NORMAL);
+//        final SecurityContext context = SecurityContextHolder.getContext();
+//        final Authentication authentication = context.getAuthentication();
+//        authentication.getAuthorities().add(Role.defaltRole());
     }
 
     @Override

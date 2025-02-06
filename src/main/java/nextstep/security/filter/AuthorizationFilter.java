@@ -5,9 +5,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
-import nextstep.security.authentication.Role;
 import nextstep.security.core.context.SecurityContextHolder;
 import nextstep.security.exception.ForbiddenException;
+import nextstep.security.role.GrantedAuthority;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 public class AuthorizationFilter extends OncePerRequestFilter {
-    private final Map<String, List<Role>> restrictedRoutes;
+    private final Map<String, List<GrantedAuthority>> restrictedRoutes;
 
-    public AuthorizationFilter(Map<String, List<Role>> restrictedRoutes) {
+    public AuthorizationFilter(Map<String, List<GrantedAuthority>> restrictedRoutes) {
         this.restrictedRoutes = restrictedRoutes;
     }
 
@@ -40,7 +40,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     }
 
     private boolean isBlockedRole(final Authentication authentication, final String requestUri) {
-        List<Role> blockedRoles = restrictedRoutes.getOrDefault(requestUri, List.of());
+        List<GrantedAuthority> blockedRoles = restrictedRoutes.getOrDefault(requestUri, List.of());
 
         return authentication.getAuthorities().stream()
                 .anyMatch(blockedRoles::contains);
