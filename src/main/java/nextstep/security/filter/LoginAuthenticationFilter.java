@@ -26,21 +26,26 @@ public class LoginAuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-
-        if (!httpRequest.getRequestURI().startsWith("/login")) {
+        if (notTarget(httpRequest)) {
             chain.doFilter(request, response);
             return;
         }
 
-        Map<String, String[]> parameterMap = httpRequest.getParameterMap();
-        String username = parameterMap.get("username")[0];
-        String password = parameterMap.get("password")[0];
-
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password);
-        Authentication afterAuthentication = authenticationManager.authenticate(authentication);
-        SecurityContextHolder.getContext().setAuthentication(afterAuthentication);
+        Authentication authentication = authenticationManager.authenticate(getAuthentication(httpRequest));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         httpRequest.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
 
         chain.doFilter(request, response);
+    }
+
+    private static boolean notTarget(HttpServletRequest httpRequest) {
+        return !httpRequest.getRequestURI().startsWith("/login");
+    }
+
+    private static UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest httpRequest) {
+        Map<String, String[]> parameterMap = httpRequest.getParameterMap();
+        String username = parameterMap.get("username")[0];
+        String password = parameterMap.get("password")[0];
+        return new UsernamePasswordAuthenticationToken(username, password);
     }
 }
