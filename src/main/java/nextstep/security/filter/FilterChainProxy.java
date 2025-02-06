@@ -28,11 +28,6 @@ public class FilterChainProxy extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         List<Filter> filters = getMatchedFilters(request);
 
-        if (filters.isEmpty()) {
-            filterChain.doFilter(servletRequest, servletResponse);
-            return;
-        }
-
         VirtualFilterChain virtualFilterChain = new VirtualFilterChain(filterChain, filters);
         virtualFilterChain.doFilter(servletRequest, servletResponse);
     }
