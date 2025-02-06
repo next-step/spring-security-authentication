@@ -27,13 +27,8 @@ public class BasicAuthenticationFilter extends GenericFilterBean {
             return;
         }
 
-        try {
-            Authentication resultAuthentication = authenticationManager.authenticate(getAuthenticationFrom(httpRequest));
-            SecurityContextHolder.getContext().setAuthentication(resultAuthentication);
-        } catch (AuthenticationException e) {
-            SecurityContextHolder.clearContext();
-            throw e;
-        }
+        Authentication resultAuthentication = authenticationManager.authenticate(getAuthenticationFrom(httpRequest));
+        SecurityContextHolder.getContext().setAuthentication(resultAuthentication);
 
         try {
             chain.doFilter(request, response);
