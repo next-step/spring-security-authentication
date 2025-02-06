@@ -6,6 +6,7 @@ import nextstep.security.authentication.Role;
 import nextstep.security.core.context.HttpSessionSecurityContextRepository;
 import nextstep.security.core.context.SecurityContextRepository;
 import nextstep.security.filter.AuthorizationFilter;
+import nextstep.security.filter.GlobalExceptionFilter;
 import nextstep.security.filter.SecurityContextHolderFilter;
 import nextstep.security.filter.config.DefaultSecurityFilterChain;
 import nextstep.security.filter.config.DelegatingFilterProxy;
@@ -47,6 +48,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain() {
         return new DefaultSecurityFilterChain(
+                new GlobalExceptionFilter(),
                 new SecurityContextHolderFilter(securityContextRepository()),
                 new FormAuthFilter(authenticationManager()),
                 new BasicAuthFilter(authenticationManager()),

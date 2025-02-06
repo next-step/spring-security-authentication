@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.Role;
 import nextstep.security.core.context.SecurityContextHolder;
+import nextstep.security.exception.ForbiddenException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -25,8 +26,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (isUnauthorized(request, authentication)) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return;
+            throw new ForbiddenException();
         }
 
         filterChain.doFilter(request, response);

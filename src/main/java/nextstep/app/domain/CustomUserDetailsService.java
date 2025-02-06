@@ -2,6 +2,7 @@ package nextstep.app.domain;
 
 import nextstep.security.core.uesrdetails.UserDetails;
 import nextstep.security.core.uesrdetails.UserDetailsService;
+import nextstep.security.exception.AuthenticationException;
 
 public class CustomUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
@@ -14,6 +15,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String username) {
         return memberRepository.findByEmail(username)
                 .map(CustomMember::new)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new AuthenticationException());
     }
 }

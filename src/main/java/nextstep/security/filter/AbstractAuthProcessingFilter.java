@@ -32,18 +32,13 @@ public abstract class AbstractAuthProcessingFilter extends OncePerRequestFilter 
             return;
         }
 
-        try {
-            Authentication authRequest = makeAuthentication(request);
+        Authentication authRequest = makeAuthentication(request);
 
-            Authentication authentication = authenticate(authRequest);
+        Authentication authentication = authenticate(authRequest);
 
-            saveAuthentication(request, response, authentication);
+        saveAuthentication(request, response, authentication);
 
-            successAuthentication(request, response, filterChain);
-        } catch (Exception e) {
-            SecurityContextHolder.clearContext();
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        }
+        successAuthentication(request, response, filterChain);
     }
 
     private static boolean isAlreadyAuthenticated() {
