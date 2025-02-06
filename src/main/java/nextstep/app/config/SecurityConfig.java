@@ -3,6 +3,10 @@ package nextstep.app.config;
 import nextstep.app.domain.MemberRepository;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.AuthenticationProvider;
+import nextstep.security.authentication.BasicAuthenticationFailureHandler;
+import nextstep.security.authentication.BasicAuthenticationSuccessHandler;
+import nextstep.security.authentication.UsernamePasswordAuthenticationFailureHandler;
+import nextstep.security.authentication.UsernamePasswordAuthenticationSuccessHandler;
 import nextstep.security.context.SecurityContextRepository;
 import nextstep.security.filter.SecurityFilterChain;
 import nextstep.security.userdetails.UserDetailsService;
@@ -84,12 +88,14 @@ public class SecurityConfig implements WebMvcConfigurer {
                         new UsernamePasswordAuthenticationFilter(
                                 authenticationManager,
                                 usernamePasswordAuthenticationConverter(),
-                                securityContextRepository
+                                new UsernamePasswordAuthenticationSuccessHandler(securityContextRepository),
+                                new UsernamePasswordAuthenticationFailureHandler()
                         ),
                         new BasicAuthenticationFilter(
                                 authenticationManager,
                                 basicAuthenticationConverter(),
-                                securityContextRepository
+                                new BasicAuthenticationSuccessHandler(securityContextRepository),
+                                new BasicAuthenticationFailureHandler()
                         )
                 )
         );

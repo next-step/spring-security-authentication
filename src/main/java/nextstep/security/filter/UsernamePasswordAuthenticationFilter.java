@@ -7,33 +7,32 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
-import nextstep.security.converter.AuthenticationConverter;
+import nextstep.security.authentication.AuthenticationFailureHandler;
 import nextstep.security.authentication.AuthenticationManager;
-import nextstep.security.context.SecurityContext;
-import nextstep.security.context.SecurityContextRepository;
-import nextstep.security.context.SecurityContextHolder;
+import nextstep.security.authentication.AuthenticationSuccessHandler;
+import nextstep.security.converter.AuthenticationConverter;
 import nextstep.security.exception.AuthenticationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
 public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
-    private static final Logger logger = LoggerFactory.getLogger(UsernamePasswordAuthenticationFilter.class);
     private static final String DEFAULT_FILTER_PROCESS_URL = "/login";
 
     private final AuthenticationManager authenticationManager;
     private final AuthenticationConverter authenticationConverter;
-    private final SecurityContextRepository securityContextRepository;
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
+    private final AuthenticationFailureHandler authenticationFailureHandler;
 
     public UsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager,
                                                 AuthenticationConverter authenticationConverter,
-                                                SecurityContextRepository securityContextRepository) {
+                                                AuthenticationSuccessHandler authenticationSuccessHandler,
+                                                AuthenticationFailureHandler authenticationFailureHandler) {
 
         this.authenticationManager = authenticationManager;
         this.authenticationConverter = authenticationConverter;
-        this.securityContextRepository = securityContextRepository;
+        this.authenticationSuccessHandler = authenticationSuccessHandler;
+        this.authenticationFailureHandler = authenticationFailureHandler;
     }
 
     @Override
@@ -51,34 +50,15 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
             Authentication authRequest = this.authenticationConverter.convert(httpRequest);
             Authentication authResult = this.authenticationManager.authenticate(authRequest);
 
-            onAuthenticationSuccess(httpRequest, httpResponse, authResult);
+            authenticationSuccessHandler.onAuthenticationSuccess(httpRequest, httpResponse, authResult);
         } catch (AuthenticationException e) {
-            onAuthenticationFailure(httpResponse, e);
+            authenticationFailureHandler.onAuthenticationFailure(httpRequest, httpResponse, e);
         }
     }
 
     private boolean requireAuthentication(HttpServletRequest httpRequest) {
         return httpRequest.getRequestURI().equals(DEFAULT_FILTER_PROCESS_URL)
                 && httpRequest.getMethod().equals("POST");
-    }
-
-    private void onAuthenticationSuccess(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-                                         Authentication authResult) {
-        SecurityContext ctx = setSecurityContext(authResult);
-        securityContextRepository.saveContext(ctx, httpRequest, httpResponse);
-    }
-
-    private void onAuthenticationFailure(HttpServletResponse httpResponse,
-                                         AuthenticationException e) throws IOException {
-        SecurityContextHolder.clearContext();
-        httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-    }
-
-    private SecurityContext setSecurityContext(Authentication authResult) {
-        SecurityContext ctx = SecurityContextHolder.createEmptyContext();
-        ctx.setAuthentication(authResult);
-        SecurityContextHolder.setContext(ctx);
-        return ctx;
     }
 
 }
