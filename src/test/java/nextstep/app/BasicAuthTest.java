@@ -2,7 +2,6 @@ package nextstep.app;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.app.util.Base64Convertor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.Base64;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,11 +40,11 @@ class BasicAuthTest {
     @Test
     void members() throws Exception {
         String token = TEST_MEMBER.getEmail() + ":" + TEST_MEMBER.getPassword();
-        String encoded = Base64Convertor.encode(token);
+        String encoded = encode(token);
 
         ResultActions loginResponse = mockMvc.perform(get("/members")
-                .header("Authorization", "Basic " + encoded)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                                                              .header("Authorization", "Basic " + encoded)
+                                                              .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         );
 
         loginResponse.andDo(print());
@@ -56,11 +57,15 @@ class BasicAuthTest {
     void members_fail() throws Exception {
         ResultActions loginResponse = mockMvc.
                 perform(get("/members")
-                        .header("Authorization", "Basic " + "invalid")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                                .header("Authorization", "Basic " + "invalid")
+                                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 );
 
         loginResponse.andDo(print());
         loginResponse.andExpect(status().isUnauthorized());
+    }
+
+    public String encode(String value) {
+        return Base64.getEncoder().encodeToString(value.getBytes());
     }
 }
