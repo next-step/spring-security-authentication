@@ -28,13 +28,13 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        if (!DEFAULT_REQUEST_URI.equals(request.getRequestURI())) {
-            filterChain.doFilter(request, response);
+        if (alreadyStoredAuthentication()) {
             return;
         }
 
-        if (alreadyStoredAuthentication()) {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        if (!DEFAULT_REQUEST_URI.equals(request.getRequestURI())) {
+            filterChain.doFilter(request, response);
             return;
         }
 
