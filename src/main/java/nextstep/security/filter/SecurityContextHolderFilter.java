@@ -7,14 +7,18 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.context.SecurityContext;
+import nextstep.security.context.SecurityContextHolderStrategy;
 import nextstep.security.context.SecurityContextRepository;
 import nextstep.security.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
 public class SecurityContextHolderFilter extends GenericFilterBean {
 
+    private final SecurityContextHolderStrategy securityContextHolderStrategy =
+            SecurityContextHolder.getContextHolderStrategy();
     private final SecurityContextRepository securityContextRepository;
 
     public SecurityContextHolderFilter(SecurityContextRepository securityContextRepository) {
@@ -27,13 +31,13 @@ public class SecurityContextHolderFilter extends GenericFilterBean {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
+        Supplier<SecurityContext> securityContextSupplier = () -> securityContextRepository.loadContext(request);
 
         try {
-            SecurityContext ctx = securityContextRepository.loadContext(request);
-            SecurityContextHolder.setContext(ctx);
+            securityContextHolderStrategy.setDeferredContext(securityContextSupplier);
             filterChain.doFilter(request, response);
         } finally {
-            SecurityContextHolder.clearContext();
+            securityContextHolderStrategy.clearContext();
         }
     }
 }

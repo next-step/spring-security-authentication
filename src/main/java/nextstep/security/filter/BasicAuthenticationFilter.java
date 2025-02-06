@@ -8,7 +8,6 @@ import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationFailureHandler;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.AuthenticationSuccessHandler;
-import nextstep.security.context.SecurityContextHolder;
 import nextstep.security.converter.AuthenticationConverter;
 import nextstep.security.exception.AuthenticationException;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -49,10 +48,6 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        try {
-            filterChain.doFilter(request, response);
-        } finally {
-            SecurityContextHolder.clearContext();
-        }
+        filterChain.doFilter(request, response);
     }
 }

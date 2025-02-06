@@ -2,6 +2,11 @@ package nextstep.security.context;
 
 public class SecurityContextHolder {
     private static final ThreadLocal<SecurityContext> contextHolder = new ThreadLocal<>();
+    private static final SecurityContextHolderStrategy strategy;
+
+    static {
+        strategy = new ThreadLocalSecurityContextHolderStrategy();
+    }
 
     public static SecurityContext getContext() {
         SecurityContext context = contextHolder.get();
@@ -22,5 +27,9 @@ public class SecurityContextHolder {
 
     public static SecurityContext createEmptyContext() {
         return new SecurityContextImpl();
+    }
+
+    public static SecurityContextHolderStrategy getContextHolderStrategy() {
+        return strategy;
     }
 }

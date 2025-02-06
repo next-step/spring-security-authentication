@@ -4,9 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
+import nextstep.security.context.SecurityContextHolderStrategy;
 import nextstep.security.context.SecurityContextRepository;
 
 public class UsernamePasswordAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+    private final SecurityContextHolderStrategy securityContextHolderStrategy =
+            SecurityContextHolder.getContextHolderStrategy();
     private final SecurityContextRepository securityContextRepository;
 
     public UsernamePasswordAuthenticationSuccessHandler(SecurityContextRepository securityContextRepository) {
@@ -17,10 +20,10 @@ public class UsernamePasswordAuthenticationSuccessHandler implements Authenticat
     public void onAuthenticationSuccess(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
                                         Authentication authentication) {
 
-        SecurityContext ctx = SecurityContextHolder.createEmptyContext();
+        SecurityContext ctx = this.securityContextHolderStrategy.createEmptyContext();
         ctx.setAuthentication(authentication);
 
-        SecurityContextHolder.setContext(ctx);
-        securityContextRepository.saveContext(ctx, httpRequest, httpResponse);
+        this.securityContextHolderStrategy.setContext(ctx);
+        this.securityContextRepository.saveContext(ctx, httpRequest, httpResponse);
     }
 }
