@@ -22,6 +22,8 @@ import nextstep.security.filter.DelegatingFilterProxy;
 import nextstep.security.filter.FilterChainProxy;
 import nextstep.security.filter.SecurityContextHolderFilter;
 import nextstep.security.filter.UsernamePasswordAuthenticationFilter;
+import nextstep.security.util.AllMatchRequestMatcher;
+import nextstep.security.util.FormLoginRequestMatcher;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -81,11 +83,13 @@ public class SecurityConfig implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(AuthenticationManager authenticationManager,
                                                    SecurityContextRepository securityContextRepository) {
         return new DefaultSecurityFilterChain(
+                new AllMatchRequestMatcher(),
                 List.of(
                         new SecurityContextHolderFilter(
                                 securityContextRepository
                         ),
                         new UsernamePasswordAuthenticationFilter(
+                                new FormLoginRequestMatcher(),
                                 authenticationManager,
                                 usernamePasswordAuthenticationConverter(),
                                 new UsernamePasswordAuthenticationSuccessHandler(securityContextRepository),

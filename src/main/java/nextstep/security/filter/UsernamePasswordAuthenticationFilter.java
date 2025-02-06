@@ -12,23 +12,25 @@ import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.AuthenticationSuccessHandler;
 import nextstep.security.converter.AuthenticationConverter;
 import nextstep.security.exception.AuthenticationException;
+import nextstep.security.util.RequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
 public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
-    private static final String DEFAULT_FILTER_PROCESS_URL = "/login";
 
+    private final RequestMatcher requestMatcher;
     private final AuthenticationManager authenticationManager;
     private final AuthenticationConverter authenticationConverter;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
 
-    public UsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager,
+    public UsernamePasswordAuthenticationFilter(RequestMatcher requestMatcher,
+                                                AuthenticationManager authenticationManager,
                                                 AuthenticationConverter authenticationConverter,
                                                 AuthenticationSuccessHandler authenticationSuccessHandler,
                                                 AuthenticationFailureHandler authenticationFailureHandler) {
-
+        this.requestMatcher = requestMatcher;
         this.authenticationManager = authenticationManager;
         this.authenticationConverter = authenticationConverter;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
@@ -57,8 +59,7 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
     }
 
     private boolean requireAuthentication(HttpServletRequest httpRequest) {
-        return httpRequest.getRequestURI().equals(DEFAULT_FILTER_PROCESS_URL)
-                && httpRequest.getMethod().equals("POST");
+        return requestMatcher.matches(httpRequest);
     }
 
 }
