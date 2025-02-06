@@ -38,7 +38,8 @@ public class LoginAuthenticationFilter extends GenericFilterBean {
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password);
         Authentication afterAuthentication = authenticationManager.authenticate(authentication);
-        httpRequest.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, afterAuthentication.getPrincipal());
+        SecurityContextHolder.getContext().setAuthentication(afterAuthentication);
+        httpRequest.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
 
         chain.doFilter(request, response);
     }
