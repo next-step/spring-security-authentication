@@ -8,10 +8,8 @@ import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.Role;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
-import nextstep.security.core.context.HttpSessionSecurityContextRepository;
 import nextstep.security.core.context.SecurityContext;
 import nextstep.security.core.context.SecurityContextHolder;
-import nextstep.security.core.context.SecurityContextRepository;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.util.Base64Convertor;
 
@@ -22,7 +20,6 @@ public class BasicAuthFilter extends AbstractAuthProcessingFilter {
     public static final String BASIC_HEADER_COMMA = " ";
     public static final String BASIC_HEADER_PREFIX = "Basic ";
     public static final String AUTHORIZATION = "Authorization";
-    private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
     public BasicAuthFilter(final AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -79,7 +76,5 @@ public class BasicAuthFilter extends AbstractAuthProcessingFilter {
         final SecurityContext context = SecurityContextHolder.getContext();
         final Authentication authentication = context.getAuthentication();
         authentication.getAuthorities().add(Role.ADMIN);
-
-        securityContextRepository.saveContext(context, request, response);
     }
 }
