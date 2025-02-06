@@ -1,35 +1,25 @@
 package nextstep.security.context;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class HttpSessionSecurityContextRepositoryTest {
 
     private HttpSessionSecurityContextRepository repository;
-    private HttpServletRequest mockRequest;
-    private HttpServletResponse mockResponse;
-    private HttpSession mockSession;
-    private SecurityContext mockSecurityContext;
 
     @BeforeEach
     void setUp() {
         repository = new HttpSessionSecurityContextRepository();
-        mockRequest = mock(HttpServletRequest.class);
-        mockResponse = mock(HttpServletResponse.class);
-        mockSession = mock(HttpSession.class);
-        mockSecurityContext = mock(SecurityContext.class);
     }
 
     @Test
     void loadContext_ShouldReturnNull_WhenSessionDoesNotExist() {
-        when(mockRequest.getSession(false)).thenReturn(null);
-
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
         SecurityContext context = repository.loadContext(mockRequest);
 
         assertNull(context);
@@ -37,8 +27,11 @@ class HttpSessionSecurityContextRepositoryTest {
 
     @Test
     void loadContext_ShouldReturnSecurityContext_WhenSessionExists() {
-        when(mockRequest.getSession(false)).thenReturn(mockSession);
-        when(mockSession.getAttribute("SPRING_SECURITY_CONTEXT")).thenReturn(mockSecurityContext);
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        MockHttpSession mockSession = new MockHttpSession();
+        SecurityContext mockSecurityContext = new SecurityContextImpl();
+        mockSession.setAttribute("SPRING_SECURITY_CONTEXT", mockSecurityContext);
+        mockRequest.setSession(mockSession);
 
         SecurityContext context = repository.loadContext(mockRequest);
 
@@ -48,10 +41,13 @@ class HttpSessionSecurityContextRepositoryTest {
 
     @Test
     void saveContext_ShouldStoreSecurityContextInSession() {
-        when(mockRequest.getSession(true)).thenReturn(mockSession);
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        MockHttpSession mockSession = new MockHttpSession();
+        SecurityContext mockSecurityContext = new SecurityContextImpl();
+        mockRequest.setSession(mockSession);
 
-        repository.saveContext(mockSecurityContext, mockRequest, mockResponse);
+        repository.saveContext(mockSecurityContext, mockRequest, new MockHttpServletResponse());
 
-        verify(mockSession).setAttribute("SPRING_SECURITY_CONTEXT", mockSecurityContext);
+        assertSame(mockSecurityContext, mockSession.getAttribute("SPRING_SECURITY_CONTEXT"));
     }
 }

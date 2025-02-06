@@ -4,7 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 class SecurityContextHolderTest {
 
@@ -31,15 +30,16 @@ class SecurityContextHolderTest {
 
     @Test
     void setContext_ShouldOverrideExistingContext() {
-        SecurityContext mockContext = mock(SecurityContext.class);
-        SecurityContextHolder.setContext(mockContext);
+        SecurityContext securityContext = new SecurityContextImpl();
+        SecurityContextHolder.setContext(securityContext);
 
-        assertSame(mockContext, SecurityContextHolder.getContext());
+        assertSame(securityContext, SecurityContextHolder.getContext());
     }
 
     @Test
     void clearContext_ShouldRemoveContext() {
-        SecurityContextHolder.setContext(mock(SecurityContext.class));
+        SecurityContext securityContext = new SecurityContextImpl();
+        SecurityContextHolder.setContext(securityContext);
         SecurityContextHolder.clearContext();
 
         assertNotSame(SecurityContextHolder.getContext(), SecurityContextHolder.createEmptyContext());

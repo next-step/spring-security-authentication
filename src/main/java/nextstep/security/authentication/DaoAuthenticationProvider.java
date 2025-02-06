@@ -1,15 +1,12 @@
 package nextstep.security.authentication;
 
-import nextstep.security.userdetails.UserDetails;
-import nextstep.security.userdetails.UserDetailsService;
 import nextstep.security.exception.BadCredentialsException;
 import nextstep.security.exception.UsernameNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import nextstep.security.userdetails.UserDetails;
+import nextstep.security.userdetails.UserDetailsService;
 import org.springframework.util.ClassUtils;
 
 public class DaoAuthenticationProvider implements AuthenticationProvider {
-    private static final Logger logger = LoggerFactory.getLogger(DaoAuthenticationProvider.class);
     private final UserDetailsService userDetailsService;
 
     public DaoAuthenticationProvider(UserDetailsService userDetailsService) {
