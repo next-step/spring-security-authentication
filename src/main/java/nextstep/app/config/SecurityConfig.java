@@ -1,9 +1,6 @@
 package nextstep.app.config;
 
-import nextstep.security.AuthenticationManager;
-import nextstep.security.AuthenticationProvider;
-import nextstep.security.DaoAuthenticationProvider;
-import nextstep.security.ProviderManager;
+import nextstep.security.*;
 import nextstep.security.domain.MemberDetailService;
 import nextstep.security.filter.*;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +33,8 @@ public class SecurityConfig {
         return new DefaultSecurityFilterChain(
                 List.of(new ExceptionHandlerFilter(),
                         new BasicAuthenticationFilter(authenticationManager()),
-                        new LoginAuthenticationFilter(authenticationManager()))
+                        new LoginAuthenticationFilter(authenticationManager()),
+                        new SecurityContextHolderFilter(new HttpSessionSecurityContextRepository()))
         );
     }
 
