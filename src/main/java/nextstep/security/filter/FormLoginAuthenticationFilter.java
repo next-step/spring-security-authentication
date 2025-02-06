@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpSession;
 import nextstep.security.AuthenticationException;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
+import nextstep.security.util.matcher.MvcRequestMatcher;
+import org.springframework.http.HttpMethod;
 
 import java.io.IOException;
 import java.util.Map;
@@ -18,6 +20,7 @@ import java.util.Map;
 public class FormLoginAuthenticationFilter implements Filter {
 
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
+    private static final MvcRequestMatcher DEFAULT_REQUEST_MATCHER = new MvcRequestMatcher(HttpMethod.POST, "/login");
 
     private final UserDetailsService userDetailsService;
 
@@ -27,6 +30,11 @@ public class FormLoginAuthenticationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        if (!DEFAULT_REQUEST_MATCHER.matches((HttpServletRequest) servletRequest)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 

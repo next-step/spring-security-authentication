@@ -11,10 +11,14 @@ import nextstep.security.AuthenticationException;
 import nextstep.security.util.Base64Convertor;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
+import nextstep.security.util.matcher.MvcRequestMatcher;
+import org.springframework.http.HttpMethod;
 
 import java.io.IOException;
 
 public class BasicAuthenticationFilter implements Filter {
+
+    private static final MvcRequestMatcher DEFAULT_REQUEST_MATCHER = new MvcRequestMatcher(HttpMethod.GET, "/members");
 
     private final UserDetailsService userDetailsService;
 
@@ -24,6 +28,11 @@ public class BasicAuthenticationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        if (!DEFAULT_REQUEST_MATCHER.matches((HttpServletRequest) servletRequest)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
