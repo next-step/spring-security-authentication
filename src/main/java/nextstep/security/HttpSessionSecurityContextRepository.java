@@ -9,10 +9,12 @@ public class HttpSessionSecurityContextRepository implements SecurityContextRepo
 
     @Override
     public SecurityContext loadContext(HttpServletRequest request) {
-        if (request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY) == null) {
+        Object context = request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+        if (context == null) {
             return SecurityContextHolder.createEmptyContext();
         }
-        return (SecurityContext) request.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
+
+        return (SecurityContext) context;
     }
 
     @Override
