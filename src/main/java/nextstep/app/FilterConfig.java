@@ -26,26 +26,6 @@ public class FilterConfig implements WebMvcConfigurer {
         this.memberRepository = memberRepository;
     }
 
-    /*
-    @Bean
-    public FilterRegistrationBean<BasicAuthenticationFilter> basicAuthenticationFilterBean() {
-        FilterRegistrationBean<BasicAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new BasicAuthenticationFilter(userDetailsService()));
-        registrationBean.addUrlPatterns("/members");
-
-        return registrationBean;
-    }
-
-    @Bean
-    public FilterRegistrationBean<FormLoginAuthenticationFilter> formLoginAuthenticationFilterBean() {
-        FilterRegistrationBean<FormLoginAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new FormLoginAuthenticationFilter(userDetailsService()));
-        registrationBean.addUrlPatterns("/login");
-
-        return registrationBean;
-    }
-     */
-
     @Bean
     public DelegatingFilterProxy delegatingFilterProxy() {
         return new DelegatingFilterProxy(filterChainProxy());
