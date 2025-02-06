@@ -29,12 +29,7 @@ public class BasicAuthenticationFilter extends GenericFilterBean {
 
         Authentication resultAuthentication = authenticationManager.authenticate(getAuthenticationFrom(httpRequest));
         SecurityContextHolder.getContext().setAuthentication(resultAuthentication);
-
-        try {
-            chain.doFilter(request, response);
-        } finally {
-            SecurityContextHolder.clearContext();
-        }
+        chain.doFilter(request, response);
     }
 
     private static boolean notTarget(HttpServletRequest httpRequest) {

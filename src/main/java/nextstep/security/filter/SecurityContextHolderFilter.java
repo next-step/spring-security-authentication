@@ -29,10 +29,12 @@ public class SecurityContextHolderFilter extends GenericFilterBean {
         SecurityContext securityContext = securityContextRepository.loadContext(httpRequest);
         SecurityContextHolder.setContext(securityContext);
 
-        chain.doFilter(httpRequest, response);
-
-        SecurityContext context = SecurityContextHolder.getContext();
-        securityContextRepository.saveContext(context, httpRequest, httpResponse);
-//        SecurityContextHolder.clearContext();
+        try {
+            chain.doFilter(httpRequest, response);
+        } finally {
+            SecurityContext context = SecurityContextHolder.getContext();
+            securityContextRepository.saveContext(context, httpRequest, httpResponse);
+//            SecurityContextHolder.clearContext();
+        }
     }
 }
