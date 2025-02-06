@@ -1,6 +1,8 @@
 package nextstep.app.domain;
 
-public class Member {
+import nextstep.security.userdetails.UserDetails;
+
+public class Member implements UserDetails {
     private final String email;
     private final String password;
     private final String name;
@@ -17,6 +19,12 @@ public class Member {
         return email;
     }
 
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
     public String getPassword() {
         return password;
     }
