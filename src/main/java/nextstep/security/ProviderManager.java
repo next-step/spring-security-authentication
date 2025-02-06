@@ -1,5 +1,7 @@
 package nextstep.security;
 
+import nextstep.security.exception.AuthenticationException;
+
 import java.util.List;
 
 public class ProviderManager implements AuthenticationManager {
@@ -12,12 +14,10 @@ public class ProviderManager implements AuthenticationManager {
 
     @Override
     public Authentication authenticate(Authentication authentication) {
-        for (AuthenticationProvider provider : providers) {
-            if (provider.supports(authentication.getClass())) {
-                return provider.authenticate(authentication);
-            }
-        }
-
-        return null;
+        return providers.stream()
+                .filter(provider -> provider.supports(authentication.getClass()))
+                .map(provider -> provider.authenticate(authentication))
+                .findFirst()
+                .orElseThrow(AuthenticationException::new);
     }
 }
