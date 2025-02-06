@@ -81,7 +81,5 @@ public class BasicAuthFilter extends AbstractAuthProcessingFilter {
         authentication.getAuthorities().add(Role.ADMIN);
 
         securityContextRepository.saveContext(context, request, response);
-
-        filterChain.doFilter(request, response);
     }
 }

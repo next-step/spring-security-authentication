@@ -57,4 +57,9 @@ public class FormAuthFilter extends AbstractAuthProcessingFilter {
 
         securityContextRepository.saveContext(context, request, response);
     }
+
+    @Override
+    protected boolean shouldContinueFilterChain() {
+        return false;
+    }
 }
