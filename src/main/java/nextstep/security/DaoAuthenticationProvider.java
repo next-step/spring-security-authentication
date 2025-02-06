@@ -13,8 +13,7 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
     }
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-
+    public Authentication authenticate(Authentication authentication) {
         if (authentication.isAuthenticated()) {
             return authentication;
         }
