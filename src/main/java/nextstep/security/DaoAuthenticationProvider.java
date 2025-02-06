@@ -14,6 +14,11 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
+        if (authentication.isAuthenticated()) {
+            return authentication;
+        }
+
         MemberDetail member = memberDetailService.findByUsername((String) authentication.getPrincipal());
         if (!member.isCorrectPassword((String) authentication.getCredentials())) {
             throw new AuthenticationException();
