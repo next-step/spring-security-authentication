@@ -1,4 +1,4 @@
-package nextstep.app.config;
+package nextstep.app.service;
 
 import nextstep.app.domain.MemberRepository;
 import nextstep.security.exception.AuthenticationException;
