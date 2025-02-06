@@ -1,6 +1,8 @@
 package nextstep.app.domain;
 
-public class Member {
+import nextstep.security.domain.MemberDetail;
+
+public class Member implements MemberDetail {
     private final String email;
     private final String password;
     private final String name;
@@ -31,5 +33,20 @@ public class Member {
 
     public boolean matchPassword(String password) {
         return this.password.equals(password);
+    }
+
+    @Override
+    public String username() {
+        return email;
+    }
+
+    @Override
+    public String password() {
+        return password;
+    }
+
+    @Override
+    public boolean isCorrectPassword(String password) {
+        return password.equals(this.password);
     }
 }
