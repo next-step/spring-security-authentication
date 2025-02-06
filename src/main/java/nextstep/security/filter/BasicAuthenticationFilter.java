@@ -8,6 +8,10 @@ import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationFailureHandler;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.AuthenticationSuccessHandler;
+import nextstep.security.context.SecurityContext;
+import nextstep.security.context.SecurityContextHolder;
+import nextstep.security.context.SecurityContextHolderStrategy;
+import nextstep.security.context.SecurityContextRepository;
 import nextstep.security.converter.AuthenticationConverter;
 import nextstep.security.exception.AuthenticationException;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -15,20 +19,26 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 public class BasicAuthenticationFilter extends OncePerRequestFilter {
+    private final SecurityContextHolderStrategy securityContextHolderStrategy =
+            SecurityContextHolder.getContextHolderStrategy();
+
     private final AuthenticationManager authenticationManager;
     private final AuthenticationConverter authenticationConverter;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
+    private final SecurityContextRepository securityContextRepository;
 
     public BasicAuthenticationFilter(AuthenticationManager authenticationManager,
                                      AuthenticationConverter authenticationConverter,
                                      AuthenticationSuccessHandler authenticationSuccessHandler,
-                                     AuthenticationFailureHandler authenticationFailureHandler) {
+                                     AuthenticationFailureHandler authenticationFailureHandler,
+                                     SecurityContextRepository securityContextRepository) {
 
         this.authenticationManager = authenticationManager;
         this.authenticationConverter = authenticationConverter;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.authenticationFailureHandler = authenticationFailureHandler;
+        this.securityContextRepository = securityContextRepository;
     }
 
     @Override
@@ -42,6 +52,7 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
             }
 
             Authentication authResult = this.authenticationManager.authenticate(authRequest);
+            saveSecurityContext(authResult, request, response);
             authenticationSuccessHandler.onAuthenticationSuccess(request, response, authResult);
         } catch (AuthenticationException e) {
             authenticationFailureHandler.onAuthenticationFailure(request, response, e);
@@ -49,5 +60,14 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+
+    private void saveSecurityContext(Authentication authResult, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        SecurityContext ctx = this.securityContextHolderStrategy.createEmptyContext();
+        ctx.setAuthentication(authResult);
+
+        this.securityContextHolderStrategy.setContext(ctx);
+        this.securityContextRepository.saveContext(ctx, httpRequest, httpResponse);
     }
 }

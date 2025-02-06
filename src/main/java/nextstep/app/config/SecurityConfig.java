@@ -4,9 +4,8 @@ import nextstep.app.domain.MemberRepository;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.AuthenticationProvider;
 import nextstep.security.authentication.BasicAuthenticationFailureHandler;
-import nextstep.security.authentication.BasicAuthenticationSuccessHandler;
+import nextstep.security.authentication.DefaultAuthenticationSuccessHandler;
 import nextstep.security.authentication.UsernamePasswordAuthenticationFailureHandler;
-import nextstep.security.authentication.UsernamePasswordAuthenticationSuccessHandler;
 import nextstep.security.context.SecurityContextRepository;
 import nextstep.security.filter.SecurityFilterChain;
 import nextstep.security.userdetails.UserDetailsService;
@@ -92,14 +91,16 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 new FormLoginRequestMatcher(),
                                 authenticationManager,
                                 usernamePasswordAuthenticationConverter(),
-                                new UsernamePasswordAuthenticationSuccessHandler(securityContextRepository),
-                                new UsernamePasswordAuthenticationFailureHandler()
+                                new DefaultAuthenticationSuccessHandler(),
+                                new UsernamePasswordAuthenticationFailureHandler(),
+                                securityContextRepository
                         ),
                         new BasicAuthenticationFilter(
                                 authenticationManager,
                                 basicAuthenticationConverter(),
-                                new BasicAuthenticationSuccessHandler(securityContextRepository),
-                                new BasicAuthenticationFailureHandler()
+                                new DefaultAuthenticationSuccessHandler(),
+                                new BasicAuthenticationFailureHandler(),
+                                securityContextRepository
                         )
                 )
         );
