@@ -33,8 +33,8 @@ public class SecurityConfig {
         return new DefaultSecurityFilterChain(
                 List.of(new ExceptionHandlerFilter(),
                         new SecurityContextHolderFilter(new HttpSessionSecurityContextRepository()),
-                        new BasicAuthenticationFilter(authenticationManager()),
-                        new LoginAuthenticationFilter(authenticationManager())));
+                        new BasicAuthenticationFilter(authenticationManager(), new HttpSessionSecurityContextRepository()),
+                        new LoginAuthenticationFilter(authenticationManager(), new HttpSessionSecurityContextRepository())));
 
     }
 

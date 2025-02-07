@@ -2,6 +2,7 @@ package nextstep.security.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.*;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.util.Base64Convertor;
@@ -9,19 +10,21 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
-import static nextstep.security.filter.LoginAuthenticationFilter.SPRING_SECURITY_CONTEXT_KEY;
-
 public class BasicAuthenticationFilter extends GenericFilterBean {
 
     private final AuthenticationManager authenticationManager;
+    private final SecurityContextRepository securityContextRepository;
 
-    public BasicAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public BasicAuthenticationFilter(AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
         this.authenticationManager = authenticationManager;
+        this.securityContextRepository = securityContextRepository;
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+
         if (notTarget(httpRequest)) {
             chain.doFilter(request, response);
             return;
@@ -29,6 +32,7 @@ public class BasicAuthenticationFilter extends GenericFilterBean {
 
         Authentication resultAuthentication = authenticationManager.authenticate(getAuthenticationFrom(httpRequest));
         SecurityContextHolder.getContext().setAuthentication(resultAuthentication);
+        securityContextRepository.saveContext(SecurityContextHolder.getContext(), httpRequest, httpResponse);
         chain.doFilter(request, response);
     }
 
@@ -37,9 +41,10 @@ public class BasicAuthenticationFilter extends GenericFilterBean {
     }
 
     private static Authentication getAuthenticationFrom(HttpServletRequest httpRequest) {
-        if (httpRequest.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY) != null) {
-            SecurityContext attribute = (SecurityContext) httpRequest.getSession().getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-            return attribute.getAuthentication();
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        if (authentication != null) {
+            return authentication;
         }
 
         String basicToken = extractToken(httpRequest);
