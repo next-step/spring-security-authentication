@@ -1,8 +1,8 @@
 package nextstep.security.authentication;
 
 public class UsernamePasswordAuthenticationToken implements Authentication {
-    private final String principal;
-    private final String credentials;
+    private final Object principal;
+    private final Object credentials;
     private Boolean authenticated = false;
 
     public UsernamePasswordAuthenticationToken(String principal, String credentials) {
@@ -11,12 +11,12 @@ public class UsernamePasswordAuthenticationToken implements Authentication {
     }
 
     @Override
-    public String getPrincipal() {
+    public Object getPrincipal() {
         return this.principal;
     }
 
     @Override
-    public String getCredentials() {
+    public Object getCredentials() {
         return this.credentials;
     }
 

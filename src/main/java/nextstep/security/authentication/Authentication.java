@@ -1,9 +1,9 @@
 package nextstep.security.authentication;
 
 public interface Authentication {
-    String getPrincipal();
+    Object getPrincipal();
 
-    String getCredentials();
+    Object getCredentials();
 
     boolean isAuthenticated();
 
