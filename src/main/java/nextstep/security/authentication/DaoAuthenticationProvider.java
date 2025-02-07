@@ -27,7 +27,7 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
         throw new AuthenticationException();
     }
 
-    private static void check(Authentication authentication) {
+    private void check(Authentication authentication) {
         if (authentication == null) {
             throw new AuthenticationException();
         }
