@@ -7,18 +7,31 @@ import java.util.List;
 
 public class DefaultSecurityFilterChain implements SecurityFilterChain {
 
+    private final RequestMatcher requestMatcher;
 
-    public <E> DefaultSecurityFilterChain(List<E> of) {
+    private final List<Filter> filters;
+
+    public DefaultSecurityFilterChain(List<Filter> filters) {
+        this(null, filters);
     }
 
-    @Override
-    public List<Filter> getFilters() {
-        return List.of();
+    public DefaultSecurityFilterChain(RequestMatcher requestMatcher, List<Filter> filters) {
+        this.requestMatcher = requestMatcher;
+        this.filters = filters;
     }
 
     @Override
     public boolean matches(HttpServletRequest request) {
-        return false;
+        return true;
+    }
+
+    @Override
+    public List<Filter> getFilters() {
+        return this.filters;
+    }
+
+    public RequestMatcher getRequestMatcher() {
+        return requestMatcher;
     }
 
 }
