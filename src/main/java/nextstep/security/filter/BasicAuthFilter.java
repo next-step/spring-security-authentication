@@ -12,9 +12,13 @@ import nextstep.security.UserDetailService;
 import nextstep.security.UserDetails;
 import nextstep.security.util.Base64Convertor;
 
+import java.util.List;
+
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 public class BasicAuthFilter implements Filter {
+
+    private static final List<String> TARGET_URL = List.of("/members");
 
     private final UserDetailService userDetailsService;
 
@@ -30,6 +34,12 @@ public class BasicAuthFilter implements Filter {
             HttpServletResponse response = (HttpServletResponse) servletResponse;
 
             try {
+                boolean notTarget = isNotTarget(request);
+                if (notTarget) {
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+
                 checkAuthentication(request);
                 filterChain.doFilter(request, response);
             } catch (Exception e) {
@@ -40,8 +50,19 @@ public class BasicAuthFilter implements Filter {
         throw new ServletException("BasicAuthFilter only supports HTTP requests");
     }
 
+    private boolean isNotTarget(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        return TARGET_URL.stream()
+                .filter(requestURI::startsWith)
+                .findAny()
+                .isEmpty();
+    }
+
     private void checkAuthentication(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
+        if (authorizationHeader == null) {
+            return;
+        }
         String authType = authorizationHeader.split(" ")[0];
         String credentials = authorizationHeader.split(" ")[1];
         String decodedString = Base64Convertor.decode(credentials);
@@ -58,7 +79,7 @@ public class BasicAuthFilter implements Filter {
     }
 
     private void checkAuthType(String authType) {
-        if (!authType.equalsIgnoreCase(HttpServletRequest.BASIC_AUTH)) {
+        if (!HttpServletRequest.BASIC_AUTH.equalsIgnoreCase(authType)) {
             throw new AuthenticationException();
         }
     }

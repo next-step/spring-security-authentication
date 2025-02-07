@@ -1,12 +1,21 @@
 package nextstep.app.config;
 
+import jakarta.servlet.Filter;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.security.UserDetailService;
 import nextstep.security.UserDetails;
+import nextstep.security.config.DefaultSecurityFilterChain;
+import nextstep.security.config.FilterChainProxy;
+import nextstep.security.config.SecurityFilterChain;
+import nextstep.security.filter.BasicAuthFilter;
+import nextstep.security.filter.UsernamePasswordAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -17,27 +26,25 @@ public class WebConfig implements WebMvcConfigurer {
         this.memberRepository = memberRepository;
     }
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(new FormLoginInterceptor(userDetailService())).addPathPatterns("/login");
-//        registry.addInterceptor(new BasicAuthInterceptor(userDetailService())).addPathPatterns("/members");
-//    }
+    @Bean
+    public DelegatingFilterProxy delegatingFilterProxy() {
+        return new DelegatingFilterProxy(filterChainProxy());
+    }
 
-//    @Bean
-//    public FilterRegistrationBean<BasicAuthFilter> basicAuthFilterRegister() {
-//        FilterRegistrationBean<BasicAuthFilter> registrationBean = new FilterRegistrationBean<>(new BasicAuthFilter(userDetailService()));
-//        registrationBean.addUrlPatterns("/member");
-//        registrationBean.setOrder(1);
-//        return registrationBean;
-//    }
-//
-//    @Bean
-//    public FilterRegistrationBean<UsernamePasswordAuthFilter> usernamePasswordAuthFilterRegister() {
-//        FilterRegistrationBean<UsernamePasswordAuthFilter> registrationBean = new FilterRegistrationBean<>(new UsernamePasswordAuthFilter(userDetailService()));
-//        registrationBean.addUrlPatterns("/login", "/login/*");
-//        registrationBean.setOrder(2);
-//        return registrationBean;
-//    }
+    @Bean
+    public FilterChainProxy filterChainProxy() {
+        List<SecurityFilterChain> securityFilterChains = List.of(securityFilterChain());
+        return new FilterChainProxy(securityFilterChains);
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain() {
+        List<Filter> securityFilters = List.of(
+                new BasicAuthFilter(userDetailService()),
+                new UsernamePasswordAuthFilter(userDetailService())
+        );
+        return new DefaultSecurityFilterChain(securityFilters);
+    }
 
     @Bean
     public UserDetailService userDetailService() {
