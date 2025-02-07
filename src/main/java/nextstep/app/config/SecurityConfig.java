@@ -32,10 +32,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain() {
         return new DefaultSecurityFilterChain(
                 List.of(new ExceptionHandlerFilter(),
+                        new SecurityContextHolderFilter(new HttpSessionSecurityContextRepository()),
                         new BasicAuthenticationFilter(authenticationManager()),
-                        new LoginAuthenticationFilter(authenticationManager()),
-                        new SecurityContextHolderFilter(new HttpSessionSecurityContextRepository()))
-        );
+                        new LoginAuthenticationFilter(authenticationManager())));
+
     }
 
     @Bean
