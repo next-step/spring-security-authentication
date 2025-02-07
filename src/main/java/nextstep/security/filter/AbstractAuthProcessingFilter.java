@@ -53,11 +53,13 @@ public abstract class AbstractAuthProcessingFilter extends GenericFilterBean {
 
                 registerSecurityOnSession(authentication, request, response);
                 response.setStatus(HttpServletResponse.SC_OK);
-
+                return;
             } catch (AuthenticationException e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             }
         }
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     public abstract Authentication getAuthentication(HttpServletRequest request);
