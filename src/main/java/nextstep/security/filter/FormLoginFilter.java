@@ -5,7 +5,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.*;
-import nextstep.security.exception.AuthenticationException;
 import nextstep.security.user.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -36,11 +35,10 @@ public class FormLoginFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
             Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 
-            if (!authenticate.isAuthenticated()) {
-                throw new AuthenticationException();
+            if (authenticate.isAuthenticated()) {
+                SecurityContext context = SecurityContextHolder.getContext();
+                context.setAuthentication(authenticate);
             }
-            SecurityContext context = SecurityContextHolder.getContext();
-            context.setAuthentication(authenticate);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }

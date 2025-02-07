@@ -15,7 +15,7 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UserDetails userDetails = userDetailsService.loadUserByUsername(authentication.getPrincipal());
         if (!userDetails.getPassword().equals(authentication.getCredentials())) {
-            return authentication;
+            throw new AuthenticationException();
         }
         authentication.setAuthenticated(true);
         return authentication;
