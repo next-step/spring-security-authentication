@@ -1,10 +1,13 @@
 package nextstep.security.filter;
 
 import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import nextstep.security.exception.FilterChainNotFoundException;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class FilterChainProxy extends GenericFilterBean {
 
@@ -16,11 +19,18 @@ public class FilterChainProxy extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
-        for (SecurityFilterChain filterChain : filterChains) {
-            List<Filter> filters = filterChain.filters();
-            VirtualFilterChain virtualFilterChain = new VirtualFilterChain(filters, chain);
-            virtualFilterChain.doFilter(servletRequest, servletResponse);
-        }
+        HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
+        List<Filter> filters = getFilters(httpRequest);
+        VirtualFilterChain virtualFilterChain = new VirtualFilterChain(filters, chain);
+        virtualFilterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    private List<Filter> getFilters(HttpServletRequest httpRequest) {
+        return filterChains.stream()
+                .filter(filterChain -> filterChain.matches(httpRequest))
+                .findFirst()
+                .map(SecurityFilterChain::filters)
+                .orElseThrow(FilterChainNotFoundException::new);
     }
 
     public static class VirtualFilterChain implements FilterChain {
