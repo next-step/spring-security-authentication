@@ -57,7 +57,7 @@ public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
     private void storeAuthentication(Authentication authenticate, HttpServletRequest request, HttpServletResponse response) {
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         securityContext.setAuthentication(authenticate);
-        SecurityContextHolder.setContext(securityContext);
+
         securityContextRepository.saveContext(securityContext, request, response);
     }
 
