@@ -38,8 +38,7 @@ public abstract class AbstractAuthProcessingFilter extends GenericFilterBean {
         if (servletRequest instanceof HttpServletRequest request
                 && (servletResponse instanceof HttpServletResponse response)
         ) {
-            boolean shouldNotFiltered = isShouldNotFiltered(request);
-            if (shouldNotFiltered) {
+            if (isShouldNotFiltered(request)) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }
@@ -54,15 +53,11 @@ public abstract class AbstractAuthProcessingFilter extends GenericFilterBean {
 
                 registerSecurityOnSession(authentication, request, response);
                 response.setStatus(HttpServletResponse.SC_OK);
+
             } catch (AuthenticationException e) {
-                ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             }
         }
-    }
-
-    private void registerSecurityOnSession(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
-        SecurityContext securityContext = new SecurityContextImpl(authentication);
-        securityContextRepository.saveContext(securityContext, request, response);
     }
 
     public abstract Authentication getAuthentication(HttpServletRequest request);
@@ -71,5 +66,10 @@ public abstract class AbstractAuthProcessingFilter extends GenericFilterBean {
         boolean isNotPostMethod = Arrays.stream(shouldFilteringMethods).map(HttpMethod::name).noneMatch(it -> it.equalsIgnoreCase(request.getMethod()));
         boolean isNotMatchedURI = Arrays.stream(shouldFilteringPaths).noneMatch(it -> it.equalsIgnoreCase(request.getRequestURI()));
         return isNotMatchedURI || isNotPostMethod;
+    }
+
+    private void registerSecurityOnSession(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+        SecurityContext securityContext = new SecurityContextImpl(authentication);
+        securityContextRepository.saveContext(securityContext, request, response);
     }
 }
