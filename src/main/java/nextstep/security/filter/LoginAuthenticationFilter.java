@@ -6,7 +6,11 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nextstep.security.*;
+import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.AuthenticationManager;
+import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
+import nextstep.security.context.SecurityContextHolder;
+import nextstep.security.context.SecurityContextRepository;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;

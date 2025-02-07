@@ -1,6 +1,7 @@
 package nextstep.app.config;
 
-import nextstep.security.*;
+import nextstep.security.authentication.*;
+import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.domain.MemberDetailService;
 import nextstep.security.filter.*;
 import org.springframework.context.annotation.Bean;

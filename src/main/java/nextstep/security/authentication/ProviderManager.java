@@ -1,4 +1,4 @@
-package nextstep.security;
+package nextstep.security.authentication;
 
 import nextstep.security.exception.AuthenticationException;
 

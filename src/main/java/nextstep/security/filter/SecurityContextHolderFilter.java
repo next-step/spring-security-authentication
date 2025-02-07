@@ -5,9 +5,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import nextstep.security.SecurityContext;
-import nextstep.security.SecurityContextHolder;
-import nextstep.security.SecurityContextRepository;
+import nextstep.security.context.SecurityContext;
+import nextstep.security.context.SecurityContextHolder;
+import nextstep.security.context.SecurityContextRepository;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
