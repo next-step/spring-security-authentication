@@ -75,5 +75,7 @@ public class BasicAuthFilter extends AbstractAuthProcessingFilter {
         final SecurityContext context = SecurityContextHolder.getContext();
         final Authentication authentication = context.getAuthentication();
         authentication.getAuthorities().clear();
+
+        filterChain.doFilter(request, response);
     }
 }

@@ -39,12 +39,6 @@ public abstract class AbstractAuthProcessingFilter extends OncePerRequestFilter 
         saveAuthentication(request, response, authentication);
 
         successAuthentication(request, response, filterChain);
-
-        if (!shouldContinueFilterChain()) {
-            return;
-        }
-
-        doFilter(request, response, filterChain);
     }
 
     private static boolean isAlreadyAuthenticated() {
@@ -72,8 +66,4 @@ public abstract class AbstractAuthProcessingFilter extends OncePerRequestFilter 
 
     protected abstract void successAuthentication(final HttpServletRequest request, final HttpServletResponse response,
                                                   final FilterChain filterChain) throws ServletException, IOException;
-
-    protected boolean shouldContinueFilterChain() {
-        return true;
-    }
 }

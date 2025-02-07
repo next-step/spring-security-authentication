@@ -48,13 +48,5 @@ public class FormAuthFilter extends AbstractAuthProcessingFilter {
 
     @Override
     protected void successAuthentication(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
-//        final SecurityContext context = SecurityContextHolder.getContext();
-//        final Authentication authentication = context.getAuthentication();
-//        authentication.getAuthorities().add(Role.defaltRole());
-    }
-
-    @Override
-    protected boolean shouldContinueFilterChain() {
-        return false;
     }
 }
