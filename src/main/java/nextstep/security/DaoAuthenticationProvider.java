@@ -23,9 +23,7 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
             throw new AuthenticationException();
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member, null);
-        authenticationToken.setAuthenticated(true);
-        return authenticationToken;
+        return new UsernamePasswordAuthenticationToken(member, null, true);
     }
 
     @Override

@@ -11,6 +11,12 @@ public class UsernamePasswordAuthenticationToken implements Authentication {
         this.credentials = credentials;
     }
 
+    public UsernamePasswordAuthenticationToken(Object principal, Object credentials, boolean authenticated) {
+        this.principal = principal;
+        this.credentials = credentials;
+        this.authenticated = authenticated;
+    }
+
     @Override
     public Object getPrincipal() {
         return principal;
@@ -24,9 +30,5 @@ public class UsernamePasswordAuthenticationToken implements Authentication {
     @Override
     public boolean isAuthenticated() {
         return authenticated;
-    }
-
-    public void setAuthenticated(boolean authenticated) {
-        this.authenticated = authenticated;
     }
 }
