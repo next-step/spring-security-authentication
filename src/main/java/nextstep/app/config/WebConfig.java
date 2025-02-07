@@ -4,9 +4,6 @@ import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.security.UserDetailService;
 import nextstep.security.UserDetails;
-import nextstep.security.filter.BasicAuthFilter;
-import nextstep.security.filter.UsernamePasswordAuthFilter;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -26,21 +23,21 @@ public class WebConfig implements WebMvcConfigurer {
 //        registry.addInterceptor(new BasicAuthInterceptor(userDetailService())).addPathPatterns("/members");
 //    }
 
-    @Bean
-    public FilterRegistrationBean<BasicAuthFilter> basicAuthFilterRegister() {
-        FilterRegistrationBean<BasicAuthFilter> registrationBean = new FilterRegistrationBean<>(new BasicAuthFilter(userDetailService()));
-        registrationBean.addUrlPatterns("/member");
-        registrationBean.setOrder(1);
-        return registrationBean;
-    }
-
-    @Bean
-    public FilterRegistrationBean<UsernamePasswordAuthFilter> usernamePasswordAuthFilterRegister() {
-        FilterRegistrationBean<UsernamePasswordAuthFilter> registrationBean = new FilterRegistrationBean<>(new UsernamePasswordAuthFilter(userDetailService()));
-        registrationBean.addUrlPatterns("/login", "/login/*");
-        registrationBean.setOrder(2);
-        return registrationBean;
-    }
+//    @Bean
+//    public FilterRegistrationBean<BasicAuthFilter> basicAuthFilterRegister() {
+//        FilterRegistrationBean<BasicAuthFilter> registrationBean = new FilterRegistrationBean<>(new BasicAuthFilter(userDetailService()));
+//        registrationBean.addUrlPatterns("/member");
+//        registrationBean.setOrder(1);
+//        return registrationBean;
+//    }
+//
+//    @Bean
+//    public FilterRegistrationBean<UsernamePasswordAuthFilter> usernamePasswordAuthFilterRegister() {
+//        FilterRegistrationBean<UsernamePasswordAuthFilter> registrationBean = new FilterRegistrationBean<>(new UsernamePasswordAuthFilter(userDetailService()));
+//        registrationBean.addUrlPatterns("/login", "/login/*");
+//        registrationBean.setOrder(2);
+//        return registrationBean;
+//    }
 
     @Bean
     public UserDetailService userDetailService() {
