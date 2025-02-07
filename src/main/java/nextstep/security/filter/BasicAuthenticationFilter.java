@@ -27,7 +27,7 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (!isNotBasicAuth(authorization)) {
+        if (isNotBasicAuth(authorization)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -53,8 +53,8 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean isNotBasicAuth(String authorization) {
         if (authorization == null) {
-            return false;
+            return true;
         }
-        return authorization.toLowerCase().startsWith(BASIC_PREFIX);
+        return !authorization.toLowerCase().startsWith(BASIC_PREFIX);
     }
 }
