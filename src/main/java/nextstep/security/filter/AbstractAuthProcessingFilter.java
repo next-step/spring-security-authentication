@@ -38,7 +38,7 @@ public abstract class AbstractAuthProcessingFilter extends GenericFilterBean {
         if (servletRequest instanceof HttpServletRequest request
                 && (servletResponse instanceof HttpServletResponse response)
         ) {
-            if (isShouldNotFiltered(request)) {
+            if (shouldNotFiltered(request)) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }
@@ -62,7 +62,7 @@ public abstract class AbstractAuthProcessingFilter extends GenericFilterBean {
 
     public abstract Authentication getAuthentication(HttpServletRequest request);
 
-    private boolean isShouldNotFiltered(HttpServletRequest request) {
+    private boolean shouldNotFiltered(HttpServletRequest request) {
         boolean isNotPostMethod = Arrays.stream(shouldFilteringMethods).map(HttpMethod::name).noneMatch(it -> it.equalsIgnoreCase(request.getMethod()));
         boolean isNotMatchedURI = Arrays.stream(shouldFilteringPaths).noneMatch(it -> it.equalsIgnoreCase(request.getRequestURI()));
         return isNotMatchedURI || isNotPostMethod;
