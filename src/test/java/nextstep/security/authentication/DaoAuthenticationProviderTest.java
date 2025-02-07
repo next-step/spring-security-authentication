@@ -11,13 +11,24 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 class DaoAuthenticationProviderTest {
     @Test
-    @DisplayName("daoAuthenticationProvider 는 UsernamePasswordAuthenticationToken 만 지원한다")
+    @DisplayName("daoAuthenticationProvider 는 UsernamePasswordAuthenticationToken 을 지원한다")
     void support() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider((it) -> null);
 
         assertSoftly(it -> {
             it.assertThat(daoAuthenticationProvider.supports(UsernamePasswordAuthenticationToken.class)).isTrue();
             it.assertThat(daoAuthenticationProvider.supports(Authentication.class)).isFalse();
+        });
+    }
+
+    @Test
+    @DisplayName("daoAuthenticationProvider 는 UsernamePasswordAuthenticationToken 하위 타입을 지원한다")
+    void support_extends() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider((it) -> null);
+
+        assertSoftly(it -> {
+            it.assertThat(daoAuthenticationProvider.supports(ChildUsernamePasswordAuthenticationToken.class)).isTrue();
+            it.assertThat(daoAuthenticationProvider.supports(UsernamePasswordAuthenticationToken.class)).isTrue();
         });
     }
 
@@ -75,4 +86,11 @@ class DaoAuthenticationProviderTest {
 
         assertThat(authenticate.isAuthenticated()).isTrue();
     }
+
+    private static class ChildUsernamePasswordAuthenticationToken extends UsernamePasswordAuthenticationToken {
+        public ChildUsernamePasswordAuthenticationToken(String principal, String credentials) {
+            super(principal, credentials);
+        }
+    }
+
 }
