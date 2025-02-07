@@ -38,7 +38,7 @@ public class SecurityConfig {
 
         return new DefaultSecurityFilterChain(
                 List.of(new SecurityContextHolderFilter(securityContextRepository)
-                        , new UsernamePasswordAuthenticationFilter(providerManager)
+                        , new UsernamePasswordAuthenticationFilter(providerManager, securityContextRepository)
                         , new BasicAuthenticationFilter(providerManager))
         );
     }
