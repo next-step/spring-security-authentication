@@ -2,7 +2,7 @@ package nextstep.app;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.app.util.Base64Convertor;
+import nextstep.security.util.Base64Convertor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ class BasicAuthTest {
         memberRepository.save(TEST_MEMBER);
     }
 
-    @DisplayName("Basic Auth 인증 성공 후 회원 목록 조회")
+    @DisplayName("Basic Auth GET 요청 인증 성공 후 회원 목록 조회")
     @Test
     void members() throws Exception {
         String token = TEST_MEMBER.getEmail() + ":" + TEST_MEMBER.getPassword();
