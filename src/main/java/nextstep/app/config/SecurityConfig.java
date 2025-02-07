@@ -46,6 +46,6 @@ public class SecurityConfig {
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
-        return new DaoAuthenticationProvider(memberDetailService);
+        return new DaoAuthenticationProvider(memberDetailService, new BasicPasswordMatcher());
     }
 }

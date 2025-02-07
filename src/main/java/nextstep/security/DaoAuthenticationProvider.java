@@ -7,9 +7,11 @@ import nextstep.security.exception.AuthenticationException;
 public class DaoAuthenticationProvider implements AuthenticationProvider {
 
     private final MemberDetailService memberDetailService;
+    private final PasswordMatcher passwordMatcher;
 
-    public DaoAuthenticationProvider(MemberDetailService memberDetailService) {
+    public DaoAuthenticationProvider(MemberDetailService memberDetailService, PasswordMatcher passwordMatcher) {
         this.memberDetailService = memberDetailService;
+        this.passwordMatcher = passwordMatcher;
     }
 
     @Override
@@ -19,11 +21,11 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
         }
 
         MemberDetail member = memberDetailService.findByUsername((String) authentication.getPrincipal());
-        if (!member.isCorrectPassword((String) authentication.getCredentials())) {
-            throw new AuthenticationException();
+        if (passwordMatcher.matches(member.password(), (String) authentication.getCredentials())) {
+            return new UsernamePasswordAuthenticationToken(member, null, true);
         }
 
-        return new UsernamePasswordAuthenticationToken(member, null, true);
+        throw new AuthenticationException();
     }
 
     @Override
