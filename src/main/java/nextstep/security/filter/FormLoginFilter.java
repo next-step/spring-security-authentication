@@ -16,6 +16,7 @@ public class FormLoginFilter extends OncePerRequestFilter {
     private static final String MATCH_URI = "/login";
 
     private final AuthenticationManager authenticationManager;
+    private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
     public FormLoginFilter(UserDetailsService userDetailsService) {
         this.authenticationManager = new ProviderManager(List.of(new DaoAuthenticationProvider(userDetailsService)));
@@ -38,7 +39,9 @@ public class FormLoginFilter extends OncePerRequestFilter {
             if (authenticate.isAuthenticated()) {
                 SecurityContext context = SecurityContextHolder.getContext();
                 context.setAuthentication(authenticate);
+                securityContextRepository.saveContext(context, request, response);
             }
+
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }

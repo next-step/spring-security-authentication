@@ -18,8 +18,6 @@ public class SecurityContextHolderFilter extends OncePerRequestFilter {
             SecurityContext securityContext = securityContextRepository.loadContext(request);
             SecurityContextHolder.setContext(securityContext);
             filterChain.doFilter(request, response);
-            SecurityContext context = SecurityContextHolder.getContext();
-            securityContextRepository.saveContext(context, request, response);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } finally {
