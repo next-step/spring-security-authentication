@@ -8,7 +8,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import nextstep.security.AuthenticationException;
+import nextstep.security.exception.AuthenticationException;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
 import nextstep.security.util.matcher.MvcRequestMatcher;
