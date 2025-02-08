@@ -7,10 +7,11 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import nextstep.security.Authentication;
+import nextstep.security.AuthenticationManager;
+import nextstep.security.UsernamePasswordAuthenticationToken;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.util.Base64Convertor;
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
 import nextstep.security.util.matcher.MvcRequestMatcher;
 import org.springframework.http.HttpMethod;
 
@@ -20,10 +21,10 @@ public class BasicAuthenticationFilter implements Filter {
 
     private static final MvcRequestMatcher DEFAULT_REQUEST_MATCHER = new MvcRequestMatcher(HttpMethod.GET, "/members");
 
-    private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
-    public BasicAuthenticationFilter(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public BasicAuthenticationFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -37,16 +38,10 @@ public class BasicAuthenticationFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         try {
-            String authorization = request.getHeader("Authorization");
-            String credentials = authorization.split(" ")[1];
-            String decodedString = Base64Convertor.decode(credentials);
-            String[] usernameAndPassword = decodedString.split(":");
-            String username = usernameAndPassword[0];
-            String password = usernameAndPassword[1];
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (!userDetails.getPassword().equals(password)) {
-                throw new AuthenticationException();
+            Authentication authenticationResult = attemptAuthentication(request, response);
+            if (authenticationResult == null) {
+                return;
             }
 
             filterChain.doFilter(servletRequest, servletResponse);
@@ -54,5 +49,20 @@ public class BasicAuthenticationFilter implements Filter {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
+    }
+
+    private Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+
+        String authorization = request.getHeader("Authorization");
+        String credentials = authorization.split(" ")[1];
+        String decodedString = Base64Convertor.decode(credentials);
+        String[] usernameAndPassword = decodedString.split(":");
+
+        String username = usernameAndPassword[0];
+        String password = usernameAndPassword[1];
+
+        UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username, password);
+
+        return authenticationManager.authenticate(authRequest);
     }
 }

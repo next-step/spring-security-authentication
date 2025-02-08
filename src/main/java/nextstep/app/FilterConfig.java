@@ -2,13 +2,18 @@ package nextstep.app;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.security.AuthenticationManager;
+import nextstep.security.DaoAuthenticationProvider;
 import nextstep.security.DefaultSecurityFilterChain;
 import nextstep.security.FilterChainProxy;
+import nextstep.security.ProviderManager;
 import nextstep.security.SecurityFilterChain;
 import nextstep.security.filter.BasicAuthenticationFilter;
 import nextstep.security.filter.FormLoginAuthenticationFilter;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
+import nextstep.security.password.PasswordEncoder;
+import nextstep.security.password.RawPasswordEncoder;
 import nextstep.security.util.matcher.AnyRequestMatcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,19 +32,28 @@ public class FilterConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public DelegatingFilterProxy delegatingFilterProxy() {
-        return new DelegatingFilterProxy(filterChainProxy());
+    public DelegatingFilterProxy delegatingFilterProxy(AuthenticationManager authenticationManager) {
+        return new DelegatingFilterProxy(filterChainProxy(authenticationManager));
     }
 
-    private FilterChainProxy filterChainProxy() {
-        return new FilterChainProxy(securityFilterChain());
+    private FilterChainProxy filterChainProxy(AuthenticationManager authenticationManager) {
+        return new FilterChainProxy(securityFilterChain(authenticationManager));
     }
 
-    private SecurityFilterChain securityFilterChain() {
+    private SecurityFilterChain securityFilterChain(AuthenticationManager authenticationManager) {
         return new DefaultSecurityFilterChain(AnyRequestMatcher.INSTANCE, List.of(
-                new BasicAuthenticationFilter(userDetailsService()),
-                new FormLoginAuthenticationFilter(userDetailsService())
+                new BasicAuthenticationFilter(authenticationManager),
+                new FormLoginAuthenticationFilter(authenticationManager)
         ));
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        return new ProviderManager(List.of(new DaoAuthenticationProvider(userDetailsService(), passwordEncoder())));
+    }
+
+    private PasswordEncoder passwordEncoder() {
+        return new RawPasswordEncoder();
     }
 
     private UserDetailsService userDetailsService() {

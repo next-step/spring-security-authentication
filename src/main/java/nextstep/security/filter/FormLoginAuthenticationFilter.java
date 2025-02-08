@@ -8,24 +8,24 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import nextstep.security.Authentication;
+import nextstep.security.AuthenticationManager;
+import nextstep.security.UsernamePasswordAuthenticationToken;
 import nextstep.security.exception.AuthenticationException;
-import nextstep.security.UserDetails;
-import nextstep.security.UserDetailsService;
 import nextstep.security.util.matcher.MvcRequestMatcher;
 import org.springframework.http.HttpMethod;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class FormLoginAuthenticationFilter implements Filter {
 
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
     private static final MvcRequestMatcher DEFAULT_REQUEST_MATCHER = new MvcRequestMatcher(HttpMethod.POST, "/login");
 
-    private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
-    public FormLoginAuthenticationFilter(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public FormLoginAuthenticationFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -39,22 +39,32 @@ public class FormLoginAuthenticationFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         try {
-            Map<String, String[]> parameterMap = request.getParameterMap();
-            String username = parameterMap.get("username")[0];
-            String password = parameterMap.get("password")[0];
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (!userDetails.getPassword().equals(password)) {
-                throw new AuthenticationException();
+            Authentication authenticationResult = attemptAuthentication(request, response);
+            if (authenticationResult == null) {
+                return;
             }
 
-            HttpSession session = request.getSession();
-            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, userDetails);
+            successfulAuthentication(request, response, filterChain, (UsernamePasswordAuthenticationToken) authenticationResult);
 
             filterChain.doFilter(servletRequest, servletResponse);
 
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
+    }
+
+    private Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username, password);
+
+        return authenticationManager.authenticate(authRequest);
+    }
+
+    private void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, UsernamePasswordAuthenticationToken authResult) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, authResult.getUserDetails());
     }
 }

@@ -2,7 +2,7 @@ package nextstep.security.password;
 
 public interface PasswordEncoder {
 
-    String encode(CharSequence rawPassword);
+    String encode(String rawPassword);
 
-    boolean matches(CharSequence rawPassword, String encodedPassword);
+    boolean matches(String rawPassword, String encodedPassword);
 }

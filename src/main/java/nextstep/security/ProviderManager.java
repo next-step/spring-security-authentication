@@ -26,7 +26,6 @@ public class ProviderManager implements AuthenticationManager {
                 try {
                     result = provider.authenticate(authentication);
                     if (result != null) {
-                        //this.copyDetails(authentication, result);
                         break;
                     }
                 } catch (AuthenticationException ex) {
