@@ -8,6 +8,11 @@ public class UsernamePasswordAuthenticationToken extends AbstractAuthenticationT
     private final String credentials;
     private boolean authenticated = false;
 
+    public UsernamePasswordAuthenticationToken(String principal, String credentials) {
+        this.principal = principal;
+        this.credentials = credentials;
+    }
+
     public UsernamePasswordAuthenticationToken(String principal, String credentials, UserDetails userDetails) {
         this.principal = principal;
         this.credentials = credentials;

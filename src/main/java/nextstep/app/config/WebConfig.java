@@ -5,8 +5,12 @@ import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.security.UserDetailService;
 import nextstep.security.UserDetails;
+import nextstep.security.config.AuthenticationManager;
+import nextstep.security.config.AuthenticationProvider;
+import nextstep.security.config.DaoAuthenticationProvider;
 import nextstep.security.config.DefaultSecurityFilterChain;
 import nextstep.security.config.FilterChainProxy;
+import nextstep.security.config.ProviderManager;
 import nextstep.security.config.SecurityFilterChain;
 import nextstep.security.filter.BasicAuthFilter;
 import nextstep.security.filter.UsernamePasswordAuthFilter;
@@ -41,9 +45,20 @@ public class WebConfig implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain() {
         List<Filter> securityFilters = List.of(
                 new BasicAuthFilter(userDetailService()),
-                new UsernamePasswordAuthFilter(userDetailService())
+                new UsernamePasswordAuthFilter(authenticationManager())
         );
         return new DefaultSecurityFilterChain(securityFilters);
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        List<AuthenticationProvider> providers = List.of(daoAuthenticationProvider());
+        return new ProviderManager(providers);
+    }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        return new DaoAuthenticationProvider(userDetailService());
     }
 
     @Bean

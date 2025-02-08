@@ -8,9 +8,10 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import nextstep.security.AuthenticationException;
-import nextstep.security.UserDetailService;
 import nextstep.security.UserDetails;
+import nextstep.security.config.Authentication;
+import nextstep.security.config.AuthenticationManager;
+import nextstep.security.config.UsernamePasswordAuthenticationToken;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,10 +21,10 @@ public class UsernamePasswordAuthFilter implements Filter {
     private static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
     private static final List<String> targetURIList = List.of("/login");
 
-    private final UserDetailService userDetailService;
+    private final AuthenticationManager authenticationManager;
 
-    public UsernamePasswordAuthFilter(UserDetailService userDetailService) {
-        this.userDetailService = userDetailService;
+    public UsernamePasswordAuthFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -56,11 +57,14 @@ public class UsernamePasswordAuthFilter implements Filter {
         try {
             String username = request.getParameter("username");
             String password = request.getParameter("password");
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
 
-            UserDetails userDetail = userDetailService.getUserByUsername(username);
-            if (!userDetail.getPassword().equals(password)) {
-                throw new AuthenticationException();
+            Authentication authenticationResult = this.authenticationManager.authenticate(authentication);
+            if (authenticationResult == null) {
+                throw new ServletException("AuthenticationManager should not return null");
             }
+
+            UserDetails userDetail = (UserDetails)authenticationResult.getDetails();
             addMemberToSession(request, userDetail);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
