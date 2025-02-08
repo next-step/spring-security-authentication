@@ -19,7 +19,7 @@ public class DefaultFilterChain implements SecurityFilterChain {
     }
 
     @Override
-    public boolean supports(ServletRequest servletRequest) {
+    public boolean matches(ServletRequest servletRequest) {
         return true;
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class FilterChainProxy extends GenericFilterBean {
     private final List<SecurityFilterChain> filterChains;
@@ -17,16 +18,19 @@ public class FilterChainProxy extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain originalChain) throws IOException, ServletException {
 
-        List<SecurityFilterChain> supportedChain = filterChains.stream()
-                .filter(chain -> chain.supports(servletRequest))
-                .toList();
+        SecurityFilterChain matchedChain = filterChains.stream()
+                .filter(chain -> chain.matches(servletRequest))
+                .findFirst()
+                .orElse(null);
 
-        for (SecurityFilterChain chain : supportedChain) {
-            List<Filter> filters = chain.getFilters();
+        if (Objects.nonNull(matchedChain)) {
+            List<Filter> filters = matchedChain.getFilters();
             VirtualFilterChain virtualFilterChain = new VirtualFilterChain(filters, originalChain);
             virtualFilterChain.doFilter(servletRequest, servletResponse);
         }
+
     }
+
 
     public class VirtualFilterChain implements FilterChain {
         private final List<Filter> filters;

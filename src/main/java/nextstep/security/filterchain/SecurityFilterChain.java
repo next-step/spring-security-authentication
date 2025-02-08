@@ -8,5 +8,5 @@ import java.util.List;
 public interface SecurityFilterChain {
     List<Filter> getFilters();
 
-    boolean supports(ServletRequest servletRequest);
+    boolean matches(ServletRequest servletRequest);
 }
