@@ -17,6 +17,10 @@ public class UsernamePasswordAuthenticationToken implements Authentication {
         this.authenticated = authenticated;
     }
 
+    public static UsernamePasswordAuthenticationToken authenticated(String principal, String credentials) {
+        return new UsernamePasswordAuthenticationToken(principal, credentials, true);
+    }
+
     @Override
     public String getPrincipal() {
         return principal;
