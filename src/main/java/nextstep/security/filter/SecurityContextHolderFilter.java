@@ -20,7 +20,10 @@ public class SecurityContextHolderFilter extends AbstractAuthenticationFilter{
             return null;
         }
         SecurityContextHolder.setContext(securityContext);
-        return securityContext.getAuthentication();
+        Authentication authentication = securityContext.getAuthentication();
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return authentication;
     }
 
     @Override

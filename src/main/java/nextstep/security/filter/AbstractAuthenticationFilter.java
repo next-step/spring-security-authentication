@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.context.SecurityContextHolder;
-import nextstep.security.authentication.context.SecurityContextImpl;
 import nextstep.security.authentication.context.SecurityContextRepository;
 import nextstep.security.authentication.context.SessionSecurityContextRepository;
 import nextstep.security.authentication.provider.AuthenticationManager;
@@ -34,10 +33,7 @@ public abstract class AbstractAuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try {
-            Authentication authentication = attemptAuthentication((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            securityContextRepository.saveContext(SecurityContextImpl.from(authentication), (HttpServletRequest) servletRequest);
+            attemptAuthentication((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);
 
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (AuthenticationException e) {

@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
+import nextstep.security.authentication.context.SecurityContextHolder;
 import nextstep.security.authentication.context.SecurityContextImpl;
 import nextstep.security.authentication.provider.AuthenticationManager;
 
@@ -33,6 +34,7 @@ public class FormLoginAuthenticationFilter extends AbstractAuthenticationFilter 
 
         SecurityContextImpl securityContext = SecurityContextImpl.from(authentication);
 
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         securityContextRepository.saveContext(securityContext, request);
 
         return authentication;
