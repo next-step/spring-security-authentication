@@ -25,7 +25,7 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
         );
         return UsernamePasswordAuthenticationToken.authenticated(
                 userDetails.getUsername(),
-                userDetails.getPassword());
+                passwordsEncoder.encode(userDetails.getPassword()));
     }
 
     private UserDetails retrieveUser(String username, String password) {
