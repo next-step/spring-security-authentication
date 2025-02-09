@@ -18,7 +18,6 @@ import java.util.Map;
 
 public class LoginAuthenticationFilter extends GenericFilterBean {
 
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
     private final AuthenticationManager authenticationManager;
 
     public LoginAuthenticationFilter(AuthenticationManager authenticationManager) {

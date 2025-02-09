@@ -3,9 +3,9 @@ package nextstep.security.context;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import static nextstep.security.filter.LoginAuthenticationFilter.SPRING_SECURITY_CONTEXT_KEY;
-
 public class HttpSessionSecurityContextRepository implements SecurityContextRepository {
+
+    private static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
     @Override
     public SecurityContext loadContext(HttpServletRequest request) {
