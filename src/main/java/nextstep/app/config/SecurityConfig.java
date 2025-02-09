@@ -35,9 +35,9 @@ public class SecurityConfig{
         SecurityFilterChain securityFilterChain = new DefaultSecurityFilterChain(
                 AnyRequestMatcher.INSTANCE,
                 List.of(
+                        new SecurityContextHolderFilter(authenticationManager()),
                         new BasicAuthenticationFilter(authenticationManager()),
-                        new FormLoginAuthenticationFilter(authenticationManager()),
-                        new SecurityContextHolderFilter(authenticationManager())
+                        new FormLoginAuthenticationFilter(authenticationManager())
                 )
         );
 

@@ -54,13 +54,5 @@ public class BasicAuthenticationFilter extends AbstractAuthenticationFilter {
         }
         return StringUtils.startsWithIgnoreCase(header, AUTHENTICATION_SCHEME_BASIC);
     }
-
-    private byte[] decode(byte[] base64Token) {
-        try {
-            return Base64.getDecoder().decode(base64Token);
-        } catch (IllegalArgumentException ex) {
-            throw new AuthenticationException("Failed to decode basic authentication token");
-        }
-    }
 }
 

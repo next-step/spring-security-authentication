@@ -21,6 +21,9 @@ public class SecurityContextHolderFilter extends AbstractAuthenticationFilter{
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         SecurityContext securityContext = securityContextRepository.loadContext(request);
+        if(securityContext == null) {
+            return null;
+        }
         SecurityContextHolder.setContext(securityContext);
         return securityContext.getAuthentication();
     }
