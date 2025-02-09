@@ -76,6 +76,17 @@ class FormLoginTest {
         response.andExpect(status().isUnauthorized());
     }
 
+    @DisplayName("로그인 실패 - 입력값 누락")
+    @Test
+    void login_fail_with_empty_input_value() throws Exception {
+        ResultActions response = mockMvc.perform(post("/login")
+                .param("username", TEST_MEMBER.getEmail())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+        );
+
+        response.andExpect(status().isBadRequest());
+    }
+
     @DisplayName("로그인 후 세션을 통해 회원 목록 조회")
     @Test
     void login_after_members() throws Exception {

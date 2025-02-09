@@ -44,8 +44,15 @@ public class LoginAuthenticationFilter extends GenericFilterBean {
 
     private static UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest httpRequest) {
         Map<String, String[]> parameterMap = httpRequest.getParameterMap();
+        validateParameter(parameterMap);
         String username = parameterMap.get("username")[0];
         String password = parameterMap.get("password")[0];
         return new UsernamePasswordAuthenticationToken(username, password);
+    }
+
+    private static void validateParameter(Map<String, String[]> parameterMap) {
+        if (parameterMap.get("username") == null || parameterMap.get("password") == null) {
+            throw new IllegalArgumentException("Missing required parameter");
+        }
     }
 }
