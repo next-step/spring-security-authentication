@@ -1,10 +1,15 @@
 package nextstep.app.domain;
 
-public class Member {
-    private final String email;
-    private final String password;
-    private final String name;
-    private final String imageUrl;
+import nextstep.security.UserDetails;
+
+public class Member implements UserDetails {
+    private String email;
+    private String password;
+    private String name;
+    private String imageUrl;
+
+    private Member() {
+    }
 
     public Member(String email, String password, String name, String imageUrl) {
         this.email = email;
@@ -15,6 +20,11 @@ public class Member {
 
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public String getUsername() {
+        return name;
     }
 
     public String getPassword() {
