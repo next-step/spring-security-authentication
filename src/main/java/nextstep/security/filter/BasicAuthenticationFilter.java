@@ -18,17 +18,14 @@ import java.io.IOException;
 public class BasicAuthenticationFilter extends GenericFilterBean {
 
     private final AuthenticationManager authenticationManager;
-    private final SecurityContextRepository securityContextRepository;
 
-    public BasicAuthenticationFilter(AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
+    public BasicAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.securityContextRepository = securityContextRepository;
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         if (notTarget(httpRequest)) {
             chain.doFilter(request, response);
@@ -37,7 +34,6 @@ public class BasicAuthenticationFilter extends GenericFilterBean {
 
         Authentication resultAuthentication = authenticationManager.authenticate(getAuthenticationFrom(httpRequest));
         SecurityContextHolder.getContext().setAuthentication(resultAuthentication);
-        securityContextRepository.saveContext(SecurityContextHolder.getContext(), httpRequest, httpResponse);
         chain.doFilter(request, response);
     }
 

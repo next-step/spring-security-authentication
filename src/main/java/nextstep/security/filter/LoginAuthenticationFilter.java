@@ -20,17 +20,14 @@ public class LoginAuthenticationFilter extends GenericFilterBean {
 
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
     private final AuthenticationManager authenticationManager;
-    private final SecurityContextRepository securityContextRepository;
 
-    public LoginAuthenticationFilter(AuthenticationManager authenticationManager, SecurityContextRepository securityContextRepository) {
+    public LoginAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.securityContextRepository = securityContextRepository;
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         if (notTarget(httpRequest)) {
             chain.doFilter(request, response);
@@ -39,7 +36,6 @@ public class LoginAuthenticationFilter extends GenericFilterBean {
 
         Authentication authentication = authenticationManager.authenticate(getAuthentication(httpRequest));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        securityContextRepository.saveContext(SecurityContextHolder.getContext(), httpRequest, httpResponse);
         chain.doFilter(request, response);
     }
 
