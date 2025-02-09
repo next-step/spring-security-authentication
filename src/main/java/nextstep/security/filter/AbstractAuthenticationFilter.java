@@ -20,11 +20,11 @@ import java.io.IOException;
 public abstract class AbstractAuthenticationFilter extends GenericFilterBean {
 
     protected final AuthenticationManager authenticationManager;
-    private final SecurityContextRepository securityContextRepository;
+    protected final SecurityContextRepository securityContextRepository;
 
     public AbstractAuthenticationFilter(final AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.securityContextRepository = SessionSecurityContextRepository.getInstance();
+        this.securityContextRepository = new SessionSecurityContextRepository();
     }
 
     public abstract Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException;

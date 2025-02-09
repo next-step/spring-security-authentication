@@ -4,11 +4,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
-import nextstep.security.authentication.context.SecurityContextImpl;
-import nextstep.security.authentication.context.SecurityContextRepository;
-import nextstep.security.authentication.context.SessionSecurityContextRepository;
-import nextstep.security.authentication.provider.AuthenticationManager;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
+import nextstep.security.authentication.context.SecurityContextImpl;
+import nextstep.security.authentication.provider.AuthenticationManager;
 
 import java.io.IOException;
 
@@ -17,11 +15,8 @@ public class FormLoginAuthenticationFilter extends AbstractAuthenticationFilter 
     private static final String SPRING_SECURITY_FORM_USERNAME = "username";
     private static final String SPRING_SECURITY_FORM_PASSWORD = "password";
 
-    private final SecurityContextRepository securityContextRepository;
-
     public FormLoginAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
-        this.securityContextRepository = SessionSecurityContextRepository.getInstance();
     }
 
     @Override

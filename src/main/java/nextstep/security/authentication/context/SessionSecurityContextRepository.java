@@ -7,12 +7,6 @@ public class SessionSecurityContextRepository implements SecurityContextReposito
 
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
-    private SessionSecurityContextRepository() { }
-
-    public static SessionSecurityContextRepository getInstance() {
-        return SingletonHolder.INSTANCE;
-    }
-
     @Override
     public SecurityContext loadContext(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -24,10 +18,6 @@ public class SessionSecurityContextRepository implements SecurityContextReposito
     @Override
     public void saveContext(SecurityContext context, HttpServletRequest request) {
         request.getSession().setAttribute(SPRING_SECURITY_CONTEXT_KEY, context);
-    }
-
-    private static final class SingletonHolder {
-        private static final SessionSecurityContextRepository INSTANCE = new SessionSecurityContextRepository();
     }
 
 }

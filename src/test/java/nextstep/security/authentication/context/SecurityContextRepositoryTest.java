@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 
 class SecurityContextRepositoryTest {
 
-    private SecurityContextRepository securityContextRepository = SessionSecurityContextRepository.getInstance();
+    private SecurityContextRepository securityContextRepository = new SessionSecurityContextRepository();
     private HttpServletRequest request;
     private HttpSession session;
     private SecurityContext securityContext;
