@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.context.SecurityContextImpl;
 import nextstep.security.authentication.context.SecurityContextRepository;
-import nextstep.security.authentication.context.SecurityContextRepositoryImpl;
+import nextstep.security.authentication.context.SessionSecurityContextRepository;
 import nextstep.security.authentication.provider.AuthenticationManager;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
 
@@ -21,7 +21,7 @@ public class FormLoginAuthenticationFilter extends AbstractAuthenticationFilter 
 
     public FormLoginAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
-        this.securityContextRepository = SecurityContextRepositoryImpl.getInstance();
+        this.securityContextRepository = SessionSecurityContextRepository.getInstance();
     }
 
     @Override

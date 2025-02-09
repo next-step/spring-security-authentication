@@ -7,14 +7,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.security.authentication.context.SecurityContextRepositoryImpl.SPRING_SECURITY_CONTEXT_KEY;
+import static nextstep.security.authentication.context.SessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class SecurityContextRepositoryTest {
 
-    private SecurityContextRepository securityContextRepository = SecurityContextRepositoryImpl.getInstance();
+    private SecurityContextRepository securityContextRepository = SessionSecurityContextRepository.getInstance();
     private HttpServletRequest request;
     private HttpSession session;
     private SecurityContext securityContext;

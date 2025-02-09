@@ -6,7 +6,7 @@ import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.context.SecurityContext;
 import nextstep.security.authentication.context.SecurityContextHolder;
 import nextstep.security.authentication.context.SecurityContextRepository;
-import nextstep.security.authentication.context.SecurityContextRepositoryImpl;
+import nextstep.security.authentication.context.SessionSecurityContextRepository;
 import nextstep.security.authentication.provider.AuthenticationManager;
 
 public class SecurityContextHolderFilter extends AbstractAuthenticationFilter{
@@ -15,7 +15,7 @@ public class SecurityContextHolderFilter extends AbstractAuthenticationFilter{
 
     public SecurityContextHolderFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
-        this.securityContextRepository = SecurityContextRepositoryImpl.getInstance();
+        this.securityContextRepository = SessionSecurityContextRepository.getInstance();
     }
 
     @Override

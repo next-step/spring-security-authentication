@@ -1,16 +1,15 @@
 package nextstep.security.authentication.context;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-public class SecurityContextRepositoryImpl implements SecurityContextRepository {
+public class SessionSecurityContextRepository implements SecurityContextRepository {
 
     public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
-    private SecurityContextRepositoryImpl() { }
+    private SessionSecurityContextRepository() { }
 
-    public static SecurityContextRepositoryImpl getInstance() {
+    public static SessionSecurityContextRepository getInstance() {
         return SingletonHolder.INSTANCE;
     }
 
@@ -28,7 +27,7 @@ public class SecurityContextRepositoryImpl implements SecurityContextRepository 
     }
 
     private static final class SingletonHolder {
-        private static final SecurityContextRepositoryImpl INSTANCE = new SecurityContextRepositoryImpl();
+        private static final SessionSecurityContextRepository INSTANCE = new SessionSecurityContextRepository();
     }
 
 }

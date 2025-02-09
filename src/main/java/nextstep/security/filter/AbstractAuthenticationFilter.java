@@ -10,7 +10,7 @@ import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.context.SecurityContextHolder;
 import nextstep.security.authentication.context.SecurityContextImpl;
 import nextstep.security.authentication.context.SecurityContextRepository;
-import nextstep.security.authentication.context.SecurityContextRepositoryImpl;
+import nextstep.security.authentication.context.SessionSecurityContextRepository;
 import nextstep.security.authentication.provider.AuthenticationManager;
 import nextstep.security.exception.AuthenticationException;
 import org.springframework.web.filter.GenericFilterBean;
@@ -24,7 +24,7 @@ public abstract class AbstractAuthenticationFilter extends GenericFilterBean {
 
     public AbstractAuthenticationFilter(final AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.securityContextRepository = SecurityContextRepositoryImpl.getInstance();
+        this.securityContextRepository = SessionSecurityContextRepository.getInstance();
     }
 
     public abstract Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException;
