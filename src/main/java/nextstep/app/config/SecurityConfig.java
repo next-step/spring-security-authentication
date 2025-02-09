@@ -2,6 +2,7 @@ package nextstep.app.config;
 
 import nextstep.security.authentication.*;
 import nextstep.security.context.HttpSessionSecurityContextRepository;
+import nextstep.security.context.SecurityContextRepository;
 import nextstep.security.domain.MemberDetailService;
 import nextstep.security.filter.*;
 import org.springframework.context.annotation.Bean;
@@ -33,9 +34,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain() {
         return new DefaultSecurityFilterChain(
                 List.of(new ExceptionHandlerFilter(),
-                        new SecurityContextHolderFilter(new HttpSessionSecurityContextRepository()),
-                        new BasicAuthenticationFilter(authenticationManager(), new HttpSessionSecurityContextRepository()),
-                        new LoginAuthenticationFilter(authenticationManager(), new HttpSessionSecurityContextRepository())));
+                        new SecurityContextHolderFilter(securityContextRepository()),
+                        new BasicAuthenticationFilter(authenticationManager()),
+                        new LoginAuthenticationFilter(authenticationManager())));
 
     }
 
@@ -48,5 +49,10 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         return new DaoAuthenticationProvider(memberDetailService, new BasicPasswordMatcher());
+    }
+
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
     }
 }
