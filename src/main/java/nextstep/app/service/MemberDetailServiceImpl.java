@@ -1,0 +1,23 @@
+package nextstep.app.service;
+
+import nextstep.app.domain.MemberRepository;
+import nextstep.security.exception.AuthenticationException;
+import nextstep.security.domain.MemberDetail;
+import nextstep.security.domain.MemberDetailService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MemberDetailServiceImpl implements MemberDetailService {
+
+    private final MemberRepository memberRepository;
+
+    public MemberDetailServiceImpl(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+
+    @Override
+    public MemberDetail findByUsername(String username) {
+        return memberRepository.findByEmail(username)
+                .orElseThrow(AuthenticationException::new);
+    }
+}
