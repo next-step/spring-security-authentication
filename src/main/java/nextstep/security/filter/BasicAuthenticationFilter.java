@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationManager;
 import nextstep.security.UsernamePasswordAuthenticationToken;
+import nextstep.security.context.SecurityContextHolder;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.util.Base64Convertor;
 import nextstep.security.util.matcher.MvcRequestMatcher;
@@ -44,11 +45,16 @@ public class BasicAuthenticationFilter implements Filter {
                 return;
             }
 
-            filterChain.doFilter(servletRequest, servletResponse);
+            SecurityContextHolder.getContext().setAuthentication(authenticationResult);
 
         } catch (Exception e) {
+            SecurityContextHolder.clearContext();
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+            return;
         }
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     private Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
