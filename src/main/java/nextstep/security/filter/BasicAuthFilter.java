@@ -8,7 +8,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.AuthenticationException;
-import nextstep.security.UserDetailService;
 import nextstep.security.config.Authentication;
 import nextstep.security.config.AuthenticationManager;
 import nextstep.security.config.BasicAuthenticationToken;

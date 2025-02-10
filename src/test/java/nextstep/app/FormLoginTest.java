@@ -1,6 +1,5 @@
 package nextstep.app;
 
-import jakarta.servlet.http.HttpSession;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
 import nextstep.security.config.Authentication;
