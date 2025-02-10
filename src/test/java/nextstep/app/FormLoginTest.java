@@ -3,6 +3,9 @@ package nextstep.app;
 import jakarta.servlet.http.HttpSession;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.security.config.Authentication;
+import nextstep.security.config.SecurityContext;
+import nextstep.security.config.SecurityContextHolder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class FormLoginTest {
+
     private final Member TEST_MEMBER = new Member("a@a.com", "password", "a", "");
 
     @Autowired
@@ -46,9 +50,11 @@ class FormLoginTest {
         loginResponse.andDo(print());
         loginResponse.andExpect(status().isOk());
 
-        HttpSession session = loginResponse.andReturn().getRequest().getSession();
-        assertThat(session).isNotNull();
-        assertThat(session.getAttribute("SPRING_SECURITY_CONTEXT")).isNotNull();
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        assertThat(authentication).isNotNull();
+        assertThat(authentication.getPrincipal()).isEqualTo(TEST_MEMBER.getEmail());
+        assertThat(authentication.getCredentials()).isEqualTo(TEST_MEMBER.getPassword());
     }
 
     @DisplayName("로그인 실패 - 사용자 없음")
@@ -76,4 +82,5 @@ class FormLoginTest {
         response.andDo(print());
         response.andExpect(status().isUnauthorized());
     }
+
 }

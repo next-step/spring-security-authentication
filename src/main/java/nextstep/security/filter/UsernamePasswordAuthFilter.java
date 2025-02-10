@@ -7,18 +7,17 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import nextstep.security.UserDetails;
 import nextstep.security.config.Authentication;
 import nextstep.security.config.AuthenticationManager;
+import nextstep.security.config.SecurityContext;
+import nextstep.security.config.SecurityContextHolder;
 import nextstep.security.config.UsernamePasswordAuthenticationToken;
 
 import java.io.IOException;
 import java.util.List;
 
 public class UsernamePasswordAuthFilter implements Filter {
-
-    private static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
+    
     private static final List<String> targetURIList = List.of("/login");
 
     private final AuthenticationManager authenticationManager;
@@ -60,20 +59,19 @@ public class UsernamePasswordAuthFilter implements Filter {
             Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
 
             Authentication authenticationResult = this.authenticationManager.authenticate(authentication);
-            if (authenticationResult == null) {
+            if (authenticationResult == null || !authenticationResult.isAuthenticated()) {
                 throw new ServletException("AuthenticationManager should not return null");
             }
-
-            UserDetails userDetail = (UserDetails)authenticationResult.getDetails();
-            addMemberToSession(request, userDetail);
+            addMemberToSession(authenticationResult);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 
-    private void addMemberToSession(HttpServletRequest request, UserDetails userDetail) {
-        HttpSession session = request.getSession();
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, userDetail);
+    private void addMemberToSession(Authentication authentication) {
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
     }
 
 }
