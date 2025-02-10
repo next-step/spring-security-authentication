@@ -8,10 +8,12 @@ import nextstep.security.DefaultSecurityFilterChain;
 import nextstep.security.FilterChainProxy;
 import nextstep.security.ProviderManager;
 import nextstep.security.SecurityFilterChain;
+import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.filter.BasicAuthenticationFilter;
 import nextstep.security.filter.FormLoginAuthenticationFilter;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
+import nextstep.security.filter.SecurityContextHolderFilter;
 import nextstep.security.password.PasswordEncoder;
 import nextstep.security.password.RawPasswordEncoder;
 import nextstep.security.util.matcher.AnyRequestMatcher;
@@ -42,6 +44,7 @@ public class FilterConfig implements WebMvcConfigurer {
 
     private SecurityFilterChain securityFilterChain(AuthenticationManager authenticationManager) {
         return new DefaultSecurityFilterChain(AnyRequestMatcher.INSTANCE, List.of(
+                new SecurityContextHolderFilter(new HttpSessionSecurityContextRepository()),
                 new BasicAuthenticationFilter(authenticationManager),
                 new FormLoginAuthenticationFilter(authenticationManager)
         ));
