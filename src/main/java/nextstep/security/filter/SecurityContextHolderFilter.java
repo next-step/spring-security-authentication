@@ -5,12 +5,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.context.SecurityContext;
 import nextstep.security.authentication.context.SecurityContextHolder;
+import nextstep.security.authentication.context.SecurityContextRepository;
+import nextstep.security.authentication.context.SessionSecurityContextRepository;
 import nextstep.security.authentication.provider.AuthenticationManager;
 
 public class SecurityContextHolderFilter extends AbstractAuthenticationFilter{
 
+    private final SecurityContextRepository securityContextRepository;
+
     public SecurityContextHolderFilter(AuthenticationManager authenticationManager) {
-        super(authenticationManager);
+        this.securityContextRepository = new SessionSecurityContextRepository();
     }
 
     @Override

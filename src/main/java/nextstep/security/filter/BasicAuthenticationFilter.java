@@ -4,6 +4,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.context.SecurityContextRepository;
+import nextstep.security.authentication.context.SessionSecurityContextRepository;
 import nextstep.security.authentication.provider.AuthenticationManager;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
 import nextstep.security.exception.AuthenticationException;
@@ -21,8 +23,10 @@ public class BasicAuthenticationFilter extends AbstractAuthenticationFilter {
     private static final String AUTHENTICATION_SCHEME_BASIC = "Basic";
     private static final Pattern BASIC_AUTH_PATTERN = Pattern.compile("^Basic\\s+(.+)$");
 
+    private final AuthenticationManager authenticationManager;
+
     public BasicAuthenticationFilter(AuthenticationManager authenticationManager) {
-        super(authenticationManager);
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
