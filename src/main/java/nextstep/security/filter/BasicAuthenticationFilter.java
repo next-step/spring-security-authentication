@@ -59,15 +59,25 @@ public class BasicAuthenticationFilter implements Filter {
 
     private Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-        String authorization = request.getHeader("Authorization");
-        String credentials = authorization.split(" ")[1];
-        String decodedString = Base64Convertor.decode(credentials);
-        String[] usernameAndPassword = decodedString.split(":");
+        UsernamePasswordAuthenticationToken authRequest;
 
-        String username = usernameAndPassword[0];
-        String password = usernameAndPassword[1];
+        var securityContext = SecurityContextHolder.getContext();
 
-        UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username, password);
+        if (securityContext.getAuthentication() == null) {
+
+            String authorization = request.getHeader("Authorization");
+            String credentials = authorization.split(" ")[1];
+            String decodedString = Base64Convertor.decode(credentials);
+            String[] usernameAndPassword = decodedString.split(":");
+
+            String username = usernameAndPassword[0];
+            String password = usernameAndPassword[1];
+
+            authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username, password);
+
+        } else {
+            authRequest = (UsernamePasswordAuthenticationToken) securityContext.getAuthentication();
+        }
 
         return authenticationManager.authenticate(authRequest);
     }

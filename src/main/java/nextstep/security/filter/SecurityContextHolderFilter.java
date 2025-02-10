@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class SecurityContextHolderFilter implements Filter {
 
-    private SecurityContextRepository securityContextRepository;
+    private final SecurityContextRepository securityContextRepository;
 
     public SecurityContextHolderFilter(SecurityContextRepository securityContextRepository) {
         this.securityContextRepository = securityContextRepository;

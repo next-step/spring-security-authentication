@@ -7,10 +7,10 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import nextstep.security.Authentication;
 import nextstep.security.AuthenticationManager;
 import nextstep.security.UsernamePasswordAuthenticationToken;
+import nextstep.security.context.SecurityContextHolder;
 import nextstep.security.exception.AuthenticationException;
 import nextstep.security.util.matcher.MvcRequestMatcher;
 import org.springframework.http.HttpMethod;
@@ -45,13 +45,16 @@ public class FormLoginAuthenticationFilter implements Filter {
                 return;
             }
 
-            successfulAuthentication(request, response, filterChain, (UsernamePasswordAuthenticationToken) authenticationResult);
-
-            filterChain.doFilter(servletRequest, servletResponse);
+            SecurityContextHolder.getContext().setAuthentication(authenticationResult);
 
         } catch (Exception e) {
+            SecurityContextHolder.clearContext();
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+            return;
         }
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     private Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -61,10 +64,5 @@ public class FormLoginAuthenticationFilter implements Filter {
         UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username, password);
 
         return authenticationManager.authenticate(authRequest);
-    }
-
-    private void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, UsernamePasswordAuthenticationToken authResult) throws IOException, ServletException {
-        HttpSession session = request.getSession();
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, authResult.getUserDetails());
     }
 }
