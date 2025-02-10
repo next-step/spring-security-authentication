@@ -9,8 +9,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.AuthenticationException;
 import nextstep.security.UserDetailService;
-import nextstep.security.UserDetails;
-import nextstep.security.util.Base64Convertor;
+import nextstep.security.config.Authentication;
+import nextstep.security.config.AuthenticationManager;
+import nextstep.security.config.BasicAuthenticationToken;
+import nextstep.security.config.SecurityContextHolder;
 
 import java.util.List;
 
@@ -20,10 +22,10 @@ public class BasicAuthFilter implements Filter {
 
     private static final List<String> TARGET_URL = List.of("/members");
 
-    private final UserDetailService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
-    public BasicAuthFilter(UserDetailService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public BasicAuthFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class BasicAuthFilter implements Filter {
                     filterChain.doFilter(request, response);
                     return;
                 }
-
+                // 타겟일 경우
                 checkAuthentication(request);
                 filterChain.doFilter(request, response);
             } catch (Exception e) {
@@ -59,29 +61,25 @@ public class BasicAuthFilter implements Filter {
     }
 
     private void checkAuthentication(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader == null) {
-            return;
-        }
-        String authType = authorizationHeader.split(" ")[0];
-        String credentials = authorizationHeader.split(" ")[1];
-        String decodedString = Base64Convertor.decode(credentials);
-        checkAuthType(authType);
+        try {
+            String authorizationHeader = getAuthorizationHeader(request);
+            if (authorizationHeader == null) throw new AuthenticationException("Missing authorization header");
 
-        String[] usernameAndPassword = decodedString.split(":");
-        String username = usernameAndPassword[0];
-        String password = usernameAndPassword[1];
-
-        UserDetails userDetail = userDetailsService.getUserByUsername(username);
-        if (!userDetail.getPassword().equals(password)) {
-            throw new AuthenticationException();
+            Authentication authentication = authenticationManager.authenticate(new BasicAuthenticationToken(authorizationHeader));
+            if (!authentication.isAuthenticated()) {
+                throw new AuthenticationException();
+            }
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (AuthenticationException e) {
+            SecurityContextHolder.clearContext();
+            throw e;
         }
+
     }
 
-    private void checkAuthType(String authType) {
-        if (!HttpServletRequest.BASIC_AUTH.equalsIgnoreCase(authType)) {
-            throw new AuthenticationException();
-        }
+    private static String getAuthorizationHeader(HttpServletRequest request) {
+        return request.getHeader(AUTHORIZATION);
     }
+
 
 }

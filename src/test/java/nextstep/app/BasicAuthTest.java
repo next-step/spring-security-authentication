@@ -63,4 +63,16 @@ class BasicAuthTest {
         loginResponse.andDo(print());
         loginResponse.andExpect(status().isUnauthorized());
     }
+
+    @Test
+    @DisplayName("Authentication 헤더가 없으면 예외가 발생한다.")
+    void throwException_when_authentication_header_doesnt_exist() throws Exception {
+
+        ResultActions loginResponse = mockMvc.perform(get("/members")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
+
+        loginResponse.andDo(print());
+        loginResponse.andExpect(status().isUnauthorized());
+    }
+
 }

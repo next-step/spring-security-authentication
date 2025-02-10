@@ -24,6 +24,7 @@ public class ProviderManager implements AuthenticationManager {
             result = provider.authenticate(authentication);
             if (result != null) { // 인증된 객제가 있다면
                 copyDetails(authentication, result);
+                result.setAuthenticated(true); // todo 책임 확인 한번 필요
                 break;
             }
         }
