@@ -19,7 +19,6 @@ import java.io.IOException;
 
 public class FormLoginAuthenticationFilter implements Filter {
 
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
     private static final MvcRequestMatcher DEFAULT_REQUEST_MATCHER = new MvcRequestMatcher(HttpMethod.POST, "/login");
 
     private final AuthenticationManager authenticationManager;

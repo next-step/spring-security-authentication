@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpSession;
 
 public class HttpSessionSecurityContextRepository implements SecurityContextRepository {
 
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
+    private static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
     @Override
     public SecurityContext loadContext(HttpServletRequest request) {
