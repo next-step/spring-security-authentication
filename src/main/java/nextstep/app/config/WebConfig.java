@@ -12,6 +12,7 @@ import nextstep.security.config.DaoAuthenticationProvider;
 import nextstep.security.config.DefaultSecurityFilterChain;
 import nextstep.security.config.FilterChainProxy;
 import nextstep.security.config.ProviderManager;
+import nextstep.security.config.SecurityContextHolderFilter;
 import nextstep.security.config.SecurityFilterChain;
 import nextstep.security.filter.BasicAuthFilter;
 import nextstep.security.filter.UsernamePasswordAuthFilter;
@@ -45,6 +46,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain() {
         List<Filter> securityFilters = List.of(
+                new SecurityContextHolderFilter(),
                 new BasicAuthFilter(authenticationManager()),
                 new UsernamePasswordAuthFilter(authenticationManager())
         );
