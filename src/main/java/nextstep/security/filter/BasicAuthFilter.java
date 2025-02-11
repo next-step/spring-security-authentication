@@ -11,6 +11,7 @@ import nextstep.security.AuthenticationException;
 import nextstep.security.config.Authentication;
 import nextstep.security.config.AuthenticationManager;
 import nextstep.security.config.BasicAuthenticationToken;
+import nextstep.security.config.SecurityContext;
 import nextstep.security.config.SecurityContextHolder;
 
 import java.util.List;
@@ -60,23 +61,23 @@ public class BasicAuthFilter implements Filter {
     }
 
     private void checkAuthentication(HttpServletRequest request) {
-        try {
-            String authorizationHeader = getAuthorizationHeader(request);
-            if (authorizationHeader == null) throw new AuthenticationException("Missing authorization header");
+        String authorizationHeader = getAuthorizationHeader(request);
+        if (authorizationHeader == null) throw new AuthenticationException("Missing authorization header");
 
-            Authentication authentication = authenticationManager.authenticate(new BasicAuthenticationToken(authorizationHeader));
-            if (!authentication.isAuthenticated()) {
-                throw new AuthenticationException();
-            }
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (AuthenticationException e) {
-            SecurityContextHolder.clearContext();
-            throw e;
+        Authentication authentication = authenticationManager.authenticate(new BasicAuthenticationToken(authorizationHeader));
+        if (!authentication.isAuthenticated()) {
+            throw new AuthenticationException();
         }
-
+        saveToSecurityContext(authentication);
     }
 
-    private static String getAuthorizationHeader(HttpServletRequest request) {
+    private void saveToSecurityContext(Authentication authentication) {
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(authentication);
+        SecurityContextHolder.setContext(securityContext);
+    }
+
+    private String getAuthorizationHeader(HttpServletRequest request) {
         return request.getHeader(AUTHORIZATION);
     }
 

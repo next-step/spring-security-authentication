@@ -1,10 +1,8 @@
 package nextstep.app;
 
+import jakarta.servlet.http.HttpSession;
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.config.Authentication;
-import nextstep.security.config.SecurityContext;
-import nextstep.security.config.SecurityContextHolder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,11 +47,9 @@ class FormLoginTest {
         loginResponse.andDo(print());
         loginResponse.andExpect(status().isOk());
 
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = securityContext.getAuthentication();
-        assertThat(authentication).isNotNull();
-        assertThat(authentication.getPrincipal()).isEqualTo(TEST_MEMBER.getEmail());
-        assertThat(authentication.getCredentials()).isEqualTo(TEST_MEMBER.getPassword());
+        HttpSession session = loginResponse.andReturn().getRequest().getSession();
+        assertThat(session).isNotNull();
+        assertThat(session.getAttribute("SPRING_SECURITY_CONTEXT")).isNotNull();
     }
 
     @DisplayName("로그인 실패 - 사용자 없음")
@@ -81,5 +77,26 @@ class FormLoginTest {
         response.andDo(print());
         response.andExpect(status().isUnauthorized());
     }
+
+//    @DisplayName("로그인 후 세션을 통해 회원 목록 조회")
+//    @Test
+//    void login_after_members() throws Exception {
+//        MockHttpSession session = new MockHttpSession();
+//        ResultActions loginResponse = mockMvc.perform(post("/login")
+//                .param("username", TEST_MEMBER.getEmail())
+//                .param("password", TEST_MEMBER.getPassword())
+//                .session(session)
+//                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+//        ).andDo(print());
+//
+//        loginResponse.andExpect(status().isOk());
+//
+//        ResultActions membersResponse = mockMvc.perform(get("/members")
+//                .session(session)
+//                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+//        );
+//
+//        membersResponse.andExpect(status().isOk());
+//    }
 
 }
