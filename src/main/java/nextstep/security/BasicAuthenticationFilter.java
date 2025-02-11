@@ -32,6 +32,11 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter {
 
     private void checkAuthentication(final HttpServletRequest request) {
         final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        if (authorization == null) {
+            return;
+        }
+
         final String[] authTypeAndCredential = authorization.split(" ");
 
         checkBasicAuthHeader(authTypeAndCredential);

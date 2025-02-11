@@ -5,13 +5,20 @@ import nextstep.app.domain.MemberRepository;
 import nextstep.app.ui.BasicAuthenticationInterceptor;
 import nextstep.app.ui.FormLoginInterceptor;
 import nextstep.security.BasicAuthenticationFilter;
+import nextstep.security.DefaultSecurityFilterChain;
+import nextstep.security.FilterChainProxy;
+import nextstep.security.SecurityFilterChain;
 import nextstep.security.UserDetails;
 import nextstep.security.UserDetailsService;
+import nextstep.security.UsernamePasswordAuthenticationFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -21,18 +28,24 @@ public class WebConfig implements WebMvcConfigurer {
         this.memberRepository = memberRepository;
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new FormLoginInterceptor(userDetailsService())).addPathPatterns("/login");
-//        registry.addInterceptor(new BasicAuthenticationInterceptor(userDetailsService())).addPathPatterns("/members");
+    @Bean
+    public DelegatingFilterProxy delegatingFilterProxy() {
+        return new DelegatingFilterProxy(filterChainProxy(List.of(securityFilterChain())));
     }
 
     @Bean
-    public FilterRegistrationBean basicAuthenticationFilterRegister() {
-        final FilterRegistrationBean registrationBean = new FilterRegistrationBean(new BasicAuthenticationFilter(userDetailsService()));
-        registrationBean.addUrlPatterns("/members");
+    public FilterChainProxy filterChainProxy(final List<SecurityFilterChain> securityFilterChainList) {
+        return new FilterChainProxy(securityFilterChainList);
+    }
 
-        return registrationBean;
+    @Bean
+    public SecurityFilterChain securityFilterChain() {
+        return new DefaultSecurityFilterChain(
+                List.of(
+                        new BasicAuthenticationFilter(userDetailsService()),
+                        new UsernamePasswordAuthenticationFilter(userDetailsService())
+                )
+        );
     }
 
     @Bean
