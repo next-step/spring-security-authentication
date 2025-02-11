@@ -5,11 +5,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 요청들 사이에 SecurityContext를 영속시키는데 사용되는 전략.
- *
+
  * SecurityContextPersistenceFilter에 의해 사용된다.
  * 현재 실행되는 스레드에 사용되는 context를 획득하고
  * 요청이 끝나고 thread-local 스토리지에서 일단 저장되면 저장하는데 사용된다.
- *
+
  * persistence 매커니즘이 구현에 따라 달라지지만, HttpSession을 사용해 context를 저장하는데 사용한다.
  */
 public interface SecurityContextRepository {
