@@ -1,8 +1,18 @@
-package nextstep.app.ui;
+package nextstep.security;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
 public class AuthenticationException extends RuntimeException {
+
+    public AuthenticationException() {
+        super();
+    }
+
+    public AuthenticationException(String message) {
+        super(message);
+
+    }
+
 }
