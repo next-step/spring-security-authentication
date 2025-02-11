@@ -1,0 +1,37 @@
+package nextstep.security.filter;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.context.SecurityContext;
+import nextstep.security.authentication.context.SecurityContextHolder;
+import nextstep.security.authentication.context.SecurityContextRepository;
+import nextstep.security.authentication.context.SessionSecurityContextRepository;
+import nextstep.security.authentication.provider.AuthenticationManager;
+
+public class SecurityContextHolderFilter extends AbstractAuthenticationFilter{
+
+    private final SecurityContextRepository securityContextRepository;
+
+    public SecurityContextHolderFilter(AuthenticationManager authenticationManager) {
+        this.securityContextRepository = new SessionSecurityContextRepository();
+    }
+
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+        SecurityContext securityContext = securityContextRepository.loadContext(request);
+        if(securityContext == null) {
+            return null;
+        }
+        SecurityContextHolder.setContext(securityContext);
+        Authentication authentication = securityContext.getAuthentication();
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return authentication;
+    }
+
+    @Override
+    public boolean support(HttpServletRequest request) {
+        return true;
+    }
+}
