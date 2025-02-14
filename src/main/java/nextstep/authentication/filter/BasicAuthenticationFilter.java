@@ -42,6 +42,7 @@ public class BasicAuthenticationFilter implements Filter {
 
             Authentication authenticationResult = attemptAuthentication(request, response);
             if (authenticationResult == null) {
+                filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }
 
