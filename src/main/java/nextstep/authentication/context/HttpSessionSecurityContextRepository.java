@@ -12,12 +12,11 @@ public class HttpSessionSecurityContextRepository implements SecurityContextRepo
     public SecurityContext loadContext(HttpServletRequest request) {
 
         HttpSession httpSession = request.getSession(false);
-        SecurityContext context = this.readSecurityContextFromSession(httpSession);
-        if (context == null) {
-            return SecurityContextHolder.createEmptyContext();
+        if (httpSession == null) {
+            return null;
         }
 
-        return context;
+        return (SecurityContext) httpSession.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
     }
 
     @Override
@@ -35,20 +34,5 @@ public class HttpSessionSecurityContextRepository implements SecurityContextRepo
         // 세션이 없으면 생성하고, SecurityContext를 저장
         HttpSession session = request.getSession(true);
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, context);
-    }
-
-    private SecurityContext readSecurityContextFromSession(HttpSession httpSession) {
-        if (httpSession == null) {
-            return null;
-        } else {
-            Object contextFromSession = httpSession.getAttribute(SPRING_SECURITY_CONTEXT_KEY);
-            if (contextFromSession == null) {
-                return null;
-            } else if (!(contextFromSession instanceof SecurityContext)) {
-                return null;
-            } else {
-                return (SecurityContext) contextFromSession;
-            }
-        }
     }
 }
