@@ -5,7 +5,6 @@ public class UsernamePasswordAuthenticationToken implements Authentication {
     private final String principal;
     private final String credentials;
     private boolean authenticated = false;
-    private UserDetails userDetails;
 
     public UsernamePasswordAuthenticationToken(String principal, String credentials) {
         this.principal = principal;
@@ -36,10 +35,6 @@ public class UsernamePasswordAuthenticationToken implements Authentication {
         return credentials;
     }
 
-    public UserDetails getUserDetails() {
-        return userDetails;
-    }
-
     @Override
     public boolean isAuthenticated() {
         return authenticated;
@@ -47,9 +42,5 @@ public class UsernamePasswordAuthenticationToken implements Authentication {
 
     public void setAuthenticated(boolean authenticated) {
         this.authenticated = authenticated;
-    }
-
-    public void setUserDetails(UserDetails userDetails) {
-        this.userDetails = userDetails;
     }
 }
