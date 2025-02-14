@@ -13,7 +13,7 @@ import nextstep.authentication.filter.BasicAuthenticationFilter;
 import nextstep.authentication.filter.FormLoginAuthenticationFilter;
 import nextstep.authentication.UserDetails;
 import nextstep.authentication.UserDetailsService;
-import nextstep.authentication.filter.SecurityContextHolderFilter;
+import nextstep.authentication.context.SecurityContextHolderFilter;
 import nextstep.authentication.password.PasswordEncoder;
 import nextstep.authentication.password.RawPasswordEncoder;
 import nextstep.authentication.util.matcher.AnyRequestMatcher;
