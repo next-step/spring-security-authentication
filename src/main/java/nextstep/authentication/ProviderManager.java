@@ -16,12 +16,12 @@ public class ProviderManager implements AuthenticationManager {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        Class<? extends Authentication> toTest = authentication.getClass();
+        Class<? extends Authentication> target = authentication.getClass();
         Authentication result = null;
         AuthenticationException lastException = null;
 
         for (AuthenticationProvider provider : this.providers) {
-            if (provider.supports(toTest)) {
+            if (provider.supports(target)) {
 
                 try {
                     result = provider.authenticate(authentication);
@@ -38,7 +38,7 @@ public class ProviderManager implements AuthenticationManager {
             return result;
         }
         if (lastException == null) {
-            lastException = new ProviderNotFoundException(String.format("No AuthenticationProvider found for %s", toTest.getName()));
+            lastException = new ProviderNotFoundException(String.format("No AuthenticationProvider found for %s", target.getName()));
         }
 
         throw lastException;
