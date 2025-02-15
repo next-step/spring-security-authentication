@@ -1,8 +1,8 @@
-package nextstep.security;
+package nextstep.authentication;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletRequest;
-import nextstep.security.util.matcher.RequestMatcher;
+import nextstep.authentication.util.matcher.RequestMatcher;
 
 import java.util.List;
 

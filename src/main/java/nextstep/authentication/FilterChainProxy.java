@@ -1,4 +1,4 @@
-package nextstep.security;
+package nextstep.authentication;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

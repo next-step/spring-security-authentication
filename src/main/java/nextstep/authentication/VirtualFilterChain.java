@@ -1,4 +1,4 @@
-package nextstep.security;
+package nextstep.authentication;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -23,9 +23,9 @@ public class VirtualFilterChain implements FilterChain {
     public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
         if (this.currentPosition == filters.size()) {
             this.originalChain.doFilter(request, response);
-        } else {
-            Filter nextFilter = filters.get(currentPosition++);
-            nextFilter.doFilter(request, response, this);
+            return;
         }
+        Filter nextFilter = filters.get(currentPosition++);
+        nextFilter.doFilter(request, response, this);
     }
 }

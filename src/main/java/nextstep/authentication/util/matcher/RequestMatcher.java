@@ -1,4 +1,4 @@
-package nextstep.security.util.matcher;
+package nextstep.authentication.util.matcher;
 
 import jakarta.servlet.http.HttpServletRequest;
 
