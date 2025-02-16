@@ -11,6 +11,7 @@ import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.DaoAuthenticationProvider;
 import nextstep.security.authentication.ProviderManager;
 import nextstep.security.authentication.UsernamePasswordAuthenticationToken;
+import nextstep.security.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -43,8 +44,7 @@ public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
 
             final Authentication authenticate = authenticationManager.authenticate(authentication);
 
-            final HttpSession session = request.getSession();
-            session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, authenticate);
+            SecurityContextHolder.getContext().setAuthentication(authenticate);
 
             filterChain.doFilter(request, response);
         } catch (Exception e) {
