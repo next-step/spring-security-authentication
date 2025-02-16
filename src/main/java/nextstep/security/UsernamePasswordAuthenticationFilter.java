@@ -4,8 +4,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import nextstep.app.ui.AuthenticationException;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationManager;
 import nextstep.security.authentication.DaoAuthenticationProvider;
@@ -22,7 +20,6 @@ public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
 
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
-    public static final String SPRING_SECURITY_CONTEXT_KEY = "SPRING_SECURITY_CONTEXT";
 
     private final AuthenticationManager authenticationManager;
 
@@ -35,7 +32,7 @@ public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
         try {
-            final Authentication authentication = generateAuthentication(request, response);
+            final Authentication authentication = generateAuthentication(request);
 
             if (authentication == null) {
                 filterChain.doFilter(request, response);
@@ -52,7 +49,7 @@ public class UsernamePasswordAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    private Authentication generateAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
+    private Authentication generateAuthentication(final HttpServletRequest request) {
         final Map<String, String[]> parameterMap = request.getParameterMap();
         final String[] userNameParams = parameterMap.get(USERNAME);
         final String[] passwordParams = parameterMap.get(PASSWORD);

@@ -1,5 +1,6 @@
 package nextstep.security.context;
 
+
 public class SecurityContextHolder {
     private static final ThreadLocal<SecurityContext> contextHolder = new ThreadLocal<>();
 
@@ -18,5 +19,15 @@ public class SecurityContextHolder {
         contextHolder.set(emptyContext);
 
         return emptyContext;
+    }
+
+    public static void setContext(SecurityContext context) {
+        if (context != null) {
+            contextHolder.set(context);
+        }
+    }
+
+    public static void clearContext() {
+        contextHolder.remove();
     }
 }
