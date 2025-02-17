@@ -22,7 +22,7 @@ public class DaoAuthenticationProvider implements AuthenticationProvider {
             throw new AuthenticationException();
         }
 
-        return new UsernamePasswordAuthenticationToken(userDetails.getPassword(), userDetails.getUsername(), true);
+        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), true);
     }
 
     @Override

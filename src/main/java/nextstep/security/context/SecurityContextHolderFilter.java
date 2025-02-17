@@ -16,12 +16,16 @@ public class SecurityContextHolderFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain) throws IOException, ServletException {
-        final SecurityContext context = this.securityContextRepository.loadContext((HttpServletRequest) request);
-        SecurityContextHolder.setContext(context);
+        try {
+            final SecurityContext context = this.securityContextRepository.loadContext((HttpServletRequest) request);
+            SecurityContextHolder.setContext(context);
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
 
-        securityContextRepository.saveContext(SecurityContextHolder.getContext(), (HttpServletRequest) request, (HttpServletResponse) response);
-        SecurityContextHolder.clearContext();
+            securityContextRepository.saveContext(SecurityContextHolder.getContext(), (HttpServletRequest) request, (HttpServletResponse) response);
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
+
     }
 }
