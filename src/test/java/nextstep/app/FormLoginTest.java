@@ -46,9 +46,9 @@ class FormLoginTest {
         loginResponse.andExpect(status().isOk());
         loginResponse.andDo(print());
 
-        HttpSession session = loginResponse.andReturn().getRequest().getSession();
-        assertThat(session).isNotNull();
-        assertThat(session.getAttribute("SPRING_SECURITY_CONTEXT")).isNotNull();
+         HttpSession session = loginResponse.andReturn().getRequest().getSession();
+         assertThat(session).isNotNull();
+         assertThat(session.getAttribute("SPRING_SECURITY_CONTEXT")).isNotNull();
     }
 
     @DisplayName("로그인 실패 - 사용자 없음")

@@ -1,5 +1,8 @@
 package nextstep.app.security;
 
+import nextstep.security.context.HttpSessionSecurityContextRepository;
+import nextstep.security.context.SecurityContextHolderFilter;
+import nextstep.security.context.SecurityContextRepository;
 import nextstep.security.filter.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,20 +20,13 @@ public class AppSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain formLoginSecurityFilterChain() {
-        return new DefaultSecurityFilterChain(
-                (httpServletRequest) -> httpServletRequest.getRequestURI().equals("/login"),
-                List.of(
-                        new FormLoginFilter(userDetailsService)
-                )
-        );
-    }
+        SecurityContextRepository contextRepository = new HttpSessionSecurityContextRepository();
 
-    @Bean
-    public SecurityFilterChain basicAuthenticationSecurityFilterChain() {
         return new DefaultSecurityFilterChain(
-                (httpServletRequest) -> httpServletRequest.getRequestURI().equals("/members"),
                 List.of(
-                        new BasicAuthenticationFilter(userDetailsService)
+                        new SecurityContextHolderFilter(contextRepository),
+                        new UsernamePasswordAuthenticationFilter(userDetailsService, contextRepository),
+                        new BasicAuthenticationFilter(userDetailsService, contextRepository)
                 )
         );
     }
